@@ -1,0 +1,46 @@
+{
+  "name": "OIH-openapi-component-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "eio-gen": "bin/eio-gen.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "OIH",
+    "openapi",
+    "component",
+    "generator"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openintegrationhub/component-generator"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openintegrationhub/ferryman": "^1.5.0",
+    "fs-extra": "^8.1.0",
+    "getopts": "^2.2.5",
+    "gm": "^1.23.1",
+    "graphicsmagick-static": "^0.1.4",
+    "html-to-text": "^5.1.1",
+    "jimp": "^0.16.1",
+    "lodash": "^4.17.20",
+    "media-type": "^0.3.1",
+    "moment": "^2.24.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "semver": "^6.3.0",
+    "swagger-parser": "^8.0.0",
+    "swagger2openapi": "^7.0.2",
+    "transliteration": "^2.1.5"
+  }
+}
