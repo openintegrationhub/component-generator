@@ -17,6 +17,16 @@
  *
  */
 
+
+
+ // how to pass the transformation function... no need
+ // pass the meta data 
+ // create a new Object 
+ // emit the message with the new emit function 
+
+ // securities and auth methods   
+ // check how to make the new ferryman and its transform functions functional // no need
+
 const Swagger = require('swagger-client');
 const processWrapper = require('../services/process-wrapper');
 const spec = require('../spec.json');
@@ -41,7 +51,7 @@ function processAction(msg, cfg) {
 
     const contentType = $CONTENT_TYPE;
 
-    const body = msg.body;
+    const body = msg.body.data;
     mapFieldNames(body);
 
     let parameters = {};
@@ -49,6 +59,28 @@ function processAction(msg, cfg) {
         parameters[param] = body[param];
     }
 
+    const oihUid = msg.body.meta !== undefined && msg.body.meta.oihUid !== undefined
+    ? msg.body.meta.oihUid
+    : 'oihUid not set yet';
+  const recordUid = msg.body !== undefined && msg.body.meta.recordUid !== undefined
+    ? msg.body.meta.recordUid
+    : undefined;
+  const applicationUid = msg.body.meta !== undefined && msg.body.meta.applicationUid !== undefined
+    ? msg.body.meta.applicationUid
+    : undefined;
+
+    const newElement = {};
+    const oihMeta = {
+      applicationUid,
+      oihUid,
+      recordUid,
+    };
+
+
+
+
+
+    
     // credentials for this operation
     $SECURITIES
 
@@ -73,7 +105,11 @@ function processAction(msg, cfg) {
     // Call operation via Swagger client
     return Swagger.execute(callParams).then(data => {
         // emit a single message with data
-        this.emit(data);
+        oihMeta.recordUid = data.body.payload.uid;
+        delete data.body.payload.uid;
+        newElement.meta = oihMeta;
+        newElement.data = reply.body.payload;
+        this.emit("data",newMessage(newElement));
 
         // if the response contains an array of entities, you can emit them one by one:
 
