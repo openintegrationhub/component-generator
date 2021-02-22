@@ -41,7 +41,7 @@ const request = require('request-promise').defaults({
     if (objectExists) {
       // Update the object if it already exists
       method = 'PATCH';
-      uri = `${BASE_URI}/company/${type}/${meta.recordUid}`;
+      uri = `${type}/${meta.recordUid}`;
     //   newObject = prepareObject(msg, type);
       delete newObject.uid;
     } else {

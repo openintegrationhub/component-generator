@@ -30,7 +30,6 @@ function newMessage(body) {
 }
 
 async function processAction(msg, cfg) {
-  // const token = cfg.API_KEY;
   const self = this;
   const oihUid = msg.body.meta !== undefined && msg.body.meta.oihUid !== undefined
     ? msg.body.meta.oihUid
@@ -112,7 +111,7 @@ async function processAction(msg, cfg) {
     self.emit('end');
   }
 
-  return Swagger.execute().then(() => {
+  return Swagger.execute(callParams).then(() => {
     // emit a single message with data
     Q().then(emitData).fail(emitError).done(emitEnd);
     // if the response contains an array of entities, you can emit them one by one:
