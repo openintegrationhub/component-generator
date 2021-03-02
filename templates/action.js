@@ -133,7 +133,7 @@ function processAction(msg, cfg) {
         // emit a single message with data
         console.log("swagger data:",data);
         delete data.uid;
-        newElement.meta = oihMeta;
+        newElement.metadata = oihMeta;
         newElement.data = data.data
         this.emit("data",newMessage(newElement));
 
