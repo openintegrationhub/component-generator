@@ -33,7 +33,7 @@ const spec = require('../spec.json');
 const uuid = require("uuid");
 
 // this wrapers offers a simplified emitData(data) function
-module.exports.process = processWrapper(processAction);
+module.exports = {process: processAction};
 
 // parameter names for this call
 const PARAMETERS = $PARAMETERS;
