@@ -30,6 +30,7 @@
 const Swagger = require('swagger-client');
 const processWrapper = require('../services/process-wrapper');
 const spec = require('../spec.json');
+const uuid = require("uuid");
 
 // this wrapers offers a simplified emitData(data) function
 module.exports.process = processWrapper(processAction);
@@ -39,6 +40,18 @@ const PARAMETERS = $PARAMETERS;
 
 // mappings from connector field names to API field names
 const FIELD_MAP = $FIELD_MAP;
+
+function newMessage(body) {
+    const msg = {
+      id: uuid.v4(),
+      attachments: {},
+      body,
+      headers: {},
+      metadata: {},
+    };
+  
+    return msg;
+  }
 
 function processAction(msg, cfg) {
     var isVerbose = process.env.debug || cfg.verbose;
@@ -51,7 +64,7 @@ function processAction(msg, cfg) {
 
     const contentType = $CONTENT_TYPE;
 
-    const body = msg.body.data;
+    const body = msg.data;
     mapFieldNames(body);
 
     let parameters = {};
@@ -59,14 +72,14 @@ function processAction(msg, cfg) {
         parameters[param] = body[param];
     }
 
-    const oihUid = msg.body.meta !== undefined && msg.body.meta.oihUid !== undefined
-    ? msg.body.meta.oihUid
+    const oihUid = msg.metadata !== undefined && msg.metadata.oihUid !== undefined
+    ? msg.metadata.oihUid
     : 'oihUid not set yet';
-  const recordUid = msg.body !== undefined && msg.body.meta.recordUid !== undefined
-    ? msg.body.meta.recordUid
+  const recordUid = msg.data !== undefined && msg.metadata.recordUid !== undefined
+    ? msg.metadata.recordUid
     : undefined;
-  const applicationUid = msg.body.meta !== undefined && msg.body.meta.applicationUid !== undefined
-    ? msg.body.meta.applicationUid
+  const applicationUid = msg.metadata !== undefined && msg.metadata.applicationUid !== undefined
+    ? msg.metadata.applicationUid
     : undefined;
 
     const newElement = {};
@@ -75,15 +88,15 @@ function processAction(msg, cfg) {
       oihUid,
       recordUid,
     };
-
-
-
-
-
     
     // credentials for this operation
     $SECURITIES
 
+    if(cfg.otherServer){
+        spec.servers.push({"url":cfg.otherServer})
+    }
+    
+    
     let callParams = {
         spec: spec,
         operationId: $OPERATION_ID,
@@ -91,10 +104,23 @@ function processAction(msg, cfg) {
         method: $METHOD,
         parameters: parameters,
         requestContentType: contentType,
-        requestBody: body.requestBody,
+        requestBody: body,
         securities: {authorized: securities},
         server: spec.servers[cfg.server] || cfg.otherServer,
     };
+    if(callParams.method === "'get'"){
+        callParams = {
+            spec: spec,
+            operationId: $OPERATION_ID,
+            pathName: $PATH,
+            method: $METHOD,
+            parameters: parameters,
+            requestContentType: contentType,
+            securities: {authorized: securities},
+            server: spec.servers[cfg.server] || cfg.otherServer,
+        };
+        return callParams;
+    }
 
     if (isVerbose) {
         let out = Object.assign({}, callParams);
@@ -105,10 +131,10 @@ function processAction(msg, cfg) {
     // Call operation via Swagger client
     return Swagger.execute(callParams).then(data => {
         // emit a single message with data
-        oihMeta.recordUid = data.body.payload.uid;
-        delete data.body.payload.uid;
+        console.log("swagger data:",data);
+        delete data.uid;
         newElement.meta = oihMeta;
-        newElement.data = reply.body.payload;
+        newElement.data = data.data
         this.emit("data",newMessage(newElement));
 
         // if the response contains an array of entities, you can emit them one by one:

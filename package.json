@@ -41,6 +41,6 @@
     "semver": "^6.3.0",
     "swagger-parser": "^8.0.0",
     "swagger2openapi": "^7.0.2",
-    "transliteration": "^2.1.5"
+    "uuid": "^8.3.2"
   }
 }
