@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "eio-gen": "bin/eio-gen.js"
+    "oih-gen": "bin/oih-gen.js"
   },
   "publishConfig": {
     "access": "public"

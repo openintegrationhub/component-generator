@@ -56,6 +56,9 @@ function newMessage(body) {
 function processAction(msg, cfg) {
     var isVerbose = process.env.debug || cfg.verbose;
 
+    console.log("msg:",msg);
+    console.log("cfg:",cfg)
+
     if (isVerbose) {
         console.log(`---MSG: ${JSON.stringify(msg)}`);
         console.log(`---CFG: ${JSON.stringify(cfg)}`);
@@ -93,6 +96,9 @@ function processAction(msg, cfg) {
     $SECURITIES
 
     if(cfg.otherServer){
+        if(!spec.servers){
+            spec.servers = [];
+        }
         spec.servers.push({"url":cfg.otherServer})
     }
     
@@ -108,19 +114,10 @@ function processAction(msg, cfg) {
         securities: {authorized: securities},
         server: spec.servers[cfg.server] || cfg.otherServer,
     };
-    if(callParams.method === "'get'"){
-        callParams = {
-            spec: spec,
-            operationId: $OPERATION_ID,
-            pathName: $PATH,
-            method: $METHOD,
-            parameters: parameters,
-            requestContentType: contentType,
-            securities: {authorized: securities},
-            server: spec.servers[cfg.server] || cfg.otherServer,
-        };
-        return callParams;
-    }
+        if(callParams.method === 'get'){
+            delete callParams.requestBody;
+        }
+    
 
     if (isVerbose) {
         let out = Object.assign({}, callParams);
