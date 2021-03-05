@@ -17,9 +17,9 @@ const validate = require('../lib/validate');
 const generate = require('../lib/generate');
 const Questionnaire = require('../lib/questionnaire');
 
-module.exports = eioGen;
+module.exports = oihGen;
 
-eioGen().catch(e => {
+oihGen().catch(e => {
     console.error('An error occurred.', e.message);
     process.exit(1);
 });
@@ -28,7 +28,7 @@ eioGen().catch(e => {
  * CLI utility for generating a single connector
  * @returns {Promise<void>}
  */
-async function eioGen() {
+async function oihGen() {
     const options = getopts(process.argv.slice(2), {
         alias: {
             output: 'o',
@@ -93,8 +93,8 @@ async function eioGen() {
 
 function printHelp() {
     console.log(`
-        Usage: eio-gen [OPTIONS] {URL|FILE}
-        Usage example: eio-gen -o petstore-connector -n petstore https://petstore.swagger.io/v2/swagger.json\n
+        Usage: oih-gen [OPTIONS] {URL|FILE}
+        Usage example: oih-gen -o petstore-connector -n petstore https://petstore.swagger.io/v2/swagger.json\n
         Generate a connector from an OpenAPI definition provided from an url or a local file.\n
         Options:
           -o, --output \t\t output directory where to store the downloaded and validated specification files and the generated connector
