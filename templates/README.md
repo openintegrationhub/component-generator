@@ -1,8 +1,8 @@
-# ![LOGO](logo.png) <%= api.info.title %> **flow**ground Connector
+# ![LOGO](logo.png) <%= api.info.title %> OIH Connector
 
 ## Description
 
-A generated **flow**ground connector for the <%= api.info.title %> API (version <%= api.info.version %>).
+A generated OIH connector for the <%= api.info.title %> API (version <%= api.info.version %>).
 
 Generated from: <%= openapiUrl %><br/>
 Generated at: <%= moment().format() %>
