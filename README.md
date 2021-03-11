@@ -13,14 +13,18 @@ The generator stores all files in a specific output directory (provided as an op
 
 ### NodeJS script
 ```shell
-node oih-gen.js -o <Output directory> -n <Connector name> <Swagger/OpenAPI file location|Swagger/OpenApi URL> 
+node bin/oih-gen.js -o <Output directory> -n <Connector name> <Swagger/OpenAPI file location|Swagger/OpenApi URL> 
 ```
 ### CLI command
 ```shell
 oih-gen --help
 oih-gen -o <Output directory> -n <Connector name> <Swagger/OpenAPI file location|Swagger/OpenApi URL> 
 ```
-### Command line arguments and options
+### Command line arguments and options and path build
+The options provided to the command line should create the path for the created components:
+For example if I do create a component and I give output value ./desktop and on top I give my component a name like MyComponent the generator will create nested folders on the desktop
+That means there should be on the desktop a desktop folder which contains the generated MyComponent (./desktop/MyComponent/...)
+
 - `url|file` - URL of Swagger/OpenAPI specification or path to file where specification is stored
 (options)
 - `-o` or `--output` - output directory where to store the connector files (default: `output`)
