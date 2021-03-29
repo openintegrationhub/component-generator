@@ -1,4 +1,5 @@
-# ![LOGO](logo.png) <%= api.info.title %> OIH Connector
+# <p align="center" width="100%"> <img src="./logo.png" width="250" height="250"> </p> 
+# <p align="center" width="100%"> <%= api.info.title %> OIH Connector </p>
 
 ## Description
 
