@@ -4,85 +4,66 @@
  const lastJira = require("./lastJira")
 
 
-                                    let schemaOut = {
-                                        type: 'object',
-                                        properties: {}
-                                    };
+ let successResp = "200";
+ console.log("lastjira:",lastJira);
 
-                                    try {
-                                    let successResp = "200";
-                                    // let resp200 = JSON.parse(lastJira)[successResp];
-                                    var stringJSON = lastJira.replace(/\\n/g, "\\n")
-                                    .replace(/\\'/g, "\\'")
-                                    .replace(/\\"/g, '\\"')
-                                    .replace(/\\&/g, "\\&")
-                                    .replace(/\\r/g, "\\r")
-                                    .replace(/\\t/g, "\\t")
-                                    .replace(/\\b/g, "\\b")
-                                    .replace(/\\f/g, "\\f");
-                                    let resp200 = JSON.parse(stringJSON)[successResp];
+ let resp200 = JSON.parse(newjs);
+ resp200 = resp200[successResp];
 
-                                    
-                                    // console.log("resp",typeof resp200);
-                                    let searchKey = ["items","schema","attributes"];
+    let path;
 
-                                    //  console.log("resp200 -->",resp200);
-                                    let counter = 0;
-                                    let path = "";
-                                    const recursiveSearch = (respNew) => {
-                                        counter++;
-                                        console.log("counter", counter)
-                                        
-                                        
-                                        Object.keys(respNew).forEach(key => {
-                                           console.log("new key -->",key);
-                                           const value = respNew[key];
-                                            console.log("values: ",value);                                                                                                              
-                                        // console.log("resp 200 new -- :" ,resp200[key]);
+    let schemaOut = {
+        type: 'object',
+        properties: {}
+    };
 
-                                            if(typeof value === 'object' ){
-                                                path = path +"."+ key;
-                                                
-                                                console.log("path -->",path);
-                                                // console.log("path type: ", typeof path);
+    const recursiveSearch = (resp) => {
+    let value; 
+    console.log("recursive search with new value",value);
+    //    
+    if(typeof resp === "object"){   
 
-                                                if (key === "properties" && ((!value.data) && (!value.items) && (!value.orders) )){
-                                                    console.log("fired1");
-                                                    console.log("new value:", value);
-                                                    return value;
-                                                }else if (path.split(".").pop() === "attributes" && (!value.data) && (!value.items)){
-                                                    console.log("fired2");
-                                                   console.log("attributes: ", value)
-                                                    return value; 
-                                                   
-                                                } else {
-                                                    recursiveSearch(value);
-                                                }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
-                                            }
-                                            else { 
-                                                console.log("fired")
-                                                console.log(typeof value);
-                                                return
-                                                
-                                            }
-                                        //         if(key==="properties" && !objPath.data && (properties.value !== response.split("/").pop())){
-                                        //             schemaOut.properties = "1243";
-                                        //         }        
-                                        //     }else if(typeof value === 'object'){
-                                        //       recursiveSearch(objPath, searchKey);
-                                        //    }
-                                        // });
-                                     }
-                                     )
-                                    
-                                }
-                                     let result = recursiveSearch(resp200);
-                                     console.log(result);
-                                    } catch(err){
-                                        console.log("generic error",err);
-                                    }
-                                    //  console.log("result: ",result)
-                                    //  console.log("recurs -->",recursiveSearch(resp200,searchKey));
+
+       Object.keys(resp).forEach(key => {
+       console.log("current key -->",key);
+        value = resp[key];
+
+        if(typeof value === 'object' ){   
+            path = path +"."+ key;
+            console.log("path -->",path);
+
+            if (key === "properties" && ((!value.data) && (!value.items) && (!value.orders) )){
+                console.log("value found 1:", value);
+                finalResult(value)
+                return false;
+            // }else if (path.split(".").pop() === "attributes" && (!value.data) && (!value.items)){
+            //     console.log("value found 2:", value);
+            //     return value;
+            } else {
+                console.log("need to call recursion again");
+                console.log("resp :",resp)
+                return recursiveSearch(value);            
+            }
+            
+        } else { 
+            console.log("Not an Object");
+            return false;
+            }
+
+        })   
+        return {title:"not found"}
+    }
+    // }else { return "Not found"}
+
+}
+     function finalResult(res){
+         console.log("final result",res);
+         schemaOut.properties = res;
+    }
+
+ 
+        recursiveSearch(resp200);
+        console.log("result:",schemaOut.properties);
 
 
                                                   //string.split(/-(.*)/)[1]
