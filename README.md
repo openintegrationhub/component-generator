@@ -1,4 +1,5 @@
 # component-generator
+
 Generator to create OIH integration components based on OpenAPI 3 / Swagger specifications. Based on https://github.com/flowground/elasticio-openapi-component-generator
 
 ## Description
@@ -12,24 +13,29 @@ The generator stores all files in a specific output directory (provided as an op
 ## Usage
 
 ### NodeJS script
+
 ```shell
-node bin/oih-gen.js -o <Output directory> -n <Connector name> <Swagger/OpenAPI file location|Swagger/OpenApi URL> 
+node bin/oih-gen.js -o <Output directory> -n <Connector name> <Swagger/OpenAPI file location|Swagger/OpenApi URL>
 ```
+
 ### CLI command
+
 ```shell
 oih-gen --help
-oih-gen -o <Output directory> -n <Connector name> <Swagger/OpenAPI file location|Swagger/OpenApi URL> 
+oih-gen -o <Output directory> -n <Connector name> <Swagger/OpenAPI file location|Swagger/OpenApi URL>
 ```
+
 ### Command line arguments and options and path build
+
 The options provided to the command line should create the path for the created components:
 For example if I do create a component and I give output value ./desktop and on top I give my component a name like MyComponent the generator will create nested folders on the desktop
 That means there should be on the desktop a desktop folder which contains the generated MyComponent (./desktop/MyComponent/...)
 
 - `url|file` - URL of Swagger/OpenAPI specification or path to file where specification is stored
-(options)
+  (options)
 - `-o` or `--output` - output directory where to store the connector files (default: `output`)
 - `-n` or `--name` - connector name used as a package name in package.json (default: extracted from title provided in Swagger/OpenAPI definition)\
-Unless `-y`, `--yes` option is provided, if output or name options are missing, user will be prompt with questions having default values.
+  Unless `-y`, `--yes` option is provided, if output or name options are missing, user will be prompt with questions having default values.
 - `-y` or `--yes` - skip questionnaire and populate all options with default values
 - `-h` or `--help` - show help
 

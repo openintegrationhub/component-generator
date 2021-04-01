@@ -6,17 +6,17 @@
  * see the file LICENSE on the toplevel directory.
  */
 
- // adding the template from a connctor
- // make adjustements to the new ferryman
+// adding the template from a connctor
+// make adjustements to the new ferryman
 
-const processWrapper = require('../services/process-wrapper');
+const processWrapper = require("../services/process-wrapper");
 
 module.exports.process = processWrapper(processTrigger);
 
 function processTrigger(msg, cfg, snapshot) {
-    this.emitData({
-        now: new Date().toISOString(),
-        config: cfg,
-        snapshot: snapshot,
-    });
+  this.emitData({
+    now: new Date().toISOString(),
+    config: cfg,
+    snapshot: snapshot,
+  });
 }

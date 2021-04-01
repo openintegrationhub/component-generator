@@ -21,17 +21,17 @@
  * @returns {function} - the wrapper with additional functionality
  */
 module.exports = function processWrapper(processFn) {
-    let num_emit = 0;
-    return function() {
-        let originalEmit = this.emit;
-        this.emit = (type, msg) => {
-            console.log('---EMIT', ++num_emit, type, JSON.stringify(msg));
-            return originalEmit.call(this, type, msg);
-        };
-        this.emit('data', data);
-
-        return Promise.resolve()
-            .then(() => processFn.apply(this, arguments))
-            .then(() => undefined);
+  let num_emit = 0;
+  return function () {
+    let originalEmit = this.emit;
+    this.emit = (type, msg) => {
+      console.log("---EMIT", ++num_emit, type, JSON.stringify(msg));
+      return originalEmit.call(this, type, msg);
     };
+    this.emit("data", data);
+
+    return Promise.resolve()
+      .then(() => processFn.apply(this, arguments))
+      .then(() => undefined);
+  };
 };

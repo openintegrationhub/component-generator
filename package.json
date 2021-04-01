@@ -10,7 +10,9 @@
     "access": "public"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write --svelte-sort-order scripts-markup-styles \"**/*.{js,md,ts,svelte}\""
+
   },
   "keywords": [
     "cli",
@@ -42,6 +44,7 @@
     "swagger-parser": "^8.0.0",
     "swagger2openapi": "^7.0.2",
     "transliteration": "^2.1.5",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "prettier": "^2.2.1"
   }
 }
