@@ -41,18 +41,6 @@ const PARAMETERS = $PARAMETERS;
 // mappings from connector field names to API field names
 const FIELD_MAP = $FIELD_MAP;
 
-function newMessage(body) {
-    const msg = {
-      id: uuid.v4(),
-      attachments: {},
-      body,
-      headers: {},
-      metadata: {},
-    };
-  
-    return msg;
-  }
-
 function processAction(msg, cfg) {
     var isVerbose = process.env.debug || cfg.verbose;
 
@@ -128,11 +116,11 @@ function processAction(msg, cfg) {
     // Call operation via Swagger client
     return Swagger.execute(callParams).then(data => {
         // emit a single message with data
-        console.log("swagger data:",data);
+        // console.log("swagger data:",data);
         delete data.uid;
         newElement.metadata = oihMeta;
         newElement.data = data.data
-        this.emit("data",newMessage(newElement));
+        this.emit("data",newElement);
 
         // if the response contains an array of entities, you can emit them one by one:
 
