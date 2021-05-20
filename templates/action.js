@@ -41,7 +41,6 @@ const PARAMETERS = $PARAMETERS;
 // mappings from connector field names to API field names
 const FIELD_MAP = $FIELD_MAP;
 
-
 function processAction(msg, cfg) {
     var isVerbose = process.env.debug || cfg.verbose;
 
