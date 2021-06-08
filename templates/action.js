@@ -28,9 +28,7 @@
  // check how to make the new ferryman and its transform functions functional // no need
 
 const Swagger = require('swagger-client');
-const processWrapper = require('../services/process-wrapper');
 const spec = require('../spec.json');
-const uuid = require("uuid");
 
 // this wrapers offers a simplified emitData(data) function
 module.exports = {process: processAction};

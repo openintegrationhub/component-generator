@@ -5,13 +5,6 @@
     "url": "",
     "envVars": {},
     "credentials": {},
-    "triggers": {
-        "startFlow": {
-            "main": "./lib/triggers/startFlow.js",
-            "type": "polling",
-            "title": "Start Flow",
-            "fields": {}
-        }
-    },
+    "triggers": {},
     "actions": {}
 }
