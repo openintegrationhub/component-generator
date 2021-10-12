@@ -100,7 +100,6 @@
          out.spec = '[omitted]';
          console.log(`--SWAGGER CALL: ${JSON.stringify(out)}`);
      }
-     if(Array.isArray(body))
  
      // Call operation via Swagger client
      return Swagger.execute(callParams).then(data => {
