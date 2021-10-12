@@ -100,37 +100,36 @@
          out.spec = '[omitted]';
          console.log(`--SWAGGER CALL: ${JSON.stringify(out)}`);
      }
+     if(Array.isArray(body))
  
      // Call operation via Swagger client
      return Swagger.execute(callParams).then(data => {
-         // emit a single message with data
-         // console.log("swagger data:",data);
+
          delete data.uid;
          newElement.metadata = oihMeta;
-         newElement.data = data.data
-         this.emit("data",newElement);
- 
-         // if the response contains an array of entities, you can emit them one by one:
- 
-         // data.obj.someItems.forEach((item) => {
-         //     this.emitData(item);
-         // }
+         const response = JSON.parse(data.data);
+         if(cfg.nodeSettings.arraySplittingKey !== undefined){
+            newElement.data = response[arraySplitingKey];
+         } else {
+            newElement.data = response;
+         }
+         if(Array.isArray(newElement.data)){
+            newElement.data.forEach(item => {
+               newElement.data = item
+               this.emit("data",newElement)})
+        } else {
+        this.emit("data",newElement);
+} 
      });
  }
  
  function mapFieldNames(obj) {
-     if(Array.isArray(obj)) {
-         obj.forEach(mapFieldNames);
-     }
-     else if(typeof obj === 'object' && obj) {
-         Object.keys(obj).forEach(key => {
-             mapFieldNames(obj[key]);
- 
-             let goodKey = FIELD_MAP[key];
-             if(goodKey && goodKey !== key) {
-                 obj[goodKey] = obj[key];
-                 delete obj[key];
-             }
-         });
-     }
+    if(Array.isArray(obj)) {
+        obj.forEach(mapFieldNames);
+    }
+    else if(typeof obj === 'object' && obj) {
+        obj = Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null));
+
+    }
+
  }
