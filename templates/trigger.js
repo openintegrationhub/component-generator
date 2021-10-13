@@ -107,16 +107,12 @@
          delete data.uid;
          newElement.metadata = oihMeta;
          const response = JSON.parse(data.data);
-         const arraySplittingKey = cfg.nodeSettings.arraySplittingKey !== undefined ? cfg.nodeSettings.arraySplittingKey : undefined;
-         if(arraySplittingKey !== undefined){   
-             newElement.data = response[arraySplittingKey];
-         } else {
-            newElement.data = response;
-         }
+         const arraySplittingKey = cfg.nodeSettings.arraySplittingKey !== undefined ? newElement.data = response[arraySplittingKey] : newElement.data = response;
+         
          if(Array.isArray(newElement.data)){
             for(let i = 0; i < newElement.data.length; i++ ){
-                const newObject = newElement
-                newObject.data = newElement.data[i]
+                const newObject = newElement;
+                newObject.data = newElement.data[i];
                 this.emit("data",newObject)
             }
         } else {

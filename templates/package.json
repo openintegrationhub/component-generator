@@ -2,7 +2,7 @@
     "version": "1.0.0",
     "main": "component.json",
     "dependencies": {
-        "@openintegrationhub/ferryman": "^1.5.0",
+        "@openintegrationhub/ferryman": "1.6.2",
         "swagger-client": "^3.8.22",
         "eslint": "^7.26.0",
         "eslint-config-airbnb-base": "13.1.0",
