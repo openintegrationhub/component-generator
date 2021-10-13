@@ -1,0 +1,33 @@
+{
+    "type": "object",
+    "properties": {
+        "since_timestamp": {
+            "required": true,
+            "type": "string"
+        },
+        "items": {
+            "type": "string",
+            "enum": [
+                "activity",
+                "activityType",
+                "deal",
+                "file",
+                "filter",
+                "note",
+                "person",
+                "organization",
+                "pipeline",
+                "product",
+                "stage",
+                "user"
+            ]
+        },
+        "start": {
+            "type": "integer",
+            "default": 0
+        },
+        "limit": {
+            "type": "integer"
+        }
+    }
+}

@@ -1,0 +1,44 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "title": "addOrganizationRelationshipRequest",
+            "allOf": [
+                {
+                    "title": "organizationRelationship",
+                    "type": "object",
+                    "properties": {
+                        "org_id": {
+                            "type": "integer",
+                            "description": "ID of the base organization for the returned calculated values"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "parent",
+                                "related"
+                            ],
+                            "description": "The type of organization relationship"
+                        },
+                        "rel_owner_org_id": {
+                            "type": "integer",
+                            "description": "The owner of this relationship. If type is `parent`, then the owner is the parent and the linked organization is the daughter."
+                        },
+                        "rel_linked_org_id": {
+                            "type": "integer",
+                            "description": "The linked organization in this relationship. If type is `parent`, then the linked organization is the daughter."
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "rel_owner_org_id",
+                        "rel_linked_org_id"
+                    ]
+                }
+            ]
+        }
+    }
+}

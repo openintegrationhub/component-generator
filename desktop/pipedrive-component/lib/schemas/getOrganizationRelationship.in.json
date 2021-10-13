@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "org_id": {
+            "required": false,
+            "type": "integer"
+        }
+    }
+}

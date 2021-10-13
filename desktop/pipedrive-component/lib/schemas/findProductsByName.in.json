@@ -1,0 +1,19 @@
+{
+    "type": "object",
+    "properties": {
+        "term": {
+            "required": true,
+            "type": "string"
+        },
+        "currency": {
+            "type": "string"
+        },
+        "start": {
+            "type": "integer",
+            "default": 0
+        },
+        "limit": {
+            "type": "integer"
+        }
+    }
+}

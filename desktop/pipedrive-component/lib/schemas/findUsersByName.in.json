@@ -1,0 +1,18 @@
+{
+    "type": "object",
+    "properties": {
+        "term": {
+            "required": true,
+            "type": "string"
+        },
+        "search_by_email": {
+            "title": "numberBooleanDefault0",
+            "type": "number",
+            "default": 1,
+            "enum": [
+                0,
+                1
+            ]
+        }
+    }
+}

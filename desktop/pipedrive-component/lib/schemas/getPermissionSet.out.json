@@ -1,0 +1,12 @@
+{
+    "type": "object",
+    "properties": {
+        "contents": {
+            "type": "array",
+            "description": "A permission assigned to this Permission Set",
+            "items": {
+                "type": "string"
+            }
+        }
+    }
+}

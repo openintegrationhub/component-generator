@@ -1,0 +1,39 @@
+{
+    "type": "object",
+    "properties": {
+        "pagination": {
+            "title": "paginationDetails",
+            "description": "Pagination details of the list",
+            "type": "object",
+            "allOf": [
+                {
+                    "description": "The additional data of the list",
+                    "type": "object",
+                    "properties": {
+                        "start": {
+                            "type": "integer",
+                            "description": "Pagination start"
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": "Items shown per page"
+                        },
+                        "more_items_in_collection": {
+                            "type": "boolean",
+                            "description": "If there are more list items in the collection than displayed or not"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "next_start": {
+                            "type": "integer",
+                            "description": "Next pagination start"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

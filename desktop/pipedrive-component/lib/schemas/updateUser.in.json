@@ -1,0 +1,23 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "requestBody": {
+            "title": "updateUserRequest",
+            "type": "object",
+            "required": [
+                "active_flag"
+            ],
+            "properties": {
+                "active_flag": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether the user is active or not. `false` = Not activated, `true` = Activated"
+                }
+            }
+        }
+    }
+}

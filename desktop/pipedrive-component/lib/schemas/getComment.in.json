@@ -1,0 +1,14 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "commentId": {
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+        }
+    }
+}

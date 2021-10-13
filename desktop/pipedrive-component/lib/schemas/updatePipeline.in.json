@@ -1,0 +1,49 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "requestBody": {
+            "title": "pipelineRequest",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the Pipeline"
+                },
+                "deal_probability": {
+                    "allOf": [
+                        {
+                            "title": "numberBoolean",
+                            "type": "number",
+                            "enum": [
+                                0,
+                                1
+                            ]
+                        }
+                    ],
+                    "description": "Whether Deal probability is disabled or enabled for this Pipeline"
+                },
+                "order_nr": {
+                    "type": "integer",
+                    "description": "Defines the order of Pipelines. First order (`order_nr=0`) is the default Pipeline."
+                },
+                "active": {
+                    "allOf": [
+                        {
+                            "title": "numberBoolean",
+                            "type": "number",
+                            "enum": [
+                                0,
+                                1
+                            ]
+                        }
+                    ],
+                    "description": "Whether this Pipeline will be made inactive (hidden) or active"
+                }
+            }
+        }
+    }
+}

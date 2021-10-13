@@ -1,0 +1,73 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "requestBody": {
+            "title": "updateActivityTypeRequest",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the ActivityType"
+                },
+                "icon_key": {
+                    "type": "string",
+                    "description": "Icon graphic to use for representing this activity type.",
+                    "enum": [
+                        "task",
+                        "email",
+                        "meeting",
+                        "deadline",
+                        "call",
+                        "lunch",
+                        "calendar",
+                        "downarrow",
+                        "document",
+                        "smartphone",
+                        "camera",
+                        "scissors",
+                        "cogs",
+                        "bubble",
+                        "uparrow",
+                        "checkbox",
+                        "signpost",
+                        "shuffle",
+                        "addressbook",
+                        "linegraph",
+                        "picture",
+                        "car",
+                        "world",
+                        "search",
+                        "clip",
+                        "sound",
+                        "brush",
+                        "key",
+                        "padlock",
+                        "pricetag",
+                        "suitcase",
+                        "finish",
+                        "plane",
+                        "loop",
+                        "wifi",
+                        "truck",
+                        "cart",
+                        "bulb",
+                        "bell",
+                        "presentation"
+                    ]
+                },
+                "color": {
+                    "type": "string",
+                    "description": "A designated color for the ActivityType in 6-character HEX format (e.g. `FFFFFF` for white, `000000` for black)"
+                },
+                "order_nr": {
+                    "type": "integer",
+                    "description": "An order number for this ActivityType. Order numbers should be used to order the types in the ActivityType selections."
+                }
+            }
+        }
+    }
+}

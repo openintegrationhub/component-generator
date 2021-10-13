@@ -1,0 +1,22 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "requestBody": {
+            "title": "addDealParticipantRequest",
+            "type": "object",
+            "required": [
+                "person_id"
+            ],
+            "properties": {
+                "person_id": {
+                    "type": "integer",
+                    "description": "ID of the person"
+                }
+            }
+        }
+    }
+}

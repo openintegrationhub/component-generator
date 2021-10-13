@@ -1,0 +1,24 @@
+{
+    "type": "object",
+    "properties": {
+        "order_by": {
+            "type": "string",
+            "enum": [
+                "id",
+                "name",
+                "manager_id",
+                "active_flag"
+            ],
+            "default": "id"
+        },
+        "skip_users": {
+            "title": "numberBooleanDefault0",
+            "type": "number",
+            "default": 1,
+            "enum": [
+                0,
+                1
+            ]
+        }
+    }
+}

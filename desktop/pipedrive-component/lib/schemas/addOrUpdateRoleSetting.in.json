@@ -1,0 +1,38 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "requestBody": {
+            "title": "addOrUpdateRoleSettingRequest",
+            "type": "object",
+            "required": [
+                "setting_key",
+                "value"
+            ],
+            "properties": {
+                "setting_key": {
+                    "type": "string",
+                    "enum": [
+                        "deal_default_visibility",
+                        "lead_default_visibility",
+                        "org_default_visibility",
+                        "person_default_visibility",
+                        "product_default_visibility"
+                    ]
+                },
+                "value": {
+                    "enum": [
+                        1,
+                        3,
+                        5,
+                        7
+                    ],
+                    "description": "Possible values for `default_visibility` settings: `1`, `3`, `5` or `7`"
+                }
+            }
+        }
+    }
+}

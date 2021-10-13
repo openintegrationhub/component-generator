@@ -1,0 +1,65 @@
+{
+    "type": "object",
+    "properties": {
+        "term": {
+            "required": true,
+            "type": "string"
+        },
+        "item_types": {
+            "type": "string",
+            "enum": [
+                "deal",
+                "person",
+                "organization",
+                "product",
+                "lead",
+                "file",
+                "mail_attachment"
+            ]
+        },
+        "fields": {
+            "type": "string",
+            "enum": [
+                "address",
+                "code",
+                "custom_fields",
+                "email",
+                "name",
+                "notes",
+                "organization_name",
+                "person_name",
+                "phone",
+                "title"
+            ]
+        },
+        "search_for_related_items": {
+            "type": "boolean",
+            "enum": [
+                true,
+                false
+            ]
+        },
+        "exact_match": {
+            "type": "boolean",
+            "enum": [
+                true,
+                false
+            ]
+        },
+        "include_fields": {
+            "type": "string",
+            "enum": [
+                "deal.cc_email",
+                "person.picture",
+                "product.price"
+            ]
+        },
+        "start": {
+            "type": "integer",
+            "default": 0
+        },
+        "limit": {
+            "type": "integer"
+        }
+    }
+}

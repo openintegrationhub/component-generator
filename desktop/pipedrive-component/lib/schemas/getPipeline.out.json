@@ -1,0 +1,83 @@
+{
+    "type": "object",
+    "properties": {
+        "deals_summary": {
+            "type": "object",
+            "description": "Deals summary",
+            "properties": {
+                "per_stages": {
+                    "type": "object",
+                    "description": "The Stage objects containing Deals currency information",
+                    "properties": {
+                        "STAGE_ID": {
+                            "type": "object",
+                            "description": "The currency summaries per stage. This parameter is dynamic and changes according to `stage_id` value.",
+                            "properties": {
+                                "CURRENCY_ID": {
+                                    "type": "object",
+                                    "description": "The currency summary. This parameter is dynamic and changes according to `currency_id` value.",
+                                    "properties": {
+                                        "count": {
+                                            "type": "integer",
+                                            "description": "Deals count per currency"
+                                        },
+                                        "value": {
+                                            "type": "integer",
+                                            "description": "Deals value per currency"
+                                        },
+                                        "value_formatted": {
+                                            "type": "string",
+                                            "description": "Deals value formatted per currency"
+                                        },
+                                        "weighted_value": {
+                                            "type": "integer",
+                                            "description": "Deals weighted value per currency"
+                                        },
+                                        "weighted_value_formatted": {
+                                            "type": "string",
+                                            "description": "Deals weighted value formatted per currency"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "per_currency": {
+                    "type": "object",
+                    "description": "The currency count summary",
+                    "properties": {
+                        "CURRENCY_ID": {
+                            "type": "integer",
+                            "description": "Deals count per currency. This parameter is dynamic and changes according to `currency_id` value."
+                        }
+                    }
+                },
+                "total_count": {
+                    "type": "integer",
+                    "description": "Deals count"
+                },
+                "per_currency_full": {
+                    "type": "object",
+                    "description": "Full currency summaries",
+                    "properties": {
+                        "CURRENCY_ID": {
+                            "type": "object",
+                            "description": "The currency summary. This parameter is dynamic and changes according to `currency_id` value.",
+                            "properties": {
+                                "count": {
+                                    "type": "integer",
+                                    "description": "Deals count per currency"
+                                },
+                                "value": {
+                                    "type": "integer",
+                                    "description": "Deals value per currency"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

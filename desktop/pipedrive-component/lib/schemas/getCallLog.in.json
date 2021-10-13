@@ -1,0 +1,10 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "string",
+            "example": "3cde3b05035cae14dcfc172bd8000d08"
+        }
+    }
+}

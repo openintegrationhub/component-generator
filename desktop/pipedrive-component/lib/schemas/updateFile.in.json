@@ -1,0 +1,23 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "requestBody": {
+            "title": "updateFileRequest",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Visible name of the file"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of the file"
+                }
+            }
+        }
+    }
+}

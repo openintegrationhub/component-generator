@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "The ID of an attached Product that was deleted from the Deal"
+        },
+        "product_attachment_id": {
+            "type": "integer",
+            "description": "The ID of an attached Product that was deleted from the Deal"
+        }
+    }
+}

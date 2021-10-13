@@ -1,0 +1,46 @@
+{
+    "type": "object",
+    "properties": {
+        "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The ID of the Note"
+        },
+        "active_flag": {
+            "type": "boolean",
+            "description": "If Note is active or deleted"
+        },
+        "add_time": {
+            "type": "string",
+            "description": "The creation date and time of the Note"
+        },
+        "update_time": {
+            "type": "string",
+            "description": "The creation date and time of the Note"
+        },
+        "content": {
+            "type": "string",
+            "description": "Content of the Note in HTML format. Subject to sanitization on the back-end."
+        },
+        "object_id": {
+            "type": "string",
+            "description": "The ID of the object that the comment is attached to, will be the id of the note"
+        },
+        "object_type": {
+            "type": "string",
+            "description": "The type of object that the comment is attached to, will be \"note\""
+        },
+        "user_id": {
+            "type": "integer",
+            "description": "The ID of the User who created the comment"
+        },
+        "updater_id": {
+            "type": "integer",
+            "description": "The ID of the User who last updated the comment"
+        },
+        "company_id": {
+            "type": "integer",
+            "description": "The ID of the company"
+        }
+    }
+}

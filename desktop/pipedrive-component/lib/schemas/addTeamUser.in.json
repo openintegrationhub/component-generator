@@ -1,0 +1,25 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "requestBody": {
+            "title": "addTeamUserRequest",
+            "type": "object",
+            "required": [
+                "users"
+            ],
+            "properties": {
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "description": "List of User IDs"
+                }
+            }
+        }
+    }
+}

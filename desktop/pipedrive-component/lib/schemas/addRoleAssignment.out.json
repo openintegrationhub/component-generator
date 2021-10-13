@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "properties": {
+        "user_id": {
+            "type": "integer",
+            "description": "The ID of the User that was added to the Role"
+        },
+        "role_id": {
+            "type": "integer",
+            "description": "The ID of the Role the User was added to"
+        }
+    }
+}

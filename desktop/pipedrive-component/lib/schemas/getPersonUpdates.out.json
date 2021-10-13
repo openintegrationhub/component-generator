@@ -1,0 +1,212 @@
+{
+    "type": "object",
+    "properties": {
+        "deal": {
+            "type": "object",
+            "properties": {
+                "DEAL_ID": {
+                    "type": "object",
+                    "description": "The ID of the Deal which is associated with the item",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "description": "The ID of the Deal associated with the item"
+                        },
+                        "title": {
+                            "type": "string",
+                            "description": "The title of the Deal associated with the item"
+                        },
+                        "status": {
+                            "type": "string",
+                            "description": "The status of the Deal associated with the item"
+                        },
+                        "value": {
+                            "type": "number",
+                            "description": "The value of the Deal that is associated with the item"
+                        },
+                        "currency": {
+                            "type": "string",
+                            "description": "The currency of the Deal value"
+                        },
+                        "stage_id": {
+                            "type": "integer",
+                            "description": "The ID of the stage the Deal is currently at"
+                        },
+                        "pipeline_id": {
+                            "type": "integer",
+                            "description": "The ID of the pipeline the Deal is in"
+                        }
+                    }
+                }
+            }
+        },
+        "organization": {
+            "type": "object",
+            "properties": {
+                "ORGANIZATION_ID": {
+                    "type": "object",
+                    "description": "The ID of the Organization associated with the item",
+                    "allOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "description": "The ID of the Organization associated with the item"
+                                }
+                            }
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "The name of the Organization associated with the item"
+                                },
+                                "people_count": {
+                                    "type": "integer",
+                                    "description": "The number of people connected with the Organization that is associated with the item"
+                                },
+                                "owner_id": {
+                                    "type": "integer",
+                                    "description": "The ID of the owner of the Organization that is associated with the item"
+                                },
+                                "address": {
+                                    "type": "string",
+                                    "description": "The address of the Organization"
+                                },
+                                "cc_email": {
+                                    "type": "string",
+                                    "description": "The CC email of the Organization associated with the item"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "user": {
+            "type": "object",
+            "properties": {
+                "USER_ID": {
+                    "type": "object",
+                    "title": "userDataWithId",
+                    "allOf": [
+                        {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "description": "The ID of the User"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "The name of the User"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "description": "The email of the User"
+                                },
+                                "has_pic": {
+                                    "type": "integer",
+                                    "description": "Whether the User has picture or not. 0 = No picture, 1 = Has picture."
+                                },
+                                "pic_hash": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "description": "The User picture hash"
+                                },
+                                "active_flag": {
+                                    "type": "boolean",
+                                    "description": "If the User is activated or not"
+                                }
+                            }
+                        },
+                        {
+                            "type": "object",
+                            "description": "The ID of the User"
+                        }
+                    ]
+                }
+            }
+        },
+        "person": {
+            "type": "object",
+            "properties": {
+                "PERSON_ID": {
+                    "type": "object",
+                    "description": "The ID of the Person associated with the item",
+                    "allOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "active_flag": {
+                                    "type": "boolean",
+                                    "description": "If the associated Person is active or not"
+                                }
+                            }
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "description": "The ID of the Person associated with the item"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "The name of the Person associated with the item"
+                                },
+                                "email": {
+                                    "type": "array",
+                                    "description": "The emails of the Person associated with the item",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "label": {
+                                                "type": "string",
+                                                "description": "The type of the email"
+                                            },
+                                            "value": {
+                                                "type": "string",
+                                                "description": "The email of the associated Person"
+                                            },
+                                            "primary": {
+                                                "type": "boolean",
+                                                "description": "If this is the primary email or not"
+                                            }
+                                        }
+                                    }
+                                },
+                                "phone": {
+                                    "type": "array",
+                                    "description": "The phone numbers of the Person associated with the item",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "label": {
+                                                "type": "string",
+                                                "description": "The type of the phone number"
+                                            },
+                                            "value": {
+                                                "type": "string",
+                                                "description": "The phone number of the Person associated with the item"
+                                            },
+                                            "primary": {
+                                                "type": "boolean",
+                                                "description": "If this is the primary phone number or not"
+                                            }
+                                        }
+                                    }
+                                },
+                                "owner_id": {
+                                    "type": "integer",
+                                    "description": "The ID of the owner of the Person that is associated with the item"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

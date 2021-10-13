@@ -1,0 +1,44 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "filter_id": {
+            "type": "integer"
+        },
+        "user_id": {
+            "type": "integer"
+        },
+        "everyone": {
+            "title": "numberBoolean",
+            "type": "number",
+            "enum": [
+                0,
+                1
+            ]
+        },
+        "stage_id": {
+            "type": "integer"
+        },
+        "start": {
+            "type": "integer",
+            "default": 0
+        },
+        "limit": {
+            "type": "integer"
+        },
+        "get_summary": {
+            "title": "numberBoolean",
+            "type": "number",
+            "enum": [
+                0,
+                1
+            ]
+        },
+        "totals_convert_currency": {
+            "type": "string"
+        }
+    }
+}

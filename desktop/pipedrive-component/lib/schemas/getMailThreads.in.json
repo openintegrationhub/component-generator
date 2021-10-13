@@ -1,0 +1,23 @@
+{
+    "type": "object",
+    "properties": {
+        "folder": {
+            "required": true,
+            "type": "string",
+            "enum": [
+                "inbox",
+                "drafts",
+                "sent",
+                "archive"
+            ],
+            "default": "inbox"
+        },
+        "start": {
+            "type": "integer",
+            "default": 0
+        },
+        "limit": {
+            "type": "integer"
+        }
+    }
+}

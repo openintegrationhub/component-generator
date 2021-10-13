@@ -1,0 +1,74 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "The ID of the Subscription"
+        },
+        "user_id": {
+            "type": "integer",
+            "description": "The ID of the User who created Subscription"
+        },
+        "deal_id": {
+            "type": "integer",
+            "description": "The ID of the Deal this Subscription associated with"
+        },
+        "description": {
+            "type": "string",
+            "description": "Description of the recurring Subscription"
+        },
+        "is_active": {
+            "type": "boolean",
+            "description": "The Subscription status"
+        },
+        "cycles_count": {
+            "type": "integer",
+            "description": "Shows how many payments a Recurring Subscription has"
+        },
+        "cycle_amount": {
+            "type": "integer",
+            "description": "Amount of each payment"
+        },
+        "infinite": {
+            "type": "boolean",
+            "description": "Indicates that the Recurring Subscription will last until it's manually canceled or deleted"
+        },
+        "currency": {
+            "type": "string",
+            "description": "The currency of the Subscription"
+        },
+        "cadence_type": {
+            "type": "string",
+            "description": "Interval between payments"
+        },
+        "start_date": {
+            "type": "string",
+            "format": "date",
+            "description": "The start date of the Recurring Subscription"
+        },
+        "end_date": {
+            "type": "string",
+            "format": "date",
+            "description": "The end date of the Subscription"
+        },
+        "lifetime_value": {
+            "type": "number",
+            "format": "double",
+            "description": "The total value of all payments"
+        },
+        "final_status": {
+            "type": "string",
+            "description": "The final status of the Subscription"
+        },
+        "add_time": {
+            "type": "string",
+            "format": "datetime",
+            "description": "The creation time of the Subscription"
+        },
+        "update_time": {
+            "type": "string",
+            "format": "datetime",
+            "description": "The update time of the Subscription"
+        }
+    }
+}

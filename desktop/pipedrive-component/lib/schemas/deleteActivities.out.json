@@ -1,0 +1,12 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "array",
+            "description": "An array of IDs of Activities that were deleted",
+            "items": {
+                "type": "integer"
+            }
+        }
+    }
+}

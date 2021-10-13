@@ -1,0 +1,65 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "The ID of the Product Field"
+        },
+        "key": {
+            "type": "string",
+            "description": "The key of the Product Field"
+        },
+        "order_nr": {
+            "type": "integer",
+            "description": "Position (index) of the Product Field in the detail view"
+        },
+        "add_time": {
+            "type": "string",
+            "description": "The Product Field creation time. Format: YYYY-MM-DD HH:MM:SS"
+        },
+        "update_time": {
+            "type": "string",
+            "description": "The Product Field last update time. Format: YYYY-MM-DD HH:MM:SS"
+        },
+        "last_updated_by_user_id": {
+            "type": "integer",
+            "description": "The ID of the last user to update the Product Field"
+        },
+        "active_flag": {
+            "type": "boolean",
+            "description": "Whether or not the Product Field is currently active"
+        },
+        "edit_flag": {
+            "type": "boolean",
+            "description": "Whether or not the Product Field Name and metadata is editable"
+        },
+        "add_visible_flag": {
+            "type": "boolean",
+            "description": "Whether or not the Product Field is visible in the Add Product Modal"
+        },
+        "important_flag": {
+            "type": "boolean",
+            "description": "Whether or not the Product Field is marked as important"
+        },
+        "bulk_edit_allowed": {
+            "type": "boolean",
+            "description": "Whether or not the Product Field data can be edited"
+        },
+        "searchable_flag": {
+            "type": "boolean",
+            "description": "Whether or not the Product Field is searchable"
+        },
+        "filtering_allowed": {
+            "type": "boolean",
+            "description": "Whether or not the Product Field value can be used when filtering searches"
+        },
+        "sortable_flag": {
+            "type": "boolean",
+            "description": "Whether or not the Product Field is sortable"
+        },
+        "mandatory_flag": {
+            "type": "boolean",
+            "description": "Whether or not the Product Field is mandatory when creating products"
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "array",
+            "items": {
+                "type": "integer"
+            },
+            "description": "The list of deleted Persons IDs"
+        }
+    }
+}

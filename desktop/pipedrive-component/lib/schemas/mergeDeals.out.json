@@ -1,0 +1,9 @@
+{
+    "type": "object",
+    "properties": {
+        "merge_what_id": {
+            "type": "integer",
+            "description": "The Deal ID of the Deal which the original Deal was merged with"
+        }
+    }
+}

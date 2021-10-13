@@ -1,0 +1,129 @@
+{
+    "type": "object",
+    "properties": {
+        "can_add_custom_fields": {
+            "type": "boolean",
+            "description": "If the User can add custom fields"
+        },
+        "can_add_products": {
+            "type": "boolean",
+            "description": "If the User can add Products"
+        },
+        "can_add_prospects_as_leads": {
+            "type": "boolean",
+            "description": "If the User can add prospects as Leads"
+        },
+        "can_bulk_edit_items": {
+            "type": "boolean",
+            "description": "If the User can bulk edit items"
+        },
+        "can_change_visibility_of_items": {
+            "type": "boolean",
+            "description": "If the User can change visibility of items"
+        },
+        "can_convert_deals_to_leads": {
+            "type": "boolean",
+            "description": "If the User can convert Deals to Leads"
+        },
+        "can_create_own_workflow": {
+            "type": "boolean",
+            "description": "If the User can create workflows"
+        },
+        "can_delete_activities": {
+            "type": "boolean",
+            "description": "If the User can delete Activities"
+        },
+        "can_delete_custom_fields": {
+            "type": "boolean",
+            "description": "If the User can delete custom fields"
+        },
+        "can_delete_deals": {
+            "type": "boolean",
+            "description": "If the User can delete Deals"
+        },
+        "can_edit_custom_fields": {
+            "type": "boolean",
+            "description": "If the User can edit custom fields"
+        },
+        "can_edit_deals_closed_date": {
+            "type": "boolean",
+            "description": "If the User can edit Deals' closed date"
+        },
+        "can_edit_products": {
+            "type": "boolean",
+            "description": "If the User can edit Products"
+        },
+        "can_edit_shared_filters": {
+            "type": "boolean",
+            "description": "If the User can edit shared filters"
+        },
+        "can_export_data_from_lists": {
+            "type": "boolean",
+            "description": "If the User can export data from item lists"
+        },
+        "can_follow_other_users": {
+            "type": "boolean",
+            "description": "If the User can follow other Users"
+        },
+        "can_merge_deals": {
+            "type": "boolean",
+            "description": "If the User can merge Deals"
+        },
+        "can_merge_organizations": {
+            "type": "boolean",
+            "description": "If the User can merge Organizations"
+        },
+        "can_merge_people": {
+            "type": "boolean",
+            "description": "If the User can merge people"
+        },
+        "can_modify_labels": {
+            "type": "boolean",
+            "description": "If the User can modify labels"
+        },
+        "can_see_company_wide_statistics": {
+            "type": "boolean",
+            "description": "If the User can see company-wide statistics"
+        },
+        "can_see_deals_list_summary": {
+            "type": "boolean",
+            "description": "If the User can see the summary on the Deals page"
+        },
+        "can_see_hidden_items_names": {
+            "type": "boolean",
+            "description": "If the User can see the names of hidden items"
+        },
+        "can_see_other_users": {
+            "type": "boolean",
+            "description": "If the User can see other Users"
+        },
+        "can_see_other_users_statistics": {
+            "type": "boolean",
+            "description": "If the User can see other Users' statistics"
+        },
+        "can_see_security_dashboard": {
+            "type": "boolean",
+            "description": "If the User can see security dashboard"
+        },
+        "can_share_filters": {
+            "type": "boolean",
+            "description": "If the User can share filters"
+        },
+        "can_share_insights": {
+            "type": "boolean",
+            "description": "If the User can share insights"
+        },
+        "can_use_api": {
+            "type": "boolean",
+            "description": "If the User can use API"
+        },
+        "can_use_email_tracking": {
+            "type": "boolean",
+            "description": "If the User can use email tracking"
+        },
+        "can_use_import": {
+            "type": "boolean",
+            "description": "If the User can use import"
+        }
+    }
+}

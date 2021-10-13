@@ -1,0 +1,34 @@
+{
+    "type": "object",
+    "properties": {
+        "stage_conversions": {
+            "type": "array",
+            "description": "The Stage conversions",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "from_stage_id": {
+                        "type": "integer",
+                        "description": "The Stage ID from where conversion starts"
+                    },
+                    "to_stage_id": {
+                        "type": "integer",
+                        "description": "The Stage ID to where conversion ends"
+                    },
+                    "conversion_rate": {
+                        "type": "integer",
+                        "description": "Conversion rate"
+                    }
+                }
+            }
+        },
+        "won_conversion": {
+            "type": "integer",
+            "description": "Won conversion"
+        },
+        "lost_conversion": {
+            "type": "integer",
+            "description": "Lost conversion"
+        }
+    }
+}

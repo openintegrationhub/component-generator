@@ -1,0 +1,39 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "title": "addStageRequest",
+            "required": [
+                "name",
+                "pipeline_id"
+            ],
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the Stage"
+                },
+                "pipeline_id": {
+                    "type": "integer",
+                    "description": "The ID of the Pipeline to add Stage to."
+                },
+                "deal_probability": {
+                    "type": "integer",
+                    "description": "Deal success probability percentage. Used/shown when Deal weighted values are used"
+                },
+                "rotten_flag": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ],
+                    "description": "Whether Deals in this stage can become rotten"
+                },
+                "rotten_days": {
+                    "type": "integer",
+                    "description": "The number of days the Deals not updated in this Stage would become rotten. Applies only if the `rotten_flag` is set."
+                }
+            }
+        }
+    }
+}

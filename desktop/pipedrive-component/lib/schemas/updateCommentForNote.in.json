@@ -1,0 +1,27 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "commentId": {
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+        },
+        "requestBody": {
+            "title": "CommentPostPutObject",
+            "type": "object",
+            "required": [
+                "content"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "description": "Content of the comment in HTML format. Subject to sanitization on the back-end."
+                }
+            }
+        }
+    }
+}

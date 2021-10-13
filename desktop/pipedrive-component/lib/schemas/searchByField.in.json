@@ -1,0 +1,49 @@
+{
+    "type": "object",
+    "properties": {
+        "term": {
+            "required": true,
+            "type": "string"
+        },
+        "exact_match": {
+            "title": "numberBoolean",
+            "type": "number",
+            "enum": [
+                0,
+                1
+            ]
+        },
+        "field_type": {
+            "required": true,
+            "type": "string",
+            "enum": [
+                "dealField",
+                "personField",
+                "organizationField",
+                "productField"
+            ]
+        },
+        "field_key": {
+            "required": true,
+            "type": "string"
+        },
+        "return_field_key": {
+            "type": "string"
+        },
+        "return_item_ids": {
+            "title": "numberBoolean",
+            "type": "number",
+            "enum": [
+                0,
+                1
+            ]
+        },
+        "start": {
+            "type": "integer",
+            "default": 0
+        },
+        "limit": {
+            "type": "integer"
+        }
+    }
+}

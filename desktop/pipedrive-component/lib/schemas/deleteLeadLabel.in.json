@@ -1,0 +1,10 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+        }
+    }
+}

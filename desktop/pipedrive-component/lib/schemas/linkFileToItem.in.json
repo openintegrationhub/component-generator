@@ -1,0 +1,41 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "title": "linkFileToItemRequest",
+            "type": "object",
+            "required": [
+                "item_type",
+                "item_id",
+                "remote_id",
+                "remote_location"
+            ],
+            "properties": {
+                "item_type": {
+                    "type": "string",
+                    "enum": [
+                        "deal",
+                        "organization",
+                        "person"
+                    ],
+                    "description": "The item type"
+                },
+                "item_id": {
+                    "type": "integer",
+                    "description": "ID of the item to associate the file with"
+                },
+                "remote_id": {
+                    "type": "string",
+                    "description": "The remote item id"
+                },
+                "remote_location": {
+                    "type": "string",
+                    "enum": [
+                        "googledrive"
+                    ],
+                    "description": "The location type to send the file to. Only `googledrive` is supported at the moment."
+                }
+            }
+        }
+    }
+}

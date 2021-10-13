@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "deal_participant_id": {
+            "required": true,
+            "type": "integer"
+        }
+    }
+}

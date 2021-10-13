@@ -1,0 +1,35 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "title": "addSubscriptionInstallmentRequest",
+            "type": "object",
+            "required": [
+                "deal_id",
+                "currency",
+                "payments"
+            ],
+            "properties": {
+                "deal_id": {
+                    "type": "integer",
+                    "description": "ID of the Deal this Installment Subscription is associated with"
+                },
+                "currency": {
+                    "type": "string",
+                    "description": "The currency of the Installment Subscription. Accepts a 3-character currency code."
+                },
+                "payments": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    },
+                    "description": "Array of payments. It requires a minimum structure as follows: [{ amount:SUM, description:DESCRIPTION, due_at:PAYMENT_DATE }]. Replace SUM with a payment amount, DESCRIPTION with an explanation string, PAYMENT_DATE with a date (format YYYY-MM-DD)."
+                },
+                "update_deal_value": {
+                    "type": "boolean",
+                    "description": "Indicates that the Deal value must be set to the Installment Subscription's total value"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "requestBody": {
+            "title": "updateRecurringSubscriptionRequest",
+            "type": "object",
+            "required": [
+                "id",
+                "effective_date"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "Description of the Recurring Subscription"
+                },
+                "cycle_amount": {
+                    "type": "integer",
+                    "description": "Amount of each payment"
+                },
+                "payments": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    },
+                    "description": "Array of additional payments. It requires a minimum structure as follows: [{ amount:SUM, description:DESCRIPTION, due_at:PAYMENT_DATE }]. Replace SUM with a payment amount, DESCRIPTION with an explanation string, PAYMENT_DATE with a date (format YYYY-MM-DD)."
+                },
+                "update_deal_value": {
+                    "type": "boolean",
+                    "description": "Indicates that the Deal value must be set to Recurring Subscription's MRR value"
+                },
+                "effective_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "All payments after that date will be affected. Format: YYYY-MM-DD"
+                }
+            }
+        }
+    }
+}

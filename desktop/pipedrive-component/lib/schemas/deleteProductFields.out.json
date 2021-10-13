@@ -1,0 +1,12 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "array",
+            "description": "Array of all the IDs of the deleted Product Fields",
+            "items": {
+                "type": "integer"
+            }
+        }
+    }
+}

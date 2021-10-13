@@ -1,0 +1,109 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "The ID of the File"
+        },
+        "user_id": {
+            "type": "integer",
+            "description": "The ID of the User to associate the File with"
+        },
+        "deal_id": {
+            "type": "integer",
+            "description": "The ID of the Deal to associate the File with"
+        },
+        "person_id": {
+            "type": "integer",
+            "description": "The ID of the Person to associate the File with"
+        },
+        "org_id": {
+            "type": "integer",
+            "description": "The ID of the Organization to associate the File with"
+        },
+        "product_id": {
+            "type": "integer",
+            "description": "The ID of the Product to associate the File with"
+        },
+        "activity_id": {
+            "type": "integer",
+            "description": "The ID of the Activity to associate the File with"
+        },
+        "add_time": {
+            "type": "string",
+            "description": "The date and time when the File was added/created. Format: YYYY-MM-DD HH:MM:SS"
+        },
+        "update_time": {
+            "type": "string",
+            "description": "The last updated date and time of the File. Format: YYYY-MM-DD HH:MM:SS"
+        },
+        "file_name": {
+            "type": "string",
+            "description": "The original name of the File"
+        },
+        "file_size": {
+            "type": "string",
+            "description": "The size of the File"
+        },
+        "active_flag": {
+            "type": "boolean",
+            "description": "Whether the User is active or not. false = Not activated, true = Activated"
+        },
+        "inline_flag": {
+            "type": "boolean",
+            "description": "Whether the File was uploaded as inline or not"
+        },
+        "remote_location": {
+            "type": "string",
+            "description": "The location type to send the File to. Only googledrive is supported at the moment."
+        },
+        "remote_id": {
+            "type": "string",
+            "description": "The ID of the remote item"
+        },
+        "cid": {
+            "type": "string",
+            "description": "The ID of the inline attachment"
+        },
+        "s3_bucket": {
+            "type": "string",
+            "description": "The location of the cloud storage"
+        },
+        "mail_message_id": {
+            "type": "string",
+            "description": "The ID of the mail message to associate the File with"
+        },
+        "mail_template_id": {
+            "type": "string",
+            "description": "The ID of the mail template to associate the File with"
+        },
+        "deal_name": {
+            "type": "string",
+            "description": "The name of the Deal associated with the File"
+        },
+        "person_name": {
+            "type": "string",
+            "description": "The name of the Person associated with the File"
+        },
+        "org_name": {
+            "type": "string",
+            "description": "The name of the Organization associated with the File"
+        },
+        "product_name": {
+            "type": "string",
+            "description": "The name of the Product associated with the File"
+        },
+        "url": {
+            "type": "string",
+            "description": "The URL of the download File"
+        },
+        "name": {
+            "type": "string",
+            "description": "The visible name of the File"
+        },
+        "description": {
+            "type": "string",
+            "description": "The description of the File"
+        }
+    }
+}

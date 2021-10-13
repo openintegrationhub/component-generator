@@ -1,0 +1,23 @@
+{
+    "type": "object",
+    "properties": {
+        "pagination": {
+            "description": "The pagination details in the Role list",
+            "type": "object",
+            "properties": {
+                "start": {
+                    "type": "integer",
+                    "description": "Pagination start"
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Items shown per page"
+                },
+                "more_items_in_collection": {
+                    "type": "boolean",
+                    "description": "Whether there are more list items in the collection than displayed"
+                }
+            }
+        }
+    }
+}

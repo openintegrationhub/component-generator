@@ -1,0 +1,9 @@
+{
+    "type": "object",
+    "properties": {
+        "selected": {
+            "type": "boolean",
+            "description": "A boolean that shows if the Pipeline is selected from a filter or not"
+        }
+    }
+}

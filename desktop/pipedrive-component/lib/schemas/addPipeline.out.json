@@ -1,0 +1,37 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "The ID of the Pipeline"
+        },
+        "name": {
+            "type": "string",
+            "description": "The name of the Pipeline"
+        },
+        "url_title": {
+            "type": "string",
+            "description": "The Pipeline title displayed in the URL"
+        },
+        "order_nr": {
+            "type": "integer",
+            "description": "Defines the order of Pipelines. First order (`order_nr=0`) is the default Pipeline."
+        },
+        "active": {
+            "type": "boolean",
+            "description": "Whether this Pipeline will be made inactive (hidden) or active"
+        },
+        "deal_probability": {
+            "type": "boolean",
+            "description": "Whether Deal probability is disabled or enabled for this Pipeline"
+        },
+        "add_time": {
+            "type": "string",
+            "description": "The Pipeline creation time. Format: YYYY-MM-DD HH:MM:SS."
+        },
+        "update_time": {
+            "type": "string",
+            "description": "The Pipeline update time. Format: YYYY-MM-DD HH:MM:SS."
+        }
+    }
+}

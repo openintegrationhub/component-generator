@@ -1,0 +1,39 @@
+{
+    "type": "object",
+    "properties": {
+        "company_id": {
+            "type": "integer",
+            "description": "The User company ID"
+        },
+        "company_name": {
+            "type": "string",
+            "description": "The User company name"
+        },
+        "company_domain": {
+            "type": "string",
+            "description": "The User company domain"
+        },
+        "company_country": {
+            "type": "string",
+            "description": "The User company country"
+        },
+        "company_industry": {
+            "type": "string",
+            "description": "The User company industry"
+        },
+        "language": {
+            "type": "object",
+            "description": "The User language details",
+            "properties": {
+                "language_code": {
+                    "type": "string",
+                    "description": "The language code. E.g. en"
+                },
+                "country_code": {
+                    "type": "string",
+                    "description": "The country code. E.g. US"
+                }
+            }
+        }
+    }
+}

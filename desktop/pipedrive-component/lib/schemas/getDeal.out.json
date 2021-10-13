@@ -1,0 +1,126 @@
+{
+    "type": "object",
+    "properties": {
+        "user": {
+            "description": "The User who is associated with the Deal",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "description": "The ID of the User"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "The Name of the User"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "The email of the User"
+                },
+                "has_pic": {
+                    "type": "boolean",
+                    "description": "If the User has a picture or not"
+                },
+                "pic_hash": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "The User picture hash"
+                },
+                "active_flag": {
+                    "type": "boolean",
+                    "description": "If the User is activated or not"
+                }
+            }
+        },
+        "organization": {
+            "type": "object",
+            "description": "The Organization which is associated with the Deal",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the Organization associated with the Deal"
+                },
+                "people_count": {
+                    "type": "integer",
+                    "description": "The number of people connected with the Organization that is associated with the Deal"
+                },
+                "owner_id": {
+                    "type": "integer",
+                    "description": "The ID of the owner of the Organization that is associated with the Deal"
+                },
+                "address": {
+                    "type": "string",
+                    "description": "The address of the Organization that is associated with the Deal"
+                },
+                "active_flag": {
+                    "type": "boolean",
+                    "description": "If the associated Organization is activated or not"
+                },
+                "cc_email": {
+                    "type": "string",
+                    "description": "The CC email of the Organization associated with the Deal"
+                }
+            }
+        },
+        "person": {
+            "type": "object",
+            "description": "The Person who is associated with the Deal",
+            "properties": {
+                "active_flag": {
+                    "type": "boolean",
+                    "description": "If the associated Person is activated or not"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "The name of the Person associated with the Deal"
+                },
+                "email": {
+                    "type": "array",
+                    "description": "The emails of the Person associated with the Deal",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "label": {
+                                "type": "string",
+                                "description": "The type of the email"
+                            },
+                            "value": {
+                                "type": "string",
+                                "description": "The email of the associated Person"
+                            },
+                            "primary": {
+                                "type": "boolean",
+                                "description": "If this is the primary email or not"
+                            }
+                        }
+                    }
+                },
+                "phone": {
+                    "type": "array",
+                    "description": "The phone numbers of the Person associated with the Deal",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "label": {
+                                "type": "string",
+                                "description": "The type of the phone number"
+                            },
+                            "value": {
+                                "type": "string",
+                                "description": "The phone number of the Person associated with the Deal"
+                            },
+                            "primary": {
+                                "type": "boolean",
+                                "description": "If this is the primary phone number or not"
+                            }
+                        }
+                    }
+                },
+                "owner_id": {
+                    "type": "integer",
+                    "description": "The ID of the owner of the Person that is associated with the Deal"
+                }
+            }
+        }
+    }
+}

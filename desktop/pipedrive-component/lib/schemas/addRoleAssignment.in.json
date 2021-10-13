@@ -1,0 +1,22 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "requestBody": {
+            "title": "addRoleAssignmentRequest",
+            "type": "object",
+            "required": [
+                "user_id"
+            ],
+            "properties": {
+                "user_id": {
+                    "type": "integer",
+                    "description": "ID of the user"
+                }
+            }
+        }
+    }
+}

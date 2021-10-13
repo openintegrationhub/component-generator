@@ -1,0 +1,53 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "title": "addFileAndLinkItRequest",
+            "type": "object",
+            "required": [
+                "file_type",
+                "title",
+                "item_type",
+                "item_id",
+                "remote_location"
+            ],
+            "properties": {
+                "file_type": {
+                    "type": "string",
+                    "enum": [
+                        "gdoc",
+                        "gslides",
+                        "gsheet",
+                        "gform",
+                        "gdraw"
+                    ],
+                    "description": "The file type"
+                },
+                "title": {
+                    "type": "string",
+                    "description": "The title of the file"
+                },
+                "item_type": {
+                    "type": "string",
+                    "enum": [
+                        "deal",
+                        "organization",
+                        "person"
+                    ],
+                    "description": "The item type"
+                },
+                "item_id": {
+                    "type": "integer",
+                    "description": "ID of the item to associate the file with"
+                },
+                "remote_location": {
+                    "type": "string",
+                    "enum": [
+                        "googledrive"
+                    ],
+                    "description": "The location type to send the file to. Only `googledrive` is supported at the moment."
+                }
+            }
+        }
+    }
+}

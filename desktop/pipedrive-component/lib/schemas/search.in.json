@@ -1,0 +1,34 @@
+{
+    "type": "object",
+    "properties": {
+        "term": {
+            "required": true,
+            "type": "string"
+        },
+        "item_type": {
+            "type": "string",
+            "enum": [
+                "deal",
+                "person",
+                "organization",
+                "product",
+                "file"
+            ]
+        },
+        "start": {
+            "type": "integer",
+            "default": 0
+        },
+        "limit": {
+            "type": "integer"
+        },
+        "exact_match": {
+            "title": "numberBoolean",
+            "type": "number",
+            "enum": [
+                0,
+                1
+            ]
+        }
+    }
+}

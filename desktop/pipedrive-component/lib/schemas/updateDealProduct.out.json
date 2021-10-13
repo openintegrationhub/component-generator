@@ -1,0 +1,57 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "integer",
+            "description": "The ID of the deal-product (the ID of the Product attached to the Deal)"
+        },
+        "company_id": {
+            "type": "integer",
+            "description": "The ID of the Company"
+        },
+        "deal_id": {
+            "type": "integer",
+            "description": "The ID of the Deal"
+        },
+        "product_id": {
+            "type": "integer",
+            "description": "The ID of the Product"
+        },
+        "duration_unit": {
+            "type": "string",
+            "description": "The type of the duration. (For example hourly, daily, etc.)"
+        },
+        "sum_no_discount": {
+            "type": "number",
+            "description": "The Product sum without the discount"
+        },
+        "sum": {
+            "type": "number",
+            "description": "The sum of all the Products attached to the Deal"
+        },
+        "currency": {
+            "type": "string",
+            "description": "The currency associated with the Deal Product"
+        },
+        "add_time": {
+            "type": "string",
+            "description": "The date and time when the Product was added to the Deal"
+        },
+        "last_edit": {
+            "type": "string",
+            "description": "The date and time when the Deal Product was last edited"
+        },
+        "active_flag": {
+            "type": "boolean",
+            "description": "Boolean indicates if the Product is activated or not"
+        },
+        "tax": {
+            "type": "number",
+            "description": "The Product tax"
+        },
+        "name": {
+            "type": "string",
+            "description": "The Product name"
+        }
+    }
+}

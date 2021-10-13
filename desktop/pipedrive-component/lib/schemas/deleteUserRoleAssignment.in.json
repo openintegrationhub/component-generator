@@ -1,0 +1,22 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "requestBody": {
+            "title": "deleteUserRoleAssignmentRequest",
+            "type": "object",
+            "required": [
+                "role_id"
+            ],
+            "properties": {
+                "role_id": {
+                    "type": "integer",
+                    "description": "ID of the role"
+                }
+            }
+        }
+    }
+}

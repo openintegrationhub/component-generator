@@ -1,0 +1,15 @@
+{
+    "type": "object",
+    "properties": {
+        "term": {
+            "required": true,
+            "type": "string"
+        },
+        "person_id": {
+            "type": "integer"
+        },
+        "org_id": {
+            "type": "integer"
+        }
+    }
+}

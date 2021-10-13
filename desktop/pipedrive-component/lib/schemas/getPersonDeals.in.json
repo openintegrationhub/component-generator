@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "start": {
+            "type": "integer",
+            "default": 0
+        },
+        "limit": {
+            "type": "integer"
+        },
+        "status": {
+            "type": "string",
+            "default": "all_not_deleted",
+            "enum": [
+                "open",
+                "won",
+                "lost",
+                "deleted",
+                "all_not_deleted"
+            ]
+        },
+        "sort": {
+            "type": "string"
+        }
+    }
+}

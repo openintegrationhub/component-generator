@@ -1,0 +1,36 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The unique ID of the Lead Label"
+        },
+        "name": {
+            "type": "string",
+            "description": "The name of the Lead Label"
+        },
+        "color": {
+            "type": "string",
+            "enum": [
+                "green",
+                "blue",
+                "red",
+                "yellow",
+                "purple",
+                "gray"
+            ],
+            "description": "The color of the label. Only a subset of colors can be used."
+        },
+        "add_time": {
+            "type": "string",
+            "description": "The date and time of when the Lead Label was created. In ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.",
+            "format": "date-time"
+        },
+        "update_time": {
+            "type": "string",
+            "description": "The date and time of when the Lead Label was last updated. In ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ.",
+            "format": "date-time"
+        }
+    }
+}

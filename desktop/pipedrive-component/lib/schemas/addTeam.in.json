@@ -1,0 +1,34 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "title": "addTeamRequest",
+            "type": "object",
+            "required": [
+                "name",
+                "manager_id"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The Team name"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "The Team description"
+                },
+                "manager_id": {
+                    "type": "integer",
+                    "description": "The Team manager ID"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "description": "List of User IDs"
+                }
+            }
+        }
+    }
+}

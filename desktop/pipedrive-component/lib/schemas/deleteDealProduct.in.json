@@ -1,0 +1,13 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "product_attachment_id": {
+            "required": true,
+            "type": "integer"
+        }
+    }
+}

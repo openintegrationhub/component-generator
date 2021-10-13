@@ -1,0 +1,21 @@
+{
+    "type": "object",
+    "properties": {
+        "limit": {
+            "type": "integer",
+            "example": 100
+        },
+        "start": {
+            "type": "integer",
+            "example": 0
+        },
+        "archived_status": {
+            "type": "string",
+            "enum": [
+                "archived",
+                "not_archived",
+                "all"
+            ]
+        }
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "type": "object",
+    "properties": {
+        "term": {
+            "required": true,
+            "type": "string"
+        },
+        "fields": {
+            "type": "string",
+            "enum": [
+                "address",
+                "custom_fields",
+                "notes",
+                "name"
+            ]
+        },
+        "exact_match": {
+            "type": "boolean",
+            "enum": [
+                true,
+                false
+            ]
+        },
+        "start": {
+            "type": "integer",
+            "default": 0
+        },
+        "limit": {
+            "type": "integer"
+        }
+    }
+}

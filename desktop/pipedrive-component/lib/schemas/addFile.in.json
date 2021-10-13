@@ -1,0 +1,39 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "title": "addFileRequest",
+            "type": "object",
+            "required": [
+                "file"
+            ],
+            "properties": {
+                "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "A single file, supplied in the multipart/form-data encoding and contained within the given boundaries."
+                },
+                "deal_id": {
+                    "type": "integer",
+                    "description": "ID of the deal to associate file(s) with"
+                },
+                "person_id": {
+                    "type": "integer",
+                    "description": "ID of the person to associate file(s) with"
+                },
+                "org_id": {
+                    "type": "integer",
+                    "description": "ID of the organization to associate file(s) with"
+                },
+                "product_id": {
+                    "type": "integer",
+                    "description": "ID of the product to associate file(s) with"
+                },
+                "activity_id": {
+                    "type": "integer",
+                    "description": "ID of the activity to associate file(s) with"
+                }
+            }
+        }
+    }
+}

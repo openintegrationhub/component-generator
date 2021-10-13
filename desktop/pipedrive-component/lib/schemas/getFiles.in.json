@@ -1,0 +1,23 @@
+{
+    "type": "object",
+    "properties": {
+        "start": {
+            "type": "integer",
+            "default": 0
+        },
+        "limit": {
+            "type": "integer"
+        },
+        "include_deleted_files": {
+            "title": "numberBoolean",
+            "type": "number",
+            "enum": [
+                0,
+                1
+            ]
+        },
+        "sort": {
+            "type": "string"
+        }
+    }
+}

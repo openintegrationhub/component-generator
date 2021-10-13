@@ -1,0 +1,63 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "requestBody": {
+            "title": "updateMailThreadDetailsRequest",
+            "type": "object",
+            "properties": {
+                "deal_id": {
+                    "type": "integer",
+                    "description": "The ID of the deal this thread is associated with"
+                },
+                "lead_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "The ID of the lead this thread is associated with"
+                },
+                "shared_flag": {
+                    "allOf": [
+                        {
+                            "title": "numberBoolean",
+                            "type": "number",
+                            "enum": [
+                                0,
+                                1
+                            ]
+                        }
+                    ],
+                    "description": "Whether this thread is shared with other users in your company"
+                },
+                "read_flag": {
+                    "allOf": [
+                        {
+                            "title": "numberBoolean",
+                            "type": "number",
+                            "enum": [
+                                0,
+                                1
+                            ]
+                        }
+                    ],
+                    "description": "Whether this thread read or unread"
+                },
+                "archived_flag": {
+                    "allOf": [
+                        {
+                            "title": "numberBoolean",
+                            "type": "number",
+                            "enum": [
+                                0,
+                                1
+                            ]
+                        }
+                    ],
+                    "description": "Whether this thread is archived or not. You can only archive threads that belong to Inbox folder. Archived threads will disappear from Inbox."
+                }
+            }
+        }
+    }
+}

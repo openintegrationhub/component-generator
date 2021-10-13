@@ -1,0 +1,32 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+        },
+        "requestBody": {
+            "title": "updateLeadLabelRequest",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the Lead Label"
+                },
+                "color": {
+                    "type": "string",
+                    "enum": [
+                        "green",
+                        "blue",
+                        "red",
+                        "yellow",
+                        "purple",
+                        "gray"
+                    ],
+                    "description": "The color of the label. Only a subset of colors can be used."
+                }
+            }
+        }
+    }
+}

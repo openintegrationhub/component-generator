@@ -1,0 +1,73 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "integer"
+        },
+        "requestBody": {
+            "title": "addDealProductRequest",
+            "allOf": [
+                {
+                    "title": "basicDealProductRequest",
+                    "type": "object",
+                    "properties": {
+                        "item_price": {
+                            "type": "number",
+                            "description": "Price at which this product will be added to the deal"
+                        },
+                        "quantity": {
+                            "type": "integer",
+                            "description": "Quantity – e.g. how many items of this product will be added to the deal"
+                        },
+                        "discount_percentage": {
+                            "type": "number",
+                            "default": 0,
+                            "description": "Discount %. If omitted, will be set to 0"
+                        },
+                        "duration": {
+                            "type": "number",
+                            "default": 1,
+                            "description": "Duration of the product (when product durations are not enabled for the company or if omitted, defaults to 1)"
+                        },
+                        "product_variation_id": {
+                            "type": "integer",
+                            "description": "ID of the product variation to use. When omitted, no variation will be used."
+                        },
+                        "comments": {
+                            "type": "string",
+                            "description": "Any textual comment associated with this product-deal attachment. Visible and editable in the application UI."
+                        },
+                        "enabled_flag": {
+                            "allOf": [
+                                {
+                                    "title": "numberBoolean",
+                                    "type": "number",
+                                    "enum": [
+                                        0,
+                                        1
+                                    ]
+                                }
+                            ],
+                            "description": "Whether the product is enabled on the deal or not. This makes it possible to add products to a deal with specific price and discount criteria - but keep them disabled, which refrains them from being included in deal price calculation. When omitted, the product will be marked as enabled by default."
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "product_id",
+                        "item_price",
+                        "quantity"
+                    ],
+                    "properties": {
+                        "product_id": {
+                            "type": "integer",
+                            "description": "ID of the product that will be attached"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

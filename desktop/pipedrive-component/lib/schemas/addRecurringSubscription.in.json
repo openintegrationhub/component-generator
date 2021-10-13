@@ -1,0 +1,68 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "title": "addRecurringSubscriptionRequest",
+            "type": "object",
+            "required": [
+                "deal_id",
+                "currency",
+                "cadence_type",
+                "start_date",
+                "cycle_amount"
+            ],
+            "properties": {
+                "deal_id": {
+                    "type": "integer",
+                    "description": "ID of the Deal this Recurring Subscription is associated with"
+                },
+                "currency": {
+                    "type": "string",
+                    "description": "The currency of the Recurring Subscription. Accepts a 3-character currency code."
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of the Recurring Subscription"
+                },
+                "cadence_type": {
+                    "type": "string",
+                    "enum": [
+                        "weekly",
+                        "monthly",
+                        "quarterly",
+                        "yearly"
+                    ],
+                    "description": "Interval between payments"
+                },
+                "cycles_count": {
+                    "type": "integer",
+                    "description": "Shows how many payments the Subscription has. Note that one field must be set: `cycles_count` or `infinite`. If `cycles_count` is set, then `cycle_amount` and `start_date` are also required."
+                },
+                "cycle_amount": {
+                    "type": "integer",
+                    "description": "Amount of each payment"
+                },
+                "start_date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Start date of the Recurring Subscription. Format: YYYY-MM-DD"
+                },
+                "infinite": {
+                    "type": "boolean",
+                    "description": "This indicates that the Recurring Subscription will last until it's manually canceled or deleted. Note that only one field must be set: `cycles_count` or `infinite`."
+                },
+                "payments": {
+                    "type": "array",
+                    "items": {
+                        "type": "object"
+                    },
+                    "description": "Array of additional payments. It requires a minimum structure as follows: [{ amount:SUM, description:DESCRIPTION, due_at:PAYMENT_DATE }]. Replace SUM with a payment amount, DESCRIPTION with an explanation string, PAYMENT_DATE with a date (format YYYY-MM-DD)."
+                },
+                "update_deal_value": {
+                    "type": "boolean",
+                    "description": "Indicates that the Deal value must be set to Recurring Subscription's MRR value"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,48 @@
+{
+    "type": "object",
+    "properties": {
+        "start_date": {
+            "required": true,
+            "type": "string",
+            "format": "date"
+        },
+        "interval": {
+            "required": true,
+            "type": "string",
+            "enum": [
+                "day",
+                "week",
+                "month",
+                "quarter"
+            ]
+        },
+        "amount": {
+            "required": true,
+            "type": "integer"
+        },
+        "field_key": {
+            "required": true,
+            "type": "string"
+        },
+        "user_id": {
+            "type": "integer"
+        },
+        "pipeline_id": {
+            "type": "integer"
+        },
+        "filter_id": {
+            "type": "integer"
+        },
+        "exclude_deals": {
+            "title": "numberBoolean",
+            "type": "number",
+            "enum": [
+                0,
+                1
+            ]
+        },
+        "totals_convert_currency": {
+            "type": "string"
+        }
+    }
+}
