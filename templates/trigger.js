@@ -107,8 +107,7 @@
          delete data.uid;
          newElement.metadata = oihMeta;
          const response = JSON.parse(data.data);
-         const arraySplittingKey = cfg.nodeSettings.arraySplittingKey !== undefined ? newElement.data = response[arraySplittingKey] : newElement.data = response;
-         
+         newElement.data = cfg.nodeSettings.arraySplittingKey !== undefined ? response[cfg.nodeSettings.arraySplittingKey] : response;
          if(Array.isArray(newElement.data)){
             for(let i = 0; i < newElement.data.length; i++ ){
                 const newObject = newElement;
