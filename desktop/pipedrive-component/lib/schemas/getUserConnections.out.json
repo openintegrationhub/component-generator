@@ -1,9 +1,0 @@
-{
-    "type": "object",
-    "properties": {
-        "google": {
-            "type": "string",
-            "description": "The third party ID or false in case the ID is not found"
-        }
-    }
-}

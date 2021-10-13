@@ -1,9 +1,0 @@
-{
-    "type": "object",
-    "properties": {
-        "dealId": {
-            "required": true,
-            "type": "integer"
-        }
-    }
-}

@@ -1,9 +1,0 @@
-{
-    "type": "object",
-    "properties": {
-        "id": {
-            "type": "integer",
-            "description": "Deleted Stage ID"
-        }
-    }
-}

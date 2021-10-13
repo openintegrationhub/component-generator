@@ -1,9 +1,0 @@
-{
-    "type": "object",
-    "properties": {
-        "org_id": {
-            "required": true,
-            "type": "integer"
-        }
-    }
-}

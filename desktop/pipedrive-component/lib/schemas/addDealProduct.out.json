@@ -1,9 +1,0 @@
-{
-    "type": "object",
-    "properties": {
-        "product_attachment_id": {
-            "type": "integer",
-            "description": "The ID of the deal-product (the ID of the Product attached to the Deal)"
-        }
-    }
-}
