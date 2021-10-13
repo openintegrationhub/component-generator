@@ -115,8 +115,9 @@
          }
          if(Array.isArray(newElement.data)){
             for(let i = 0; i < newElement.data.length; i++ ){
-                newElement.data = newElement.data[i]
-                this.emit("data",newElement)
+                const newObject = newElement
+                newObject.data = newElement.data[i]
+                this.emit("data",newObject)
             }
         } else {
         this.emit("data",newElement);
