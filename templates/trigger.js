@@ -17,115 +17,127 @@
  *
  */
 
- const Swagger = require('swagger-client');
- const spec = require('../spec.json');
- 
- // this wrapers offers a simplified emitData(data) function
- module.exports = {process: processTrigger};
- 
- // parameter names for this call
- const PARAMETERS = $PARAMETERS;
- 
- // mappings from connector field names to API field names
- const FIELD_MAP = $FIELD_MAP;
- 
- function processTrigger(msg, cfg) {
-     var isVerbose = process.env.debug || cfg.verbose;
- 
-     console.log("msg:",msg);
-     console.log("cfg:",cfg)
- 
-     if (isVerbose) {
-         console.log(`---MSG: ${JSON.stringify(msg)}`);
-         console.log(`---CFG: ${JSON.stringify(cfg)}`);
-         console.log(`---ENV: ${JSON.stringify(process.env)}`);
-     }
- 
-     const contentType = $CONTENT_TYPE;
- 
-     const body = msg.data;
-     mapFieldNames(body);
- 
-     let parameters = {};
-     for(let param of PARAMETERS) {
-         parameters[param] = body[param];
-     }
- 
-     const oihUid = msg.metadata !== undefined && msg.metadata.oihUid !== undefined
-     ? msg.metadata.oihUid
-     : 'oihUid not set yet';
-   const recordUid = msg.metadata !== undefined && msg.metadata.recordUid !== undefined
-     ? msg.metadata.recordUid
-     : undefined;
-   const applicationUid = msg.metadata !== undefined && msg.metadata.applicationUid !== undefined
-     ? msg.metadata.applicationUid
-     : undefined;
- 
-     const newElement = {};
-     const oihMeta = {
-       applicationUid,
-       oihUid,
-       recordUid,
-     };
-     
-     // credentials for this operation
-     $SECURITIES
- 
-     if(cfg.otherServer){
-         if(!spec.servers){
-             spec.servers = [];
-         }
-         spec.servers.push({"url":cfg.otherServer})
-     }
-     
-     
-     let callParams = {
-         spec: spec,
-         operationId: $OPERATION_ID,
-         pathName: $PATH,
-         method: $METHOD,
-         parameters: parameters,
-         requestContentType: contentType,
-         requestBody: body,
-         securities: {authorized: securities},
-         server: spec.servers[cfg.server] || cfg.otherServer,
-     };
-         if(callParams.method === 'get'){
-             delete callParams.requestBody;
-         }
-     
- 
-     if (isVerbose) {
-         let out = Object.assign({}, callParams);
-         out.spec = '[omitted]';
-         console.log(`--SWAGGER CALL: ${JSON.stringify(out)}`);
-     }
- 
-     // Call operation via Swagger client
-     return Swagger.execute(callParams).then(data => {
+const Swagger = require('swagger-client');
+const spec = require('../spec.json');
 
-         delete data.uid;
-         newElement.metadata = oihMeta;
-         const response = JSON.parse(data.data);
-         newElement.data = cfg.nodeSettings.arraySplittingKey !== undefined ? response[cfg.nodeSettings.arraySplittingKey] : response;
-         if(Array.isArray(newElement.data)){
-            for(let i = 0; i < newElement.data.length; i++ ){
-                const newObject = newElement;
-                newObject.data = newElement.data[i];
-                this.emit("data",newObject)
-            }
-        } else {
-        this.emit("data",newElement);
-} 
-     });
- }
- 
- function mapFieldNames(obj) {
-    if(Array.isArray(obj)) {
-        obj.forEach(mapFieldNames);
+// this wrapers offers a simplified emitData(data) function
+module.exports = { process: processTrigger };
+
+// parameter names for this call
+const PARAMETERS = $PARAMETERS;
+
+// mappings from connector field names to API field names
+const FIELD_MAP = $FIELD_MAP;
+
+function processTrigger(msg, cfg) {
+  var isVerbose = process.env.debug || cfg.verbose;
+
+  console.log('msg:', msg);
+  console.log('cfg:', cfg);
+
+  if (isVerbose) {
+    console.log(`---MSG: ${JSON.stringify(msg)}`);
+    console.log(`---CFG: ${JSON.stringify(cfg)}`);
+    console.log(`---ENV: ${JSON.stringify(process.env)}`);
+  }
+
+  const contentType = $CONTENT_TYPE;
+
+  const body = msg.data;
+  mapFieldNames(body);
+
+  let parameters = {};
+  for (let param of PARAMETERS) {
+    parameters[param] = body[param];
+  }
+
+  const oihUid =
+    msg.metadata !== undefined && msg.metadata.oihUid !== undefined
+      ? msg.metadata.oihUid
+      : 'oihUid not set yet';
+  const recordUid =
+    msg.metadata !== undefined && msg.metadata.recordUid !== undefined
+      ? msg.metadata.recordUid
+      : undefined;
+  const applicationUid =
+    msg.metadata !== undefined && msg.metadata.applicationUid !== undefined
+      ? msg.metadata.applicationUid
+      : undefined;
+
+  const newElement = {};
+  const oihMeta = {
+    applicationUid,
+    oihUid,
+    recordUid,
+  };
+
+  // credentials for this operation
+  $SECURITIES;
+
+  if (cfg.otherServer) {
+    if (!spec.servers) {
+      spec.servers = [];
     }
-    else if(typeof obj === 'object' && obj) {
-        obj = Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null));
-        return obj
+    spec.servers.push({ url: cfg.otherServer });
+  }
+
+  let callParams = {
+    spec: spec,
+    operationId: $OPERATION_ID,
+    pathName: $PATH,
+    method: $METHOD,
+    parameters: parameters,
+    requestContentType: contentType,
+    requestBody: body,
+    securities: { authorized: securities },
+    server: spec.servers[cfg.server] || cfg.otherServer,
+  };
+  if (callParams.method === 'get') {
+    delete callParams.requestBody;
+  }
+
+  if (isVerbose) {
+    let out = Object.assign({}, callParams);
+    out.spec = '[omitted]';
+    console.log(`--SWAGGER CALL: ${JSON.stringify(out)}`);
+  }
+
+  // Call operation via Swagger client
+  return Swagger.execute(callParams).then((data) => {
+    delete data.uid;
+    newElement.metadata = oihMeta;
+    const response = JSON.parse(data.data);
+    let l = cfg.nodeSettings.arraySplittingKey.split('.').length;
+
+    function change(val, num) {
+      let newObj = response[val];
+      if (num + 1 === l) newElement.data = newObj;
+      response = response[val];
     }
- }
+    if (cfg.nodeSettings.arraySplittingKey === undefined) {
+      newElement.data = response;
+    } else {
+      for (let i = 0; i < l; i++) {
+        change(cfg.nodeSettings.arraySplittingKey.split('.')[i], i);
+      }
+    }
+    if (Array.isArray(newElement.data)) {
+      for (let i = 0; i < newElement.data.length; i++) {
+        const newObject = newElement;
+        newObject.data = newElement.data[i];
+        this.emit('data', newObject);
+      }
+    } else {
+      this.emit('data', newElement);
+    }
+  });
+}
+
+function mapFieldNames(obj) {
+  if (Array.isArray(obj)) {
+    obj.forEach(mapFieldNames);
+  } else if (typeof obj === 'object' && obj) {
+    obj = Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null));
+    return obj;
+  }
+}
