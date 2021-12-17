@@ -1,7 +1,7 @@
-FROM node:10-alpine
+FROM node:16-alpine
 
 RUN apk --no-cache add \
-    python \
+    python3 \
     make \
     g++ \
     libc6-compat
@@ -9,8 +9,9 @@ RUN apk --no-cache add \
 WORKDIR /usr/src/app
 
 COPY package.json /usr/src/app
+COPY package-lock.json /usr/src/app
 
-RUN npm install --production
+RUN npm ci --production
 
 COPY . /usr/src/app
 

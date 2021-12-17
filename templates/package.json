@@ -2,14 +2,15 @@
     "version": "1.0.0",
     "main": "component.json",
     "dependencies": {
-        "@openintegrationhub/ferryman": "^1.5.0",
-        "swagger-client": "^3.8.22",
-        "eslint": "^7.26.0",
+        "@openintegrationhub/ferryman": "2.0.1",
+        "swagger-client": "^3.8.22"},
+    "devDependencies": {
+        "eslint": "7.26.0",
         "eslint-config-airbnb-base": "13.1.0",
-        "eslint-plugin-import": "^2.14.0",
-        "eslint-plugin-jest": "^22.1.0",
-        "eslint-plugin-json": "^1.4.0",
-        "eslint-plugin-mocha": "^5.2.0"
+        "eslint-plugin-import": "2.14.0",
+        "eslint-plugin-jest": "22.1.0",
+        "eslint-plugin-json": "1.4.0",
+        "eslint-plugin-mocha": "5.2.0"
     },
     "author": {
         "name": "Open Integration Hub"

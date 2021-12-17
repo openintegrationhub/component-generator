@@ -133,14 +133,8 @@ function mapFieldNames(obj) {
         obj.forEach(mapFieldNames);
     }
     else if(typeof obj === 'object' && obj) {
-        Object.keys(obj).forEach(key => {
-            mapFieldNames(obj[key]);
+        obj = Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null));
 
-            let goodKey = FIELD_MAP[key];
-            if(goodKey && goodKey !== key) {
-                obj[goodKey] = obj[key];
-                delete obj[key];
-            }
-        });
     }
-}
+
+ }
