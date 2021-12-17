@@ -107,19 +107,11 @@ function processTrigger(msg, cfg) {
     delete data.uid;
     newElement.metadata = oihMeta;
     const response = JSON.parse(data.data);
-    let l = cfg.nodeSettings.arraySplittingKey.split('.').length;
 
-    function change(val, num) {
-      let newObj = response[val];
-      if (num + 1 === l) newElement.data = newObj;
-      response = response[val];
-    }
-    if (cfg.nodeSettings.arraySplittingKey === undefined) {
+    if (!cfg.nodeSettings.arraySplittingKey) {
       newElement.data = response;
     } else {
-      for (let i = 0; i < l; i++) {
-        change(cfg.nodeSettings.arraySplittingKey.split('.')[i], i);
-      }
+      newElement.data = cfg.nodeSettings.arraySplittingKey.split('.').reduce((p,c)=> p&&p[c]||null, response)
     }
     if (Array.isArray(newElement.data)) {
       for (let i = 0; i < newElement.data.length; i++) {
