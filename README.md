@@ -33,6 +33,39 @@ Unless `-y`, `--yes` option is provided, if output or name options are missing, 
 - `-y` or `--yes` - skip questionnaire and populate all options with default values
 - `-h` or `--help` - show help
 
+### Templates folder
+
+This is the folder where the files that are copied during the generation reside
+
+Action.js is the template copied to actions
+Trigger.js is the template copied to triggers
+
+We add basic docker config as well as a docker ignoring file
+
+Package.json and package-lock.json with the latest dependencies which are loaded while running the build docker image command
+
+README file gets written on the fly on the generation with all the triggers and actions listed.
+
+### Lib folder
+
+Download.js file grabs the json url and brings the file in the generator for validation
+Validate.js file checks the json file if it is valid and can be regenerated
+Scripts.js file gets the scripts needed for the package json in the component
+Generate.js file is all about parsing and generating the new files. 
+
+Shorting description as well as access token naming is added accordingly to the Spec json of the component
+
+# Currently the parser can not support OPEN API version 3.0.3
+
+# Installing info
+
+When the component is generated make sure you run the npm install command so that you have the latest dependencies installed
+
+Docker uses node 16 and requires the package lock json to work so it is important to have the latest deps installed so they can be copied in the image for production.
+
+
+
+
 <!-- #### Install npm package
 
 ##### Install package and require module to use it as a library
