@@ -17,6 +17,7 @@
  *
  */
 
+
 const Swagger = require('swagger-client');
 const spec = require('../spec.json');
 
