@@ -10,7 +10,8 @@
     "access": "public"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "create": "node bin/oih-gen.js -o ./desktop -n"
   },
   "keywords": [
     "cli",
@@ -39,7 +40,7 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "semver": "^6.3.0",
-    "swagger-parser": "^8.0.0",
+    "swagger-parser": "10.0.3",
     "swagger2openapi": "^7.0.2",
     "transliteration": "^2.1.5",
     "uuid": "^8.3.2"
