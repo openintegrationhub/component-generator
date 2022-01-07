@@ -20,7 +20,7 @@
 
 const Swagger = require('swagger-client');
 const spec = require('../spec.json');
-
+const moment = require('moment')
 // this wrapers offers a simplified emitData(data) function
 module.exports = { process: processTrigger };
 
@@ -30,8 +30,9 @@ const PARAMETERS = $PARAMETERS;
 // mappings from connector field names to API field names
 const FIELD_MAP = $FIELD_MAP;
 
-function processTrigger(msg, cfg) {
+function processTrigger(msg, cfg,snapshot) {
   var isVerbose = process.env.debug || cfg.verbose;
+  snapshot.lastUpdated = snapshot.lastUpdated || (new Date(0)).getTime();
 
   console.log('msg:', msg);
   console.log('cfg:', cfg);
@@ -115,6 +116,7 @@ function processTrigger(msg, cfg) {
       newElement.data = cfg.nodeSettings.arraySplittingKey.split('.').reduce((p,c)=> p&&p[c]||null, response)
     }
     if (Array.isArray(newElement.data)) {
+      newElement.data = newElement.data.filter(element => moment(element[$SNAPSHOT]).isAfter(snapshot.lastUpdated))
       for (let i = 0; i < newElement.data.length; i++) {
         const newObject = newElement;
         newObject.data = newElement.data[i];

@@ -35,8 +35,9 @@ async function oihGen() {
             name: 'n',
             help: 'h',
             yes: 'y',
+            snapshot: 's'
         },
-        string: ['o', 'n'],
+        string: ['o', 'n', 's'],
     });
     if (options.help) {
         printHelp();
@@ -73,13 +74,14 @@ async function oihGen() {
         .then(def => _.kebabCase(def.info.title).replace(/-v-([0-9])+/g, '-v$1') + '-connector');
     const connectorName = options.name || await q.ask('Connector name', defaultConnName);
     const generatePath = path.join(outputDir, connectorName);
-
+    console.log("some",options)
     console.log('Generating...');
     await generate({
         inputFile: validatedSpecFile,
         outputDir: generatePath,
         packageName: connectorName,
         swaggerUrl: url,
+        snapshot: options.snapshot
     });
 
     console.log('Successfully generated. Connector has been saved in output directory:', generatePath);
