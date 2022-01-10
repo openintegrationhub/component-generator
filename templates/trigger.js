@@ -30,7 +30,7 @@ const PARAMETERS = $PARAMETERS;
 // mappings from connector field names to API field names
 const FIELD_MAP = $FIELD_MAP;
 
-function processTrigger(msg, cfg,snapshot) {
+function processTrigger(msg, cfg,snapshot = {}) {
   var isVerbose = process.env.debug || cfg.verbose;
   snapshot.lastUpdated = snapshot.lastUpdated || (new Date(0)).getTime();
 
@@ -116,12 +116,15 @@ function processTrigger(msg, cfg,snapshot) {
       newElement.data = cfg.nodeSettings.arraySplittingKey.split('.').reduce((p,c)=> p&&p[c]||null, response)
     }
     if (Array.isArray(newElement.data)) {
-      newElement.data = newElement.data.filter(element => moment(element[$SNAPSHOT]).isAfter(snapshot.lastUpdated))
+      newElement.data = newElement.data.filter(element => moment(element[$SNAPSHOT]).isAfter(snapshot.lastUpdated));
+      console.log(`Found ${newElement.data.length} new records.`);
+
       for (let i = 0; i < newElement.data.length; i++) {
         const newObject = newElement;
         newObject.data = newElement.data[i];
         this.emit('data', newObject);
       }
+      this.emit('snapshot',snapshot)
     } else {
       this.emit('data', newElement);
     }
