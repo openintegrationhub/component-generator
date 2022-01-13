@@ -13,6 +13,24 @@ function mapFieldNames(obj) {
   }
 }
 function handleParameters(paramsType,value) {
+
+    switch (paramsType) {
+        case "headers":
+            
+        break;
+        case "query":
+            
+        break;
+        case "path":
+            
+        break;
+        case "cookie":
+            
+        break;
+    
+        default:
+            break;
+    }
     if(paramsType === 'headers') {
 
     } else if(paramsType === 'url') {

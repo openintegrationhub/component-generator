@@ -37,7 +37,7 @@ function processTrigger(msg, cfg, snapshot = {}) {
 
   console.log('msg:', msg);
   console.log('cfg:', cfg);
-  const { snapshotKey, arraySplittingKey } = cfg.nodeSettings;
+  const { snapshotKey, arraySplittingKey, syncKey } = cfg.nodeSettings;
 
   if (isVerbose) {
     console.log(`---MSG: ${JSON.stringify(msg)}`);
@@ -84,6 +84,9 @@ function processTrigger(msg, cfg, snapshot = {}) {
     }
     spec.servers.push({ url: cfg.otherServer });
   }
+  if(syncKey) {
+    parameters[syncKey] = snapshot.lastUpdated;
+  }
 
   let callParams = {
     spec: spec,
@@ -118,7 +121,7 @@ function processTrigger(msg, cfg, snapshot = {}) {
       newElement.data = arraySplittingKey
         .split('.')
         .reduce((p, c) => (p && p[c]) || null, response);
-    }
+    };
     if (Array.isArray(newElement.data)) {
       let lastElement = 0;
       for (let i = 0; i < newElement.data.length; i++) {
@@ -150,7 +153,7 @@ function processTrigger(msg, cfg, snapshot = {}) {
       console.log('returned a snapshot');
     } else {
       this.emit('data', newElement);
-    }
+    };
   });
 }
 
