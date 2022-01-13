@@ -36,7 +36,7 @@ function processTrigger(msg, cfg, snapshot = {}) {
 
   console.log('msg:', msg);
   console.log('cfg:', cfg);
-  const { snapshotKey, arraySplittingKey, syncKey } = cfg.nodeSettings;
+  const { snapshotKey, arraySplittingKey, syncParam } = cfg.nodeSettings;
 
   if (isVerbose) {
     console.log(`---MSG: ${JSON.stringify(msg)}`);
@@ -84,7 +84,7 @@ function processTrigger(msg, cfg, snapshot = {}) {
     spec.servers.push({ url: cfg.otherServer });
   }
   if(syncKey) {
-    parameters[syncKey] = snapshot.lastUpdated;
+    parameters[syncParam] = snapshot.lastUpdated;
   }
 
   let callParams = {
