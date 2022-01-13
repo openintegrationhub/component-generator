@@ -53,6 +53,9 @@ function processTrigger(msg, cfg, snapshot = {}) {
   for (let param of PARAMETERS) {
     parameters[param] = body[param];
   }
+  if(syncParam) {
+    parameters[syncParam] = snapshot.lastUpdated;
+  }
 
   const oihUid =
     msg.metadata !== undefined && msg.metadata.oihUid !== undefined
@@ -82,9 +85,6 @@ function processTrigger(msg, cfg, snapshot = {}) {
       spec.servers = [];
     }
     spec.servers.push({ url: cfg.otherServer });
-  }
-  if(syncKey) {
-    parameters[syncParam] = snapshot.lastUpdated;
   }
 
   let callParams = {
