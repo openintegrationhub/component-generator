@@ -29,9 +29,9 @@
 
 const Swagger = require('swagger-client');
 const spec = require('../spec.json');
-
-// this wrapers offers a simplified emitData(data) function
-module.exports = {process: processAction};
+const {
+  mapFieldNames
+} = require('../utils/helpers'); 
 
 // parameter names for this call
 const PARAMETERS = $PARAMETERS;
@@ -128,13 +128,5 @@ function processAction(msg, cfg) {
     });
 }
 
-function mapFieldNames(obj) {
-    if(Array.isArray(obj)) {
-        obj.forEach(mapFieldNames);
-    }
-    else if(typeof obj === 'object' && obj) {
-        obj = Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null));
-
-    }
-
- }
+// this wrapers offers a simplified emitData(data) function
+module.exports = {process: processAction};

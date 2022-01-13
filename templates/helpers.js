@@ -12,30 +12,5 @@ function mapFieldNames(obj) {
     return obj;
   }
 }
-function handleParameters(paramsType,value) {
 
-    switch (paramsType) {
-        case "headers":
-            
-        break;
-        case "query":
-            
-        break;
-        case "path":
-            
-        break;
-        case "cookie":
-            
-        break;
-    
-        default:
-            break;
-    }
-    if(paramsType === 'headers') {
-
-    } else if(paramsType === 'url') {
-        return value;
-    }
-}
-
-module.exports = { dateComparison, mapFieldNames, handleParameters };
+module.exports = { dateComparison, mapFieldNames };

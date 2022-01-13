@@ -21,8 +21,7 @@ const Swagger = require('swagger-client');
 const spec = require('../spec.json');
 const {
   dateComparison,
-  mapFieldNames,
-  handleParameters,
+  mapFieldNames
 } = require('../utils/helpers');
 
 // parameter names for this call
