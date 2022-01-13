@@ -74,7 +74,6 @@ async function oihGen() {
         .then(def => _.kebabCase(def.info.title).replace(/-v-([0-9])+/g, '-v$1') + '-connector');
     const connectorName = options.name || await q.ask('Connector name', defaultConnName);
     const generatePath = path.join(outputDir, connectorName);
-    console.log("some",options)
     console.log('Generating...');
     await generate({
         inputFile: validatedSpecFile,
