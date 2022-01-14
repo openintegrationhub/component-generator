@@ -1,6 +1,6 @@
 const moment = require('moment');
 
-function dateComparison(a, b) {
+function isSecondDateAfter(a, b) {
   return moment(a).isAfter(b);
 }
 
@@ -13,4 +13,4 @@ function mapFieldNames(obj) {
   }
 }
 
-module.exports = { dateComparison, mapFieldNames };
+module.exports = { isSecondDateAfter, mapFieldNames };

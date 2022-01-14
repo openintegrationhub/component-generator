@@ -20,7 +20,7 @@
 const Swagger = require('swagger-client');
 const spec = require('../spec.json');
 const {
-  dateComparison,
+  isSecondDateAfter,
   mapFieldNames
 } = require('../utils/helpers');
 
@@ -129,15 +129,15 @@ function processTrigger(msg, cfg, snapshot = {}) {
           ? newObject.data[snapshotKey]
           : newObject.data[$SNAPSHOT];
         if (snapshot.lastUpdated === 0) {
-          if (dateComparison(currentObjectDate, lastElement)) {
+          if (isSecondDateAfter(currentObjectDate, lastElement)) {
             lastElement = snapshotKey
               ? newElement.data[snapshotKey]
               : newElement.data[$SNAPSHOT];
           }
           this.emit('data', newObject);
         } else {
-          if (dateComparison(currentObjectDate, snapshot.lastUpdated)) {
-            if (dateComparison(currentObjectDate, lastElement)) {
+          if (isSecondDateAfter(currentObjectDate, snapshot.lastUpdated)) {
+            if (isSecondDateAfter(currentObjectDate, lastElement)) {
               lastElement = currentObjectDate;
             }
             this.emit('data', newObject);
