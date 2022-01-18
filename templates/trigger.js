@@ -78,13 +78,13 @@ function processTrigger(msg, cfg, snapshot = {}) {
   };
 
   // credentials for this operation
-  $SECURITIES;
+  $SECURITIES
 
   if (cfg.otherServer) {
     if (!spec.servers) {
       spec.servers = [];
     }
-    spec.servers.push({ url: cfg.otherServer });
+    spec.servers.push({ "url": cfg.otherServer });
   }
 
   let callParams = {
