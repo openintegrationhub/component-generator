@@ -1,7 +1,7 @@
-const moment = require('moment');
+const dayjs = require('dayjs')
 
 function isSecondDateAfter(a, b) {
-  return moment(a).isAfter(b);
+  return dayjs(a).isAfter(b);
 }
 
 function mapFieldNames(obj) {
