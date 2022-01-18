@@ -4,7 +4,7 @@
     "dependencies": {
         "@openintegrationhub/ferryman": "2.0.1",
         "swagger-client": "^3.8.22",
-        "moment": "^2.29.1"
+        "dayjs": "^1.10.7"
     },
     "devDependencies": {
         "eslint": "7.26.0",
