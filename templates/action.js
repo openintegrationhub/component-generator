@@ -1,6 +1,5 @@
 /**
- * Auto-generated action file for "$API_TITLE" API.
- *
+ * Auto-generated trigger file for "$API_TITLE" API.
  * Generated at: $NOW
  * Mass generator version: $GENERATOR_VERSION
  *
@@ -10,34 +9,17 @@
  * All files of this connector are licensed under the Apache 2.0 License. For details
  * see the file LICENSE on the toplevel directory.
  *
- *
- * Operation: $OPERATION_ID
- * Endpoint Path: $PATH
- * Method: $METHOD
- *
  */
-
-// how to pass the transformation function... no need
-// pass the meta data
-// create a new Object
-// emit the message with the new emit function
-
-// securities and auth methods
-// check how to make the new ferryman and its transform functions functional // no need
 
 const Swagger = require("swagger-client");
 const spec = require("../spec.json");
-const { mapFieldNames } = require("../utils/helpers");
+const { mapFieldNames, getMetadata } = require("../utils/helpers");
+const componentJson = require("../../component.json");
 
-// parameter names for this call
-const PARAMETERS = $PARAMETERS;
-
-// mappings from connector field names to API field names
-const FIELD_MAP = $FIELD_MAP;
-
-function processAction(msg, cfg) {
+function processAction(msg, cfg, data) {
   var isVerbose = process.env.debug || cfg.verbose;
 
+  console.log("data function:", data["function"]);
   console.log("msg:", msg);
   console.log("cfg:", cfg);
 
@@ -46,52 +28,38 @@ function processAction(msg, cfg) {
     console.log(`---CFG: ${JSON.stringify(cfg)}`);
     console.log(`---ENV: ${JSON.stringify(process.env)}`);
   }
+  const action = componentJson.actions[data["function"]];
+  const { pathName, method, contentType } = action.callParams;
 
-  const contentType = $CONTENT_TYPE;
+  const specPath = spec.paths[pathName];
+  const specPathParameters = specPath[method].parameters.map(({ name }) => {
+    return name;
+  });
 
   const body = msg.data;
   mapFieldNames(body);
 
   let parameters = {};
-  for (let param of PARAMETERS) {
+  for (let param of specPathParameters) {
     parameters[param] = body[param];
   }
 
-  const oihUid =
-    msg.metadata !== undefined && msg.metadata.oihUid !== undefined
-      ? msg.metadata.oihUid
-      : "oihUid not set yet";
-  const recordUid =
-    msg.metadata !== undefined && msg.metadata.recordUid !== undefined
-      ? msg.metadata.recordUid
-      : undefined;
-  const applicationUid =
-    msg.metadata !== undefined && msg.metadata.applicationUid !== undefined
-      ? msg.metadata.applicationUid
-      : undefined;
-
   const newElement = {};
-  const oihMeta = {
-    applicationUid,
-    oihUid,
-    recordUid,
-  };
 
-  // credentials for this operation
-  $SECURITIES
+  $SECURITIES;
 
   if (cfg.otherServer) {
     if (!spec.servers) {
       spec.servers = [];
     }
-    spec.servers.push({ "url": cfg.otherServer });
+    spec.servers.push({ url: cfg.otherServer });
   }
 
   let callParams = {
     spec: spec,
-    operationId: $OPERATION_ID,
-    pathName: $PATH,
-    method: $METHOD,
+    operationId: data["function"],
+    pathName: pathName,
+    method: method,
     parameters: parameters,
     requestContentType: contentType,
     requestBody: body,
@@ -111,17 +79,10 @@ function processAction(msg, cfg) {
   // Call operation via Swagger client
   return Swagger.execute(callParams).then((data) => {
     // emit a single message with data
-    // console.log("swagger data:",data);
     delete data.uid;
-    newElement.metadata = oihMeta;
+    newElement.metadata = getMetadata(msg.metadata);
     newElement.data = data.data;
     this.emit("data", newElement);
-
-    // if the response contains an array of entities, you can emit them one by one:
-
-    // data.obj.someItems.forEach((item) => {
-    //     this.emitData(item);
-    // }
   });
 }
 
