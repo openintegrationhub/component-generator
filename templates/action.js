@@ -29,7 +29,7 @@ function processAction(msg, cfg, data) {
     console.log(`---ENV: ${JSON.stringify(process.env)}`);
   }
   const action = componentJson.actions[data["function"]];
-  const { pathName, method, contentType } = action.callParams;
+  const { pathName, method, requestContentType } = action.callParams;
 
   const specPath = spec.paths[pathName];
   const specPathParameters = specPath[method].parameters.map(({ name }) => {
@@ -61,7 +61,7 @@ function processAction(msg, cfg, data) {
     pathName: pathName,
     method: method,
     parameters: parameters,
-    requestContentType: contentType,
+    requestContentType: requestContentType,
     requestBody: body,
     securities: { authorized: securities },
     server: spec.servers[cfg.server] || cfg.otherServer,

@@ -29,7 +29,7 @@ function processTrigger(msg, cfg, snapshot = {}, data) {
   console.log("cfg:", cfg);
   const { snapshotKey, arraySplittingKey, syncParam } = cfg.nodeSettings;
   const trigger = componentJson.triggers[data["function"]];
-  const { pathName, method, contentType } = trigger.callParams;
+  const { pathName, method, requestContentType } = trigger.callParams;
 
   const specPath = spec.paths[pathName];
   const specPathParameters = specPath[method].parameters.map(({ name }) => {
@@ -70,7 +70,7 @@ function processTrigger(msg, cfg, snapshot = {}, data) {
     pathName: pathName,
     method: method,
     parameters: parameters,
-    requestContentType: contentType,
+    requestContentType: requestContentType,
     requestBody: body,
     securities: { authorized: securities },
     server: spec.servers[cfg.server] || cfg.otherServer,
