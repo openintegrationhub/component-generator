@@ -43,9 +43,7 @@ function processAction(msg, cfg, data) {
   for (let param of specPathParameters) {
     parameters[param] = body[param];
   }
-
-  const newElement = {};
-
+  
   $SECURITIES;
 
   if (cfg.otherServer) {
@@ -76,6 +74,7 @@ function processAction(msg, cfg, data) {
     console.log(`--SWAGGER CALL: ${JSON.stringify(out)}`);
   }
 
+  const newElement = {};
   // Call operation via Swagger client
   return Swagger.execute(callParams).then((data) => {
     // emit a single message with data
