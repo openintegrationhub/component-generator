@@ -53,8 +53,6 @@ function processTrigger(msg, cfg, snapshot = {}, data) {
     parameters[syncParam] = snapshot.lastUpdated;
   }
 
-  const newElement = {};
-
   $SECURITIES;
 
   if (cfg.otherServer) {
@@ -84,6 +82,7 @@ function processTrigger(msg, cfg, snapshot = {}, data) {
     out.spec = "[omitted]";
     console.log(`--SWAGGER CALL: ${JSON.stringify(out)}`);
   }
+  const newElement = {};
 
   // Call operation via Swagger client
   return Swagger.execute(callParams).then((data) => {
