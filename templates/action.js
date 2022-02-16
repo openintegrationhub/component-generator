@@ -16,7 +16,7 @@ const spec = require("../spec.json");
 const { mapFieldNames, getMetadata } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
-function processAction(msg, cfg, data) {
+function processAction(msg, cfg, _s, _h, data) {
   var isVerbose = process.env.debug || cfg.verbose;
 
   console.log("data function:", data["function"]);

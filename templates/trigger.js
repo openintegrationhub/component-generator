@@ -20,7 +20,7 @@ const {
 } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
-function processTrigger(msg, cfg, snapshot = {}, data) {
+function processTrigger(msg, cfg, snapshot, _h, data) {
   var isVerbose = process.env.debug || cfg.verbose;
   snapshot.lastUpdated = snapshot.lastUpdated || new Date(0).getTime();
 
