@@ -16,10 +16,10 @@ const spec = require("../spec.json");
 const { mapFieldNames, getMetadata } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
-function processAction(msg, cfg, _s, _h, data) {
+function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   var isVerbose = process.env.debug || cfg.verbose;
 
-  console.log("data function:", data["function"]);
+  console.log("data function:", tokenData["function"]);
   console.log("msg:", msg);
   console.log("cfg:", cfg);
 

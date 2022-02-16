@@ -20,11 +20,11 @@ const {
 } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
-function processTrigger(msg, cfg, snapshot, _h, data) {
+function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   var isVerbose = process.env.debug || cfg.verbose;
   snapshot.lastUpdated = snapshot.lastUpdated || new Date(0).getTime();
 
-  console.log("data function:", data["function"]);
+  console.log("data function:", tokenData["function"]);
   console.log("msg:", msg);
   console.log("cfg:", cfg);
   const { snapshotKey, arraySplittingKey, syncParam } = cfg.nodeSettings;
