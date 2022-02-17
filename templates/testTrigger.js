@@ -20,7 +20,7 @@
  } = require("../utils/helpers");
  const componentJson = require("../../component.json");
  
- function processTrigger(msg, cfg, snapshot, _h, data) {
+ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, data) {
    var isVerbose = process.env.debug || cfg.verbose;
    snapshot.lastUpdated = snapshot.lastUpdated || new Date(0).getTime();
  
@@ -133,7 +133,9 @@
  for (let i = 0; i < ids.length; i++ ) {
     const msg = {};
     const cfg = {};
-    const data = {};
+    const data = {
+        "function": ids[i] 
+    };
     
     processTrigger(msg,cfg,{},{},data)
 }

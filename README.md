@@ -40,6 +40,17 @@ This is the folder where the files that are copied during the generation reside
 Action.js is the template copied to actions
 Trigger.js is the template copied to triggers
 
+** As from now we use a generic Action and a Trigger for the the flow execution (look also to the component.json file )
+
+The action and the trigger process the tokenData object and grab the operationId which they use to query the object with the same name in the component.json. From there they get the callParams object which contains the method, the pathName and the contentType. From that point we use the values from the object to make the Swagger call as before.
+
+testAction.js is the template copied to tests
+testTrigger.js is the template copied to tests
+
+The test contain pretty much a copy of the real trigger and action. The only difference is that the whole proces is run through a loop in order to make the call to the specific API back to back.
+
+Component.json is the file where all the data for the component is stored. From the auth type till every operationId as well as the methods and the names of the paths for every action or trigger. 
+
 We add basic docker config as well as a docker ignoring file
 
 Package.json and package-lock.json with the latest dependencies which are loaded while running the build docker image command

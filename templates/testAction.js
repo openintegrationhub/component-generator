@@ -16,7 +16,7 @@
  const { mapFieldNames, getMetadata } = require("../utils/helpers");
  const componentJson = require("../../component.json");
  
- function processAction(msg, cfg, _s, _h, data) {
+ function processAction(msg, cfg, snapshot, incomingMessageHeaders, data) {
    var isVerbose = process.env.debug || cfg.verbose;
  
    console.log("data function:", data["function"]);
@@ -85,10 +85,13 @@
     });
  }
  const ids = [];
+ 
  for (let i = 0; i < ids.length; i++ ) {
      const msg = {};
      const cfg = {};
-     const data = {};
+     const data = {
+         "function": ids[i] 
+     };
 
      processAction(msg,cfg,{},{},data)
  }
