@@ -14,9 +14,10 @@
 const Swagger = require("swagger-client");
 const spec = require("../spec.json");
 const {
-  isSecondDateAfter,
+  dataAndSnapshot,
   mapFieldNames,
   getMetadata,
+  getElementDataFromResponse
 } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
@@ -27,7 +28,7 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   console.log("data function:", tokenData["function"]);
   console.log("msg:", msg);
   console.log("cfg:", cfg);
-  const { snapshotKey, arraySplittingKey, syncParam } = cfg.nodeSettings;
+  const { snapshotKey, arraySplittingKey, syncParam, skipSnapshot } = cfg.nodeSettings;
   const trigger = componentJson.triggers[data["function"]];
   const { pathName, method, requestContentType } = trigger.callParams;
 
@@ -85,49 +86,16 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   const newElement = {};
 
   // Call operation via Swagger client
-  return Swagger.execute(callParams).then((data) => {
+  return Swagger.execute(callParams).then( async (data) => {
     delete data.uid;
     newElement.metadata = getMetadata(msg.metadata);
     const response = JSON.parse(data.data);
 
-    if (!arraySplittingKey) {
-      newElement.data = response;
+    newElement.data = getElementDataFromResponse(arraySplittingKey,response);
+    if(skipSnapshot){
+      return newElement.data
     } else {
-      newElement.data = arraySplittingKey
-        .split(".")
-        .reduce((p, c) => (p && p[c]) || null, response);
-    }
-    if (Array.isArray(newElement.data)) {
-      let lastElement = 0;
-      for (let i = 0; i < newElement.data.length; i++) {
-        const newObject = { ...newElement, data: newElement.data[i] };
-        const currentObjectDate = newObject.data[snapshotKey]
-          ? newObject.data[snapshotKey]
-          : newObject.data[$SNAPSHOT];
-        if (snapshot.lastUpdated === 0) {
-          if (isSecondDateAfter(currentObjectDate, lastElement)) {
-            lastElement = snapshotKey
-              ? newElement.data[snapshotKey]
-              : newElement.data[$SNAPSHOT];
-          }
-          this.emit("data", newObject);
-        } else {
-          if (isSecondDateAfter(currentObjectDate, snapshot.lastUpdated)) {
-            if (isSecondDateAfter(currentObjectDate, lastElement)) {
-              lastElement = currentObjectDate;
-            }
-            this.emit("data", newObject);
-          }
-        }
-      }
-      snapshot.lastUpdated =
-        lastElement !== 0 ? lastElement : snapshot.lastUpdated;
-      console.log("returned a snapshot 1", snapshot);
-
-      this.emit("snapshot", snapshot);
-      console.log("returned a snapshot");
-    } else {
-      this.emit("data", newElement);
+      await dataAndSnapshot(newElement,snapshot,snapshotKey, $SNAPSHOT, this);
     }
   });
 }

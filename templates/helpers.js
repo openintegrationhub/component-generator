@@ -24,4 +24,55 @@ function getMetadata(metadata) {
   return newMetadata;
 }
 
-module.exports = { isSecondDateAfter, mapFieldNames, getMetadata };
+async function dataAndSnapshot(
+  newElement,
+  snapshot,
+  snapshotKey,
+  standardSnapshot,
+  self
+) {
+  if (Array.isArray(newElement.data)) {
+    let lastElement = 0;
+    for (let i = 0; i < newElement.data.length; i++) {
+      const newObject = { ...newElement, data: newElement.data[i] };
+      const currentObjectDate = newObject.data[snapshotKey]
+        ? newObject.data[snapshotKey]
+        : newObject.data[standardSnapshot];
+      if (snapshot.lastUpdated === 0) {
+        if (isSecondDateAfter(currentObjectDate, lastElement)) {
+          lastElement = snapshotKey
+            ? newElement.data[snapshotKey]
+            : newElement.data[standardSnapshot];
+        }
+        await self.emit("data", newObject);
+      } else {
+        if (isSecondDateAfter(currentObjectDate, snapshot.lastUpdated)) {
+          if (isSecondDateAfter(currentObjectDate, lastElement)) {
+            lastElement = currentObjectDate;
+          }
+          await self.emit("data", newObject);
+        }
+      }
+    }
+    snapshot.lastUpdated =
+      lastElement !== 0 ? lastElement : snapshot.lastUpdated;
+    console.log("returned a new snapshot", snapshot);
+    await self.emit("snapshot", snapshot);
+  } else {
+    await self.emit("data", newElement);
+  }
+}
+function getElementDataFromResponse(splittingKey, res) {
+  if (!splittingKey) {
+    return res;
+  } else {
+    return splittingKey.split(".").reduce((p, c) => (p && p[c]) || null, res);
+  }
+}
+module.exports = {
+  isSecondDateAfter,
+  mapFieldNames,
+  getMetadata,
+  dataAndSnapshot,
+  getElementDataFromResponse,
+};
