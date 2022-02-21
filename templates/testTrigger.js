@@ -53,7 +53,7 @@
      parameters[syncParam] = snapshot.lastUpdated;
    }
  
-   $SECURITIES;
+   $TESTSECURITIES;
  
    if (cfg.otherServer) {
      if (!spec.servers) {

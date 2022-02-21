@@ -44,7 +44,7 @@
      parameters[param] = body[param];
    }
    
-   $SECURITIES;
+   $TESTSECURITIES;
  
    if (cfg.otherServer) {
      if (!spec.servers) {
