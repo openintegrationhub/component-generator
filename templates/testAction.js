@@ -74,14 +74,13 @@
      console.log(`--SWAGGER CALL: ${JSON.stringify(out)}`);
    }
  
-   const newElement = {};
    // Call operation via Swagger client
    return Swagger.execute(callParams).then((data) => {
      // emit a single message with data
-     delete data.uid;
-     newElement.metadata = getMetadata(msg.metadata);
-     newElement.data = data.data;
-     console.log("Data to be emitted:",data)
+     console.log("Status Code: ",data.status);
+     console.log("Status Text: ",data.statusText);
+     console.log("Data Object: ",data.data)
+
     });
  }
  const ids = [];
@@ -92,6 +91,8 @@
      const data = {
          "function": ids[i] 
      };
+
+     console.log(`Test for the operation ${ids[i]} !`)
 
      processAction(msg,cfg,{},{},data)
  }

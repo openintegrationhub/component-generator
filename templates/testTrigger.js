@@ -82,50 +82,12 @@
      out.spec = "[omitted]";
      console.log(`--SWAGGER CALL: ${JSON.stringify(out)}`);
    }
-   const newElement = {};
  
    // Call operation via Swagger client
    return Swagger.execute(callParams).then((data) => {
-     delete data.uid;
-     newElement.metadata = getMetadata(msg.metadata);
-     const response = JSON.parse(data.data);
- 
-     if (!arraySplittingKey) {
-       newElement.data = response;
-     } else {
-       newElement.data = arraySplittingKey
-         .split(".")
-         .reduce((p, c) => (p && p[c]) || null, response);
-     }
-     if (Array.isArray(newElement.data)) {
-       let lastElement = 0;
-       for (let i = 0; i < newElement.data.length; i++) {
-         const newObject = { ...newElement, data: newElement.data[i] };
-         const currentObjectDate = newObject.data[snapshotKey]
-           ? newObject.data[snapshotKey]
-           : newObject.data[$SNAPSHOT];
-         if (snapshot.lastUpdated === 0) {
-           if (isSecondDateAfter(currentObjectDate, lastElement)) {
-             lastElement = snapshotKey
-               ? newElement.data[snapshotKey]
-               : newElement.data[$SNAPSHOT];
-           }
-           console.log("Data to be emitted:", newObject);
-         } else {
-           if (isSecondDateAfter(currentObjectDate, snapshot.lastUpdated)) {
-             if (isSecondDateAfter(currentObjectDate, lastElement)) {
-               lastElement = currentObjectDate;
-             }
-             console.log("Data to be emitted:", newObject);
-           }
-         }
-       }
-       snapshot.lastUpdated =
-         lastElement !== 0 ? lastElement : snapshot.lastUpdated;
-       console.log("Snapshot to be emitted:", snapshot);
-        } else {
-       console.log("Data to be emitted:", newElement);
-     }
+    console.log("Status Code: ",data.status);
+    console.log("Status Text: ",data.statusText);
+    console.log("Data Object: ",JSON.parse(data.data))
    });
  }
  
@@ -136,6 +98,7 @@
     const data = {
         "function": ids[i] 
     };
-    
+    console.log(`Test for the operation ${ids[i]} !`)
+
     processTrigger(msg,cfg,{},{},data)
 }
