@@ -83,7 +83,7 @@ async function oihGen() {
         snapshot: options.snapshot
     });
 
-    console.log('Successfully generated. Connector has been saved in output directory:', generatePath);
+    console.log("\x1b[32m",'Successfully generated. Connector has been saved in output directory:', generatePath);
 
     q.finish();
 

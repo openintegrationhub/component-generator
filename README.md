@@ -39,16 +39,33 @@ Unless `-y`, `--yes` option is provided, if output or name options are missing, 
 This is the folder where the files that are copied during the generation reside
 
 Action.js is the template copied to actions
-Trigger.js is the template copied to triggers:
+
+Trigger.js is the template copied to triggers
     Properties to be considered:
         "snapshotKey" is the parameter passed for the selected trigger to compare with snapshot date and it is to replace the default snapshot passed by the generation in each trigger
         "arraySplittingKey" is the key used for access the object returned from the get request
         "syncParam" is the param used for filtering the response in the API call
 
+** As from now we use a generic Action and a Trigger for the the flow execution (look also to the component.json file )
+
+The action and the trigger process the tokenData object and grab the operationId which they use to query the object with the same name in the component.json. From there they get the callParams object which contains the method, the pathName and the contentType. From that point we use the values from the object to make the Swagger call as before.
+
+testAction.js is the template copied to tests
+testTrigger.js is the template copied to tests
+
+The test contain pretty much a copy of the real trigger and action. The only difference is that the whole proces is run through a loop in order to make the call to the specific API back to back.
+
+Component.json is the file where all the data for the component is stored. From the auth type till every operationId as well as the methods and the names of the paths for every action or trigger. 
+
+
 helpers.js is the template file containing functions used in the triggers and actions
     funtions:
         isSecondDateAfter() is the function comparing incoming snapshot and the current object date
-        mapFieldNames() is the function that goes through all the parameters of the msg.data object and        
+        mapFieldNames() is the function that goes through all the parameters of the msg.data object and returns an object with the keys
+        getMetaData() creates a object needed for the OIH id linking process
+        dataAndSnapshot() emits the events for the data and snapshot objects and pushes them to the next component/API
+        getElementDataFromResponse() parses the path of the arraySplittingKey for returning the response array if it exists otherwise it returns the single object
+
 We add basic docker config as well as a docker ignoring file
 
 Package.json and package-lock.json with the latest dependencies which are loaded while running the build docker image command
