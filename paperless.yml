@@ -1,0 +1,3873 @@
+openapi: 3.0.1
+info:
+  title: Paperless Public API
+  description: Welcome to the public API of Paperless.
+  version: v1
+  contact:
+    name: Paperless Developer Support Team
+    email: developers@paperless.io
+tags:
+  - name: Hello
+  - name: Authentication
+  - name: Blob
+  - name: Organization
+  - name: User
+paths:
+  /api/v1/documents:
+    post:
+      summary: Create a new Document
+      x-visibility: public
+      tags:
+        - Document
+      security:
+        - oAuth2:
+            - document.write
+      operationId: createDocument
+      description: >
+        Creates a new Document. You can either create a new Document from
+        scratch, provide a `document_id` of
+
+        an existing document that then gets duplicated, or provide a
+        `template_id` that should be used to prepare the
+
+        new document from. When a document is duplicated/prepared you can also
+        provide the same parameters as when you
+
+        update a document to overwrite the values on the resulting document on
+        creation. The `workspace_id` must be
+
+        submitted in any case. When duplicating/preparing a document and the
+        `workspace_id` differs from the workspace
+
+        of the document or template, the new document gets duplicated "into the
+        workspace" for the given `workspace_id`.
+
+        Be aware that, to duplicate/prepare "into another workspace", the user
+        needs to be able to manage documents
+
+        on both, the source and the destination, workspaces for the operation to
+        succeed.
+
+
+        ## Advanced document creation
+
+
+        The `createDocument` operation provides some advanced parameters, making
+        it possible to create a document with
+
+        all information it needs to be dispatched, when a document is created by
+        duplicating an existing document
+
+        or creating the new document from a template. Advanced document creation
+        is not possible for documents
+
+        that are created from scratch.
+
+
+        ### Parameter `participants`
+
+
+        The `participants` parameter is an object in which the keys are the
+        `slot_name`s of the participants
+
+        existing in the source document or template. The values of the
+        `participant` object are objects with
+
+        parameters for the corresponding participant in the newly created
+        document.
+
+
+        Example:
+
+
+        Imagine a template with two participants with the `slot_names` `slot1`
+        and `slot2`. The participants in the
+
+        template do not have an email or a name yet. When supplying the
+        `participants` parameter like this:
+
+
+        ```
+
+        {
+          "template_id": 1234,
+          ...
+          participants: {
+            "slot1": {"email": "p1@example.com", name: "P1"},
+            "slot2": {"email": "p2@example.com", name: "P2"}
+          }
+        }
+
+        ```
+
+
+        The participants of the created document will have the correct values
+        for the "email" and "name" attributes.
+
+
+        ### Parameter `tokens`
+
+
+        The `tokens` parameter is an object in which the keys are the `name`s of
+        the tokens existing in the source
+
+        document or template. The values of the `tokens` object are strings and
+        represent the values that will
+
+        be assigned to the tokens of the newly created document.
+
+
+        ### Parameter `blocks`
+
+
+        The `blocks` parameter is an object in which the keys are the `slug`s of
+        the blocks existing in the source
+
+        document or template. The values of the `blocks` object are objects
+        which values will
+
+        be assigned to the blocks of the newly created document. Not all block
+        values are allowed.
+
+        A list of allowed keys can be found in the parameter's schema.
+
+
+        HINT: As the IDs of child blocks that would act as default values for
+        checkbox, radio and select inputs are not
+              existent before the document is created, it is necessary to use the `default_value_from_value` attribute
+              to set default_values of those input blocks. The server will map the default_value of
+              the blocks by searching for the correct child blocks when they were created.
+
+        ## Direct dispatch
+
+
+        It is possible to directly dispatch a document after its creation
+        without the need for an additional call
+
+        to the `updateDocument` operation. A requirement to do so is, that all
+        information required to dispatch
+
+        the document were provided (participants, tokens etc.).
+
+
+        To directly dispatch a document, after it was created, the client needs
+        to supply the `state` with a value
+
+        of `dispatched`.
+
+
+        ## Initial participants dispatch strategy
+
+
+        Normally the client creating a document will never be able to read
+        tokens of any participants
+
+        and the tokens are only distributed directly to the participants via
+        email. Because this
+
+        applies some restrictions for external clients integrating with
+        Paperless, it is possible to set an
+
+        `participants_dispatch_strategy` parameter when a document is created
+        and directly dispatched.
+
+        Providing this parameter will mark the participants which are at first
+        turn
+
+        as `state = dispatch_completed` and assigned them the
+        `dispatch_strategy`
+
+        `api_response_initial_participants`. As long as those
+
+        participants are in a state which allows them to participate their token
+        will be serialized in the response for
+
+        the document. The client is then responsible to deliver the tokens to
+        the participants as they will not get an
+
+        email with their token from Paperless.
+
+
+        NOTE: Only the participants at the first turn will be marked with the
+        `dispatch_strategy`
+
+        `api_response_initial_participants`. All participants further
+
+        in the participation flow will get their token via email.
+      parameters: []
+      responses:
+        '201':
+          description: |
+            The document was created.
+          content:
+            application/json:
+              example:
+                id: 28032
+                creator_id: 163045
+                workspace_id: 55407
+                submission_id: null
+                name: My new document
+                state: draft
+                description: >-
+                  Description for document with contracts of Waterproofing &
+                  Caulking
+                has_inputs: false
+                page_count: 0
+                settings:
+                  mail:
+                    subject: Subject - Waterproofing & Caulking
+                  setting1: setting1-value1
+                reminder_settings:
+                  reminders_activated: true
+                  schedule:
+                    - number_of_days_since_dispatch: 4
+                    - number_of_days_since_dispatch: 10
+                styles:
+                  style1: style1-value1
+                dispatched_at: null
+                completed_at: null
+                archived_at: null
+                participation_completed_redirect_url: null
+                updated_at: '2022-01-11T00:26:38.571Z'
+                created_at: '2022-01-11T00:26:38.571Z'
+                participants:
+                  - id: 63348
+                    replaced_by_participant_id: null
+                    role: default
+                    email: ''
+                    name: ''
+                    locale: en_US
+                    state: initialized
+                    dispatch_strategy: null
+                    progress: []
+                    terms_and_conditions_approved_at: null
+                    color: '#ff00ff'
+                    slot_name: null
+                    description: null
+                    dispatch_failed_reason: null
+                    dispatch_failed_message: null
+                    skipped_reason: null
+                    disabled_reason: null
+                    waiting_at: null
+                    dispatching_at: null
+                    dispatch_failed_at: null
+                    dispatch_completed_at: null
+                    opened_at: null
+                    started_at: null
+                    completed_at: null
+                    skipped_at: null
+                    disabled_at: null
+                    receive_submission_completed_mail: true
+                    updated_at: '2022-01-11T00:26:38.592Z'
+                    created_at: '2022-01-11T00:26:38.592Z'
+                creator:
+                  id: 163045
+                  email: rubin@lynch.name
+                  name: Cicely Altenwerth
+                  position: null
+                  locale: en_US
+                  avatar_url: null
+                  updated_at: '2022-01-11T00:26:38.227Z'
+                  created_at: '2022-01-11T00:26:38.227Z'
+                  email_verified: true
+                  settings: {}
+                  notification_settings:
+                    custom:
+                      submission_sent: 'off'
+                      submission_started: mine
+                      submission_completed: all
+                    notificationLevel: important
+                source_template: null
+                designs:
+                  - id: 232441
+                    type: 'Design::BrandDesign'
+                    organization_id: 57964
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:26:38.203Z'
+                    created_at: '2022-01-11T00:26:38.203Z'
+                    brand_settings: {}
+                    brand_styles: {}
+                    logo_url: null
+                  - id: 232442
+                    type: 'Design::SubmissionDesign'
+                    organization_id: 57964
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:26:38.205Z'
+                    created_at: '2022-01-11T00:26:38.205Z'
+                    submission_settings: {}
+                    submission_styles: {}
+                    logo_url: null
+                  - id: 232443
+                    type: 'Design::EmailDesign'
+                    organization_id: 57964
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:26:38.208Z'
+                    created_at: '2022-01-11T00:26:38.208Z'
+                    email_settings: {}
+                    email_styles: {}
+                    logo_url: null
+                  - id: 232444
+                    type: 'Design::ExportDesign'
+                    organization_id: 57964
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:26:38.209Z'
+                    created_at: '2022-01-11T00:26:38.209Z'
+                    export_settings: {}
+                    export_styles: {}
+                    logo_url: null
+                participation_flow:
+                  id: 45924
+                  updated_at: '2022-01-11T00:26:38.572Z'
+                  created_at: '2022-01-11T00:26:38.572Z'
+                  nodes:
+                    - id: 158504
+                      local_uuid: null
+                      type: 'ParticipationFlow::StartNode'
+                      executed: false
+                      completed: false
+                      disabled: false
+                      updated_at: '2022-01-11T00:26:38.589Z'
+                      created_at: '2022-01-11T00:26:38.589Z'
+                    - id: 158505
+                      local_uuid: null
+                      type: 'ParticipationFlow::EndNode'
+                      executed: false
+                      completed: false
+                      disabled: false
+                      updated_at: '2022-01-11T00:26:38.589Z'
+                      created_at: '2022-01-11T00:26:38.589Z'
+                    - id: 158506
+                      local_uuid: null
+                      type: 'ParticipationFlow::ParticipantNode'
+                      executed: false
+                      completed: false
+                      disabled: false
+                      updated_at: '2022-01-11T00:26:38.593Z'
+                      created_at: '2022-01-11T00:26:38.593Z'
+                      participant:
+                        id: 63348
+                        replaced_by_participant_id: null
+                        role: default
+                        email: ''
+                        name: ''
+                        locale: en_US
+                        state: initialized
+                        dispatch_strategy: null
+                        progress: []
+                        terms_and_conditions_approved_at: null
+                        color: '#ff00ff'
+                        slot_name: null
+                        description: null
+                        dispatch_failed_reason: null
+                        dispatch_failed_message: null
+                        skipped_reason: null
+                        disabled_reason: null
+                        waiting_at: null
+                        dispatching_at: null
+                        dispatch_failed_at: null
+                        dispatch_completed_at: null
+                        opened_at: null
+                        started_at: null
+                        completed_at: null
+                        skipped_at: null
+                        disabled_at: null
+                        receive_submission_completed_mail: true
+                        updated_at: '2022-01-11T00:26:38.592Z'
+                        created_at: '2022-01-11T00:26:38.592Z'
+                  edges:
+                    - id: 123027
+                      local_uuid: null
+                      source_id: 158504
+                      destination_id: 158506
+                      updated_at: '2022-01-11T00:26:38.595Z'
+                      created_at: '2022-01-11T00:26:38.595Z'
+                    - id: 123028
+                      local_uuid: null
+                      source_id: 158506
+                      destination_id: 158505
+                      updated_at: '2022-01-11T00:26:38.597Z'
+                      created_at: '2022-01-11T00:26:38.597Z'
+              schema:
+                $ref: '#/components/schemas/Document'
+        '400':
+          description: >
+            The server responds with `400 bad request` in the case not all
+            required parameters were submitted,
+
+            or one of the parameters violates constraints defined by the schema
+            (e.g. string to short, string to long, etc.)
+
+            It will tell in the `detail` field of the error object what param
+            was causing this error.
+          content:
+            application/json:
+              examples:
+                Errors.BadRequest.InvalidSchemaError:
+                  value:
+                    type: Errors.BadRequest.InvalidSchemaError
+                    title: >-
+                      The request did not fulfill the schema for the requested
+                      endpoint
+                    detail: >-
+                      {"workspace_id"=>55454, "name"=>"My new document",
+                      "description"=>"This a an even better document",
+                      "settings"=>{"setting1"=>"setting1-value1"},
+                      "reminder_settings"=>{"reminders_activated"=>true,
+                      "schedule"=>[1, 2, 3]},
+                      "styles"=>{"style1"=>"style1-value1"},
+                      "participation_completed_redirect_url"=>"https://redirect.example.com/completed"}
+                      isn't any of in
+                      #/paths/~1api~1v1~1documents/post/requestBody/content/application~1json/schema
+              schema:
+                $ref: '#/components/schemas/Errors.BadRequest.InvalidSchemaError'
+        '403':
+          description: |
+            The server responds with `403 forbidden` in two cases:
+
+              - There is no authenticated session.
+              - If the CSRF token in the `X-CSRF-TOKEN` header did not match the token for the current session.
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+                Errors.Forbidden.NotAuthorizedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthorizedError
+                    title: Insufficient permissions
+                Errors.Forbidden.InvalidCSRFTokenError:
+                  value:
+                    type: Errors.Forbidden.InvalidCSRFTokenError
+                    title: The given CSRF token was invalid
+              schema:
+                oneOf:
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.NotAuthenticatedError
+                  - $ref: '#/components/schemas/Errors.Forbidden.NotAuthorizedError'
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.InvalidCSRFTokenError
+        '404':
+          description: >
+            The server responds with `404 not found` when, either a resource
+            with the given id could not be found in
+
+            the database, or the currently logged has no access to it. This
+            response code is also returned in cases
+
+            in which creating a new resource references another resource (e.g.
+            by id) and the user has not at least
+
+            read access to the referenced resource.
+          content:
+            application/json:
+              examples:
+                Errors.NotFound.RecordNotFoundError:
+                  value:
+                    type: Errors.NotFound.RecordNotFoundError
+                    title: The record could not be found
+                    detail: >-
+                      The record Document(id=28086) does not exist, or you have
+                      no access
+              schema:
+                $ref: '#/components/schemas/Errors.NotFound.RecordNotFoundError'
+        '422':
+          description: >
+            The server responds with `422 unprocessable entity` if the given
+            parameters failed the server side validation.
+
+            An object is returned within the property `validation_errors`, that
+            contains a mapping of parameter name to
+
+            validation error keys.
+          content:
+            application/json:
+              examples:
+                Errors.UnprocessableEntity.ValidationError:
+                  value:
+                    type: Errors.UnprocessableEntity.ValidationError
+                    title: The validation for the given parameters failed
+                    validation_errors:
+                      blocks:
+                        'slug:input1':
+                          default_value:
+                            - error: invalid
+                              message: >-
+                                Only strings are allowed as default_value, but
+                                got 123
+                      participants:
+                        'slot_name:slot1':
+                          email:
+                            - error: invalid
+                              message: is invalid
+              schema:
+                $ref: >-
+                  #/components/schemas/Errors.UnprocessableEntity.ValidationError
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: >-
+                    #/components/schemas/RequestBodies.createDocumentFromTemplate
+                - $ref: >-
+                    #/components/schemas/RequestBodies.createDocumentFromDocument
+                - $ref: '#/components/schemas/RequestBodies.createDocument'
+            examples:
+              '0':
+                summary: Create and dispatch new Document from Template
+                value:
+                  template_id: 1
+                  workspace_id: 1
+                  name: My new document
+                  state: dispatched
+                  participants:
+                    slot1:
+                      name: Participant One
+                      email: participant1@example.com
+                    slot2:
+                      name: Participant One
+                      email: participant2@example.com
+                  tokens:
+                    token1: new-token1-value
+                    token2: new-token2-value
+    get:
+      summary: Get all Documents the user has access to
+      x-visibility: public
+      tags:
+        - Document
+      security:
+        - oAuth2:
+            - document.read
+      operationId: getDocuments
+      description: >
+        Returns information about all Documents the the user has access to. By
+        default archived Documents are not
+
+        returned within the reponse. To return archived Documents use the
+        `archived` filter parameter (`archived=true`).
+      parameters:
+        - name: per
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: 1
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: 1
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+        - name: creator_id
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: 1
+        - name: workspace_id
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: 1
+        - name: template_id
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: 1
+        - name: archived
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              example:
+                data:
+                  - id: 28161
+                    creator_id: 163315
+                    workspace_id: 55541
+                    submission_id: null
+                    name: Site Furnishings
+                    state: draft
+                    description: >-
+                      Description for document with contracts of Site
+                      Furnishings
+                    has_inputs: false
+                    page_count: 0
+                    settings:
+                      mail:
+                        subject: Subject - Site Furnishings
+                    reminder_settings:
+                      reminders_activated: false
+                      schedule: []
+                    styles: {}
+                    dispatched_at: null
+                    completed_at: null
+                    archived_at: null
+                    participation_completed_redirect_url: null
+                    updated_at: '2022-01-11T00:26:53.509Z'
+                    created_at: '2022-01-11T00:26:53.509Z'
+                    participants:
+                      - id: 63512
+                        replaced_by_participant_id: null
+                        role: default
+                        email: ''
+                        name: ''
+                        locale: en_US
+                        state: initialized
+                        dispatch_strategy: null
+                        progress: []
+                        terms_and_conditions_approved_at: null
+                        color: '#ff00ff'
+                        slot_name: null
+                        description: null
+                        dispatch_failed_reason: null
+                        dispatch_failed_message: null
+                        skipped_reason: null
+                        disabled_reason: null
+                        waiting_at: null
+                        dispatching_at: null
+                        dispatch_failed_at: null
+                        dispatch_completed_at: null
+                        opened_at: null
+                        started_at: null
+                        completed_at: null
+                        skipped_at: null
+                        disabled_at: null
+                        receive_submission_completed_mail: true
+                        updated_at: '2022-01-11T00:26:53.547Z'
+                        created_at: '2022-01-11T00:26:53.547Z'
+                    creator:
+                      id: 163315
+                      email: carey@lueilwitz.net
+                      name: Sen. Erwin Champlin
+                      position: null
+                      locale: en_US
+                      avatar_url: null
+                      updated_at: '2022-01-11T00:26:53.318Z'
+                      created_at: '2022-01-11T00:26:53.318Z'
+                    source_template: null
+                  - id: 28162
+                    creator_id: 163316
+                    workspace_id: 55541
+                    submission_id: null
+                    name: Drilled Shafts
+                    state: draft
+                    description: Description for document with contracts of Drilled Shafts
+                    has_inputs: false
+                    page_count: 0
+                    settings:
+                      mail:
+                        subject: Subject - Drilled Shafts
+                    reminder_settings:
+                      reminders_activated: false
+                      schedule: []
+                    styles: {}
+                    dispatched_at: null
+                    completed_at: null
+                    archived_at: null
+                    participation_completed_redirect_url: null
+                    updated_at: '2022-01-11T00:26:53.565Z'
+                    created_at: '2022-01-11T00:26:53.565Z'
+                    participants:
+                      - id: 63513
+                        replaced_by_participant_id: null
+                        role: default
+                        email: ''
+                        name: ''
+                        locale: en_US
+                        state: initialized
+                        dispatch_strategy: null
+                        progress: []
+                        terms_and_conditions_approved_at: null
+                        color: '#ff00ff'
+                        slot_name: null
+                        description: null
+                        dispatch_failed_reason: null
+                        dispatch_failed_message: null
+                        skipped_reason: null
+                        disabled_reason: null
+                        waiting_at: null
+                        dispatching_at: null
+                        dispatch_failed_at: null
+                        dispatch_completed_at: null
+                        opened_at: null
+                        started_at: null
+                        completed_at: null
+                        skipped_at: null
+                        disabled_at: null
+                        receive_submission_completed_mail: true
+                        updated_at: '2022-01-11T00:26:53.629Z'
+                        created_at: '2022-01-11T00:26:53.629Z'
+                    creator:
+                      id: 163316
+                      email: sandi@bauch.biz
+                      name: Audrey Gottlieb
+                      position: null
+                      locale: en_US
+                      avatar_url: null
+                      updated_at: '2022-01-11T00:26:53.368Z'
+                      created_at: '2022-01-11T00:26:53.368Z'
+                      email_verified: true
+                      settings: {}
+                      notification_settings:
+                        custom: {}
+                        notificationLevel: important
+                    source_template: null
+                count: 2
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Document'
+                  count:
+                    type: number
+        '400':
+          description: >
+            The server responds with `400 bad request` in the case not all
+            required parameters were submitted,
+
+            or one of the parameters violates constraints defined by the schema
+            (e.g. string to short, string to long, etc.)
+
+            It will tell in the `detail` field of the error object what param
+            was causing this error.
+          content:
+            application/json:
+              examples:
+                Errors.BadRequest.InvalidSchemaError:
+                  value:
+                    type: Errors.BadRequest.InvalidSchemaError
+                    title: >-
+                      The request did not fulfill the schema for the requested
+                      endpoint
+                    detail: >-
+                      #/paths/~1api~1v1~1documents/get/parameters/0/schema
+                      expected number, but received String: ""
+              schema:
+                $ref: '#/components/schemas/Errors.BadRequest.InvalidSchemaError'
+        '403':
+          description: >
+            The server responds with `403 forbidden` if there was no currently
+            logged in user.
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+              schema:
+                $ref: '#/components/schemas/Errors.Forbidden.NotAuthenticatedError'
+  '/api/v1/documents/{id}':
+    patch:
+      summary: Update existing Document by its id
+      x-visibility: public
+      tags:
+        - Document
+      security:
+        - oAuth2:
+            - document.write
+      operationId: updateDocument
+      description: >
+        Updates the Document for the given id and returns the updated resource
+        on success.
+
+
+        ## Dispatch the document
+
+
+        It is possible to dispatch the document via updating its state to
+        "dispatched".
+
+        When doing so, the server runs several checks on the document, that is
+        subject to be dispatched and
+
+        responds with `200 success` if the dispatch was successful. If the
+        server was not able to the dispatch the
+
+        document, it responds with `422 unprocessable entity`. There are
+        different reasons for the server, to not
+
+        dispatch a document which are:
+
+          - Document has no participants
+          - Document has blocks with duplicated slugs (duplicated slugs are returned by within the validation error)
+          - When the client tries to dispatch a document, that was already dispatched
+
+        ## Cancel the document
+
+
+        A dispatched and not yet completed document can be cancelled by a user
+        via updating its state to
+
+        "cancelled". This will lead to all non completed participants getting
+        disabled
+
+        with the reason "cancelled". All participants that got an email
+
+        about their participation will get an email about the cancellation.
+
+
+        The server responds with `422 unprocessable entity` when the client
+        tries to cancel a document, that was
+
+        was not yet dispatched or already completed.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              example:
+                id: 28199
+                creator_id: 163412
+                workspace_id: 55593
+                submission_id: 16372
+                name: My Document
+                state: cancelled
+                description: Description for document with contracts of Masonry & Precast
+                has_inputs: false
+                page_count: 0
+                settings:
+                  setting1: setting1-value1
+                  mail:
+                    subject: Subject - Masonry & Precast
+                reminder_settings:
+                  reminders_activated: false
+                  schedule: []
+                styles:
+                  style1: style1-value1
+                dispatched_at: '2022-01-11T00:27:01.397Z'
+                completed_at: null
+                archived_at: '2020-08-30T09:32:54.000Z'
+                participation_completed_redirect_url: null
+                updated_at: '2022-01-11T00:27:01.761Z'
+                created_at: '2022-01-11T00:27:01.399Z'
+                participants:
+                  - id: 63553
+                    replaced_by_participant_id: null
+                    role: default
+                    email: participant1@example.com
+                    name: Verdell Adams
+                    locale: en_US
+                    state: disabled
+                    dispatch_strategy: email
+                    progress: []
+                    terms_and_conditions_approved_at: null
+                    color: '#ff00ff'
+                    slot_name: null
+                    description: null
+                    dispatch_failed_reason: null
+                    dispatch_failed_message: null
+                    skipped_reason: null
+                    disabled_reason: cancelled
+                    waiting_at: '2022-01-11T00:27:01.393Z'
+                    dispatching_at: '2022-01-11T00:27:01.393Z'
+                    dispatch_failed_at: null
+                    dispatch_completed_at: null
+                    opened_at: null
+                    started_at: null
+                    completed_at: null
+                    skipped_at: null
+                    disabled_at: '2022-01-11T00:27:01.792Z'
+                    receive_submission_completed_mail: true
+                    updated_at: '2022-01-11T00:27:01.794Z'
+                    created_at: '2022-01-11T00:27:01.410Z'
+                  - id: 63554
+                    replaced_by_participant_id: null
+                    role: default
+                    email: participant2@example.com
+                    name: Roderick Sawayn
+                    locale: en_US
+                    state: disabled
+                    dispatch_strategy: null
+                    progress: []
+                    terms_and_conditions_approved_at: null
+                    color: '#ff00ff'
+                    slot_name: null
+                    description: null
+                    dispatch_failed_reason: null
+                    dispatch_failed_message: null
+                    skipped_reason: null
+                    disabled_reason: cancelled
+                    waiting_at: '2022-01-11T00:27:01.396Z'
+                    dispatching_at: null
+                    dispatch_failed_at: null
+                    dispatch_completed_at: null
+                    opened_at: null
+                    started_at: null
+                    completed_at: null
+                    skipped_at: null
+                    disabled_at: '2022-01-11T00:27:01.801Z'
+                    receive_submission_completed_mail: true
+                    updated_at: '2022-01-11T00:27:01.803Z'
+                    created_at: '2022-01-11T00:27:01.416Z'
+                creator:
+                  id: 163412
+                  email: clare@blick.name
+                  name: Gov. Mariano Homenick
+                  position: null
+                  locale: en_US
+                  avatar_url: null
+                  updated_at: '2022-01-11T00:27:01.348Z'
+                  created_at: '2022-01-11T00:27:01.348Z'
+                source_template: null
+                designs:
+                  - id: 232969
+                    type: 'Design::BrandDesign'
+                    organization_id: 58096
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:27:01.352Z'
+                    created_at: '2022-01-11T00:27:01.352Z'
+                    brand_settings: {}
+                    brand_styles: {}
+                    logo_url: null
+                  - id: 232970
+                    type: 'Design::SubmissionDesign'
+                    organization_id: 58096
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:27:01.354Z'
+                    created_at: '2022-01-11T00:27:01.354Z'
+                    submission_settings: {}
+                    submission_styles: {}
+                    logo_url: null
+                  - id: 232971
+                    type: 'Design::EmailDesign'
+                    organization_id: 58096
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:27:01.356Z'
+                    created_at: '2022-01-11T00:27:01.356Z'
+                    email_settings: {}
+                    email_styles: {}
+                    logo_url: null
+                  - id: 232972
+                    type: 'Design::ExportDesign'
+                    organization_id: 58096
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:27:01.358Z'
+                    created_at: '2022-01-11T00:27:01.358Z'
+                    export_settings: {}
+                    export_styles: {}
+                    logo_url: null
+                participation_flow:
+                  id: 46101
+                  updated_at: '2022-01-11T00:27:01.403Z'
+                  created_at: '2022-01-11T00:27:01.403Z'
+                  nodes:
+                    - id: 159082
+                      local_uuid: null
+                      type: 'ParticipationFlow::EndNode'
+                      executed: false
+                      completed: false
+                      disabled: true
+                      updated_at: '2022-01-11T00:27:01.789Z'
+                      created_at: '2022-01-11T00:27:01.405Z'
+                    - id: 159083
+                      local_uuid: null
+                      type: 'ParticipationFlow::ParticipantNode'
+                      executed: true
+                      completed: false
+                      disabled: true
+                      updated_at: '2022-01-11T00:27:01.797Z'
+                      created_at: '2022-01-11T00:27:01.412Z'
+                      participant:
+                        id: 63553
+                        replaced_by_participant_id: null
+                        role: default
+                        email: participant1@example.com
+                        name: Verdell Adams
+                        locale: en_US
+                        state: disabled
+                        dispatch_strategy: email
+                        progress: []
+                        terms_and_conditions_approved_at: null
+                        color: '#ff00ff'
+                        slot_name: null
+                        description: null
+                        dispatch_failed_reason: null
+                        dispatch_failed_message: null
+                        skipped_reason: null
+                        disabled_reason: cancelled
+                        waiting_at: '2022-01-11T00:27:01.393Z'
+                        dispatching_at: '2022-01-11T00:27:01.393Z'
+                        dispatch_failed_at: null
+                        dispatch_completed_at: null
+                        opened_at: null
+                        started_at: null
+                        completed_at: null
+                        skipped_at: null
+                        disabled_at: '2022-01-11T00:27:01.792Z'
+                        receive_submission_completed_mail: true
+                        updated_at: '2022-01-11T00:27:01.794Z'
+                        created_at: '2022-01-11T00:27:01.410Z'
+                    - id: 159081
+                      local_uuid: null
+                      type: 'ParticipationFlow::StartNode'
+                      executed: false
+                      completed: false
+                      disabled: true
+                      updated_at: '2022-01-11T00:27:01.799Z'
+                      created_at: '2022-01-11T00:27:01.404Z'
+                    - id: 159084
+                      local_uuid: null
+                      type: 'ParticipationFlow::ParticipantNode'
+                      executed: false
+                      completed: false
+                      disabled: true
+                      updated_at: '2022-01-11T00:27:01.806Z'
+                      created_at: '2022-01-11T00:27:01.418Z'
+                      participant:
+                        id: 63554
+                        replaced_by_participant_id: null
+                        role: default
+                        email: participant2@example.com
+                        name: Roderick Sawayn
+                        locale: en_US
+                        state: disabled
+                        dispatch_strategy: null
+                        progress: []
+                        terms_and_conditions_approved_at: null
+                        color: '#ff00ff'
+                        slot_name: null
+                        description: null
+                        dispatch_failed_reason: null
+                        dispatch_failed_message: null
+                        skipped_reason: null
+                        disabled_reason: cancelled
+                        waiting_at: '2022-01-11T00:27:01.396Z'
+                        dispatching_at: null
+                        dispatch_failed_at: null
+                        dispatch_completed_at: null
+                        opened_at: null
+                        started_at: null
+                        completed_at: null
+                        skipped_at: null
+                        disabled_at: '2022-01-11T00:27:01.801Z'
+                        receive_submission_completed_mail: true
+                        updated_at: '2022-01-11T00:27:01.803Z'
+                        created_at: '2022-01-11T00:27:01.416Z'
+                  edges:
+                    - id: 123437
+                      local_uuid: null
+                      source_id: 159081
+                      destination_id: 159083
+                      updated_at: '2022-01-11T00:27:01.420Z'
+                      created_at: '2022-01-11T00:27:01.420Z'
+                    - id: 123438
+                      local_uuid: null
+                      source_id: 159083
+                      destination_id: 159082
+                      updated_at: '2022-01-11T00:27:01.421Z'
+                      created_at: '2022-01-11T00:27:01.421Z'
+                    - id: 123439
+                      local_uuid: null
+                      source_id: 159081
+                      destination_id: 159084
+                      updated_at: '2022-01-11T00:27:01.423Z'
+                      created_at: '2022-01-11T00:27:01.423Z'
+                    - id: 123440
+                      local_uuid: null
+                      source_id: 159084
+                      destination_id: 159082
+                      updated_at: '2022-01-11T00:27:01.424Z'
+                      created_at: '2022-01-11T00:27:01.424Z'
+              schema:
+                $ref: '#/components/schemas/Document'
+        '400':
+          description: >
+            The server responds with `400 bad request` in the case not all
+            required parameters were submitted,
+
+            or one of the parameters violates constraints defined by the schema
+            (e.g. string to short, string to long, etc.)
+
+            It will tell in the `detail` field of the error object what param
+            was causing this error.
+          content:
+            application/json:
+              examples:
+                Errors.BadRequest.InvalidSchemaError:
+                  value:
+                    type: Errors.BadRequest.InvalidSchemaError
+                    title: >-
+                      The request did not fulfill the schema for the requested
+                      endpoint
+                    detail: >-
+                      #/components/schemas/RequestBodies.updateDocument/properties/styles
+                      expected object, but received String: ""
+              schema:
+                $ref: '#/components/schemas/Errors.BadRequest.InvalidSchemaError'
+        '402':
+          description: >
+            The server responds with `402 payment required` if the user tried to
+            dispatch a document but has no active
+
+            or trialing subscription
+          content:
+            application/json:
+              examples:
+                Errors.PaymentRequired.ActiveSubscriptionMandatoryError:
+                  value:
+                    type: Errors.PaymentRequired.ActiveSubscriptionMandatoryError
+                    title: >-
+                      The organization does not have an active (or trialing)
+                      subscription, but one is needed to fulfill the request
+              schema:
+                $ref: >-
+                  #/components/schemas/Errors.PaymentRequired.ActiveSubscriptionMandatoryError
+        '403':
+          description: |
+            The server responds with `403 forbidden` in the following cases:
+
+              - There is no authenticated session.
+              - The user does not have the permission to update the resource
+              - The CSRF token in the `X-CSRF-TOKEN` header did not match the token for the current session.
+              - The user tries to dispatch a document that is already dispatched
+              - The user that tries to dispatch the document does not have a verified email address
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.NotAuthorizedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthorizedError
+                    title: Insufficient permissions
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+                Errors.Forbidden.InvalidCSRFTokenError:
+                  value:
+                    type: Errors.Forbidden.InvalidCSRFTokenError
+                    title: The given CSRF token was invalid
+              schema:
+                oneOf:
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.NotAuthenticatedError
+                  - $ref: '#/components/schemas/Errors.Forbidden.NotAuthorizedError'
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.InvalidCSRFTokenError
+        '404':
+          description: >
+            The server responds with `404 not found` when, either a resource
+            with the given id could not be found in
+
+            the database, or the currently logged has no access to it. This
+            response code is also returned in cases
+
+            in which creating a new resource references another resource (e.g.
+            by id) and the user has not at least
+
+            read access to the referenced resource.
+          content:
+            application/json:
+              examples:
+                Errors.NotFound.RecordNotFoundError:
+                  value:
+                    type: Errors.NotFound.RecordNotFoundError
+                    title: The record could not be found
+                    detail: >-
+                      The record Document(id=28204) does not exist, or you have
+                      no access
+              schema:
+                $ref: '#/components/schemas/Errors.NotFound.RecordNotFoundError'
+        '422':
+          description: >
+            The server responds with `422 unprocessable entity` if the given
+            parameters failed the server side validation.
+
+            An object is returned within the property `validation_errors`, that
+            contains a mapping of parameter name to
+
+            validation error keys.
+          content:
+            application/json:
+              examples:
+                Errors.UnprocessableEntity.ValidationError:
+                  value:
+                    type: Errors.UnprocessableEntity.ValidationError
+                    title: The validation for the given parameters failed
+                    validation_errors:
+                      participants:
+                        - error: blank
+                          message: can't be blank
+                      state:
+                        - error: invalid
+                          message: is invalid
+                      blocks:
+                        - error: taken
+                          message: has already been taken
+                          value: true
+              schema:
+                $ref: >-
+                  #/components/schemas/Errors.UnprocessableEntity.ValidationError
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestBodies.updateDocument'
+    get:
+      summary: Get Document by its id
+      x-visibility: public
+      tags:
+        - Document
+      security:
+        - oAuth2:
+            - document.read
+      operationId: getDocument
+      description: |
+        Returns information about the Document for the given id.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              example:
+                id: 28231
+                creator_id: 163493
+                workspace_id: 55641
+                submission_id: null
+                name: Drywall & Acoustical (MOB)
+                state: draft
+                description: >-
+                  Description for document with contracts of Drywall &
+                  Acoustical (MOB)
+                has_inputs: false
+                page_count: 0
+                settings:
+                  mail:
+                    subject: Subject - Drywall & Acoustical (MOB)
+                reminder_settings:
+                  reminders_activated: true
+                  schedule:
+                    - number_of_days_since_dispatch: 4
+                    - number_of_days_since_dispatch: 10
+                styles: {}
+                dispatched_at: null
+                completed_at: null
+                archived_at: null
+                participation_completed_redirect_url: null
+                updated_at: '2022-01-11T00:27:05.814Z'
+                created_at: '2022-01-11T00:27:05.814Z'
+                participants:
+                  - id: 63586
+                    replaced_by_participant_id: null
+                    role: default
+                    email: ''
+                    name: ''
+                    locale: en_US
+                    state: initialized
+                    dispatch_strategy: null
+                    progress: []
+                    terms_and_conditions_approved_at: null
+                    color: '#ff00ff'
+                    slot_name: null
+                    description: null
+                    dispatch_failed_reason: null
+                    dispatch_failed_message: null
+                    skipped_reason: null
+                    disabled_reason: null
+                    waiting_at: null
+                    dispatching_at: null
+                    dispatch_failed_at: null
+                    dispatch_completed_at: null
+                    opened_at: null
+                    started_at: null
+                    completed_at: null
+                    skipped_at: null
+                    disabled_at: null
+                    receive_submission_completed_mail: true
+                    updated_at: '2022-01-11T00:27:05.828Z'
+                    created_at: '2022-01-11T00:27:05.828Z'
+                creator:
+                  id: 163493
+                  email: lindsy.nolan@ondricka-carroll.biz
+                  name: Sen. Cierra Wisozk
+                  position: null
+                  locale: en_US
+                  avatar_url: null
+                  updated_at: '2022-01-11T00:27:05.769Z'
+                  created_at: '2022-01-11T00:27:05.769Z'
+                source_template: null
+                designs:
+                  - id: 233097
+                    type: 'Design::BrandDesign'
+                    organization_id: 58128
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:27:05.773Z'
+                    created_at: '2022-01-11T00:27:05.773Z'
+                    brand_settings: {}
+                    brand_styles: {}
+                    logo_url: null
+                  - id: 233098
+                    type: 'Design::SubmissionDesign'
+                    organization_id: 58128
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:27:05.775Z'
+                    created_at: '2022-01-11T00:27:05.775Z'
+                    submission_settings: {}
+                    submission_styles: {}
+                    logo_url: null
+                  - id: 233099
+                    type: 'Design::EmailDesign'
+                    organization_id: 58128
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:27:05.777Z'
+                    created_at: '2022-01-11T00:27:05.777Z'
+                    email_settings: {}
+                    email_styles: {}
+                    logo_url: null
+                  - id: 233100
+                    type: 'Design::ExportDesign'
+                    organization_id: 58128
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:27:05.779Z'
+                    created_at: '2022-01-11T00:27:05.779Z'
+                    export_settings: {}
+                    export_styles: {}
+                    logo_url: null
+                participation_flow:
+                  id: 46133
+                  updated_at: '2022-01-11T00:27:05.816Z'
+                  created_at: '2022-01-11T00:27:05.816Z'
+                  nodes:
+                    - id: 159178
+                      local_uuid: null
+                      type: 'ParticipationFlow::StartNode'
+                      executed: false
+                      completed: false
+                      disabled: false
+                      updated_at: '2022-01-11T00:27:05.817Z'
+                      created_at: '2022-01-11T00:27:05.817Z'
+                    - id: 159179
+                      local_uuid: null
+                      type: 'ParticipationFlow::EndNode'
+                      executed: false
+                      completed: false
+                      disabled: false
+                      updated_at: '2022-01-11T00:27:05.817Z'
+                      created_at: '2022-01-11T00:27:05.817Z'
+                    - id: 159180
+                      local_uuid: null
+                      type: 'ParticipationFlow::ParticipantNode'
+                      executed: false
+                      completed: false
+                      disabled: false
+                      updated_at: '2022-01-11T00:27:05.829Z'
+                      created_at: '2022-01-11T00:27:05.829Z'
+                      participant:
+                        id: 63586
+                        replaced_by_participant_id: null
+                        role: default
+                        email: ''
+                        name: ''
+                        locale: en_US
+                        state: initialized
+                        dispatch_strategy: null
+                        progress: []
+                        terms_and_conditions_approved_at: null
+                        color: '#ff00ff'
+                        slot_name: null
+                        description: null
+                        dispatch_failed_reason: null
+                        dispatch_failed_message: null
+                        skipped_reason: null
+                        disabled_reason: null
+                        waiting_at: null
+                        dispatching_at: null
+                        dispatch_failed_at: null
+                        dispatch_completed_at: null
+                        opened_at: null
+                        started_at: null
+                        completed_at: null
+                        skipped_at: null
+                        disabled_at: null
+                        receive_submission_completed_mail: true
+                        updated_at: '2022-01-11T00:27:05.828Z'
+                        created_at: '2022-01-11T00:27:05.828Z'
+                  edges:
+                    - id: 123503
+                      local_uuid: null
+                      source_id: 159178
+                      destination_id: 159180
+                      updated_at: '2022-01-11T00:27:05.830Z'
+                      created_at: '2022-01-11T00:27:05.830Z'
+                    - id: 123504
+                      local_uuid: null
+                      source_id: 159180
+                      destination_id: 159179
+                      updated_at: '2022-01-11T00:27:05.832Z'
+                      created_at: '2022-01-11T00:27:05.832Z'
+              schema:
+                $ref: '#/components/schemas/Document'
+        '403':
+          description: >
+            The server responds with `403 forbidden` if there was no currently
+            logged in user.
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+              schema:
+                $ref: '#/components/schemas/Errors.Forbidden.NotAuthenticatedError'
+        '404':
+          description: >
+            The server responds with `404 not found` when, either a resource
+            with the given id could not be found in
+
+            the database, or the currently logged has no access to it. This
+            response code is also returned in cases
+
+            in which creating a new resource references another resource (e.g.
+            by id) and the user has not at least
+
+            read access to the referenced resource.
+          content:
+            application/json:
+              examples:
+                Errors.NotFound.RecordNotFoundError:
+                  value:
+                    type: Errors.NotFound.RecordNotFoundError
+                    title: The record could not be found
+                    detail: >-
+                      The record Document(id=56471) does not exist, or you have
+                      no access
+              schema:
+                $ref: '#/components/schemas/Errors.NotFound.RecordNotFoundError'
+    delete:
+      summary: Delete an existing Document by its id
+      x-visibility: public
+      tags:
+        - Document
+      security:
+        - oAuth2:
+            - document.write
+      operationId: destroyDocument
+      description: >
+        Destroys the Document for the given id and returns an empty object on
+        success.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              example: {}
+              schema:
+                type: object
+                properties: {}
+                additionalProperties: false
+        '403':
+          description: |
+            The server responds with `403 forbidden` in the following cases:
+
+              - There is no authenticated session.
+              - The user does not have the permission to destroy the resource.
+              - The user basically has the permission to destroy the document but the document was already dispatched.
+              - The CSRF token in the `X-CSRF-TOKEN` header did not match the token for the current session.
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.InvalidCSRFTokenError:
+                  value:
+                    type: Errors.Forbidden.InvalidCSRFTokenError
+                    title: The given CSRF token was invalid
+                Errors.Forbidden.NotAuthorizedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthorizedError
+                    title: Insufficient permissions
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+              schema:
+                oneOf:
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.NotAuthenticatedError
+                  - $ref: '#/components/schemas/Errors.Forbidden.NotAuthorizedError'
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.InvalidCSRFTokenError
+        '404':
+          description: >
+            The server responds with `404 not found` when, either a resource
+            with the given id could not be found in
+
+            the database, or the currently logged has no access to it. This
+            response code is also returned in cases
+
+            in which creating a new resource references another resource (e.g.
+            by id) and the user has not at least
+
+            read access to the referenced resource.
+          content:
+            application/json:
+              examples:
+                Errors.NotFound.RecordNotFoundError:
+                  value:
+                    type: Errors.NotFound.RecordNotFoundError
+                    title: The record could not be found
+                    detail: >-
+                      The record Document(id=28248) does not exist, or you have
+                      no access
+              schema:
+                $ref: '#/components/schemas/Errors.NotFound.RecordNotFoundError'
+  '/api/v1/submissions/{id}':
+    get:
+      summary: Get Submission by its id
+      x-visibility: public
+      tags:
+        - Submission
+      security:
+        - oAuth2:
+            - submission.read
+      operationId: getSubmission
+      description: >
+        Returns information about the Submission for the given id.
+
+
+        Submissions contain all data received from a recipient, including form
+        field values, uploaded files, signatures
+
+        and meta-data (timestamps, IP addresses etc).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              example:
+                id: 16381
+                submittable_id: 28260
+                pdf_url: null
+                audit_trail_pdf_url: null
+                sealed_pdf_url: null
+                dispatched_at: '2022-01-11T00:27:12.802Z'
+                completed_at: '2022-01-11T00:27:12.808Z'
+                updated_at: '2022-01-11T00:27:12.851Z'
+                created_at: '2022-01-11T00:27:12.810Z'
+                dispatching_user:
+                  id: 163574
+                  email: harland@grady-roob.biz
+                  name: Lynetta Schmeler
+                  position: null
+                  locale: en_US
+                  avatar_url: null
+                  updated_at: '2022-01-11T00:27:12.763Z'
+                  created_at: '2022-01-11T00:27:12.763Z'
+                aggregated_submit_event_values:
+                  - id: 4923
+                    block_id: 63923
+                    block_type: 'Block::Input::TextInput'
+                    slug: input1
+                    value: value1
+                    mapped_value: value1
+                    participant_id: 63615
+                  - id: 4924
+                    block_id: 63924
+                    block_type: 'Block::Input::TextInput'
+                    slug: input2
+                    value: value2
+                    mapped_value: value2
+                    participant_id: 63615
+              schema:
+                $ref: '#/components/schemas/Submission'
+        '403':
+          description: >
+            The server responds with `403 forbidden` if there was no currently
+            logged in user.
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+              schema:
+                $ref: '#/components/schemas/Errors.Forbidden.NotAuthenticatedError'
+        '404':
+          description: >
+            The server responds with `404 not found` when, either a resource
+            with the given id could not be found in
+
+            the database, or the currently logged has no access to it. This
+            response code is also returned in cases
+
+            in which creating a new resource references another resource (e.g.
+            by id) and the user has not at least
+
+            read access to the referenced resource.
+          content:
+            application/json:
+              examples:
+                Errors.NotFound.RecordNotFoundError:
+                  value:
+                    type: Errors.NotFound.RecordNotFoundError
+                    title: The record could not be found
+                    detail: >-
+                      The record Submission(id=16378) does not exist, or you
+                      have no access
+              schema:
+                $ref: '#/components/schemas/Errors.NotFound.RecordNotFoundError'
+  '/api/v1/webhooks/{id}':
+    delete:
+      summary: Delete an existing Webhook by its id
+      x-visibility: public
+      tags:
+        - Webhook
+      security:
+        - oAuth2:
+            - webhook.write
+      operationId: destroyWebhook
+      description: >
+        Destroys the Webhook for the given id returns an empty object on
+        success.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              example: {}
+              schema:
+                type: object
+                properties: {}
+                additionalProperties: false
+        '403':
+          description: |
+            The server responds with `403 forbidden` in the following cases:
+
+              - There is no authenticated session.
+              - The CSRF token in the `X-CSRF-TOKEN` header did not match the token for the current session.
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+                Errors.Forbidden.InvalidCSRFTokenError:
+                  value:
+                    type: Errors.Forbidden.InvalidCSRFTokenError
+                    title: The given CSRF token was invalid
+              schema:
+                oneOf:
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.NotAuthenticatedError
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.InvalidCSRFTokenError
+        '404':
+          description: >
+            The server responds with `404 not found` when, either a resource
+            with the given id could not be found in
+
+            the database, or the currently logged has no access to it. This
+            response code is also returned in cases
+
+            in which creating a new resource references another resource (e.g.
+            by id) and the user has not at least
+
+            read access to the referenced resource.
+          content:
+            application/json:
+              examples:
+                Errors.NotFound.RecordNotFoundError:
+                  value:
+                    type: Errors.NotFound.RecordNotFoundError
+                    title: The record could not be found
+                    detail: >-
+                      The record Webhook(id=2962) does not exist, or you have no
+                      access
+              schema:
+                $ref: '#/components/schemas/Errors.NotFound.RecordNotFoundError'
+    get:
+      summary: Get Webhook by its id
+      x-visibility: public
+      tags:
+        - Webhook
+      security:
+        - oAuth2:
+            - webhook.read
+      operationId: getWebhook
+      description: |
+        Returns information about the Webhook for the given id.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              example:
+                id: 2867
+                oauth_application_id: 18323
+                events:
+                  - submission.completed
+                  - document.created
+                  - document.updated
+                  - document.destroyed
+                hook_url: 'http://external.example.com/trigger/my-hook'
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '403':
+          description: >
+            The server responds with `403 forbidden` if there was no currently
+            logged in user.
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+              schema:
+                oneOf:
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.NotAuthenticatedError
+        '404':
+          description: >
+            The server responds with `404 not found` when, either a resource
+            with the given id could not be found in
+
+            the database, or the currently logged has no access to it. This
+            response code is also returned in cases
+
+            in which creating a new resource references another resource (e.g.
+            by id) and the user has not at least
+
+            read access to the referenced resource.
+          content:
+            application/json:
+              examples:
+                Errors.NotFound.RecordNotFoundError:
+                  value:
+                    type: Errors.NotFound.RecordNotFoundError
+                    title: The record could not be found
+                    detail: >-
+                      The record Webhook(id=2869) does not exist, or you have no
+                      access
+              schema:
+                $ref: '#/components/schemas/Errors.NotFound.RecordNotFoundError'
+    patch:
+      summary: Update an existing Webhook
+      x-visibility: public
+      tags:
+        - Webhook
+      security:
+        - oAuth2:
+            - webhook.write
+      operationId: updateWebhook
+      description: >
+        Updates the existing Webhook for the given id and returns the updated
+        resource on success.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: |
+            The webhook was updated.
+          content:
+            application/json:
+              example:
+                id: 2873
+                oauth_application_id: 18335
+                events:
+                  - submission.completed
+                hook_url: 'http://external.example.com/trigger/update-hook'
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '400':
+          description: >
+            The server responds with `400 bad request` in the case not all
+            required parameters were submitted,
+
+            or one of the parameters violates constraints defined by the schema
+            (e.g. string to short, string to long, etc.)
+
+            It will tell in the `detail` field of the error object what param
+            was causing this error.
+          content:
+            application/json:
+              examples:
+                Errors.BadRequest.InvalidSchemaError:
+                  value:
+                    type: Errors.BadRequest.InvalidSchemaError
+                    title: >-
+                      The request did not fulfill the schema for the requested
+                      endpoint
+                    detail: >-
+                      "unknown" isn't part of the enum in
+                      #/components/schemas/RequestBodies.updateWebhook/properties/events/items
+              schema:
+                $ref: '#/components/schemas/Errors.BadRequest.InvalidSchemaError'
+        '403':
+          description: |
+            The server responds with `403 forbidden` in the following cases:
+
+              - The user has no permission to update the resource.
+              - There is no authenticated session.
+              - If the CSRF token in the `X-CSRF-TOKEN` header did not match the token for the current session.
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+                Errors.Forbidden.NotAuthorizedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthorizedError
+                    title: Insufficient permissions
+                Errors.Forbidden.InvalidCSRFTokenError:
+                  value:
+                    type: Errors.Forbidden.InvalidCSRFTokenError
+                    title: The given CSRF token was invalid
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Errors.Forbidden.NotAuthorizedError'
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.NotAuthenticatedError
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.InvalidCSRFTokenError
+        '404':
+          description: >
+            The server responds with `404 not found` when, either a resource
+            with the given id could not be found in
+
+            the database, or the currently logged has no access to it. This
+            response code is also returned in cases
+
+            in which creating a new resource references another resource (e.g.
+            by id) and the user has not at least
+
+            read access to the referenced resource.
+          content:
+            application/json:
+              examples:
+                Errors.NotFound.RecordNotFoundError:
+                  value:
+                    type: Errors.NotFound.RecordNotFoundError
+                    title: The record could not be found
+                    detail: >-
+                      The record Webhook(id=2874) does not exist, or you have no
+                      access
+              schema:
+                $ref: '#/components/schemas/Errors.NotFound.RecordNotFoundError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestBodies.updateWebhook'
+  /api/v1/webhooks:
+    post:
+      summary: Create a new Webhook
+      x-visibility: public
+      tags:
+        - Webhook
+      security:
+        - oAuth2:
+            - webhook.write
+      operationId: createWebhook
+      description: |
+        Creates a new Webhook.
+      parameters: []
+      responses:
+        '201':
+          description: |
+            The webhook was created.
+          content:
+            application/json:
+              example:
+                id: 2895
+                oauth_application_id: 18363
+                events:
+                  - submission.completed
+                hook_url: 'https://external.example.com/trigger/my_hook'
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '400':
+          description: >
+            The server responds with `400 bad request` in the case not all
+            required parameters were submitted,
+
+            or one of the parameters violates constraints defined by the schema
+            (e.g. string to short, string to long, etc.)
+
+            It will tell in the `detail` field of the error object what param
+            was causing this error.
+          content:
+            application/json:
+              examples:
+                Errors.BadRequest.InvalidSchemaError:
+                  value:
+                    type: Errors.BadRequest.InvalidSchemaError
+                    title: >-
+                      The request did not fulfill the schema for the requested
+                      endpoint
+                    detail: >-
+                      #/components/schemas/RequestBodies.createWebhook/properties/hook_url
+                      "" is shorter than min length
+              schema:
+                $ref: '#/components/schemas/Errors.BadRequest.InvalidSchemaError'
+        '403':
+          description: |
+            The server responds with `403 forbidden` in the following cases:
+
+              - There is no authenticated session.
+              - If the CSRF token in the `X-CSRF-TOKEN` header did not match the token for the current session.
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+                Errors.Forbidden.InvalidCSRFTokenError:
+                  value:
+                    type: Errors.Forbidden.InvalidCSRFTokenError
+                    title: The given CSRF token was invalid
+              schema:
+                oneOf:
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.NotAuthenticatedError
+                  - $ref: >-
+                      #/components/schemas/Errors.Forbidden.InvalidCSRFTokenError
+        '404':
+          description: |
+            The server responds with `404 not found` in the following cases:
+
+              - An OAuthApplication with the given id could not be found
+          content:
+            application/json:
+              examples:
+                Errors.NotFound.RecordNotFoundError:
+                  value:
+                    type: Errors.NotFound.RecordNotFoundError
+                    title: The record could not be found
+                    detail: >-
+                      The record Webhook(id=) does not exist, or you have no
+                      access
+              schema:
+                $ref: '#/components/schemas/Errors.NotFound.RecordNotFoundError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestBodies.createWebhook'
+    get:
+      summary: Get all Webhooks the user has access to
+      x-visibility: public
+      tags:
+        - Webhook
+      security:
+        - oAuth2:
+            - webhook.read
+      operationId: getWebhooks
+      description: >
+        Returns information about all webhooks for a specific OAuthApplication
+        if the user has access.
+
+        If the user does not have the permission to read the webhooks of the
+        OAuthApplication an empty array is returned.
+      parameters:
+        - name: per
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: 1
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: 1
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+        - name: oauth_application_id
+          in: query
+          required: true
+          schema:
+            type: number
+            minimum: 1
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              example:
+                data: []
+                count: 0
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Webhook'
+                  count:
+                    type: number
+        '400':
+          description: >
+            The server responds with `400 bad request` in the case not all
+            required parameters were submitted,
+
+            or one of the parameters violates constraints defined by the schema
+            (e.g. string to short, string to long, etc.)
+
+            It will tell in the `detail` field of the error object what param
+            was causing this error.
+          content:
+            application/json:
+              examples:
+                Errors.BadRequest.InvalidSchemaError:
+                  value:
+                    type: Errors.BadRequest.InvalidSchemaError
+                    title: >-
+                      The request did not fulfill the schema for the requested
+                      endpoint
+                    detail: >-
+                      #/paths/~1api~1v1~1webhooks/get/parameters/4/schema
+                      expected number, but received String: "a"
+              schema:
+                $ref: '#/components/schemas/Errors.BadRequest.InvalidSchemaError'
+        '403':
+          description: >
+            The server responds with `403 forbidden` if there was no currently
+            logged in user.
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+              schema:
+                $ref: '#/components/schemas/Errors.Forbidden.NotAuthenticatedError'
+  /api/v1/templates:
+    get:
+      summary: Get all template the user has access to
+      x-visibility: public
+      tags:
+        - Template
+      security:
+        - oAuth2:
+            - template.read
+      operationId: getTemplates
+      description: |
+        Returns information about all Templates the the user has access to.
+      parameters:
+        - name: per
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: 1
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: 1
+        - name: q
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            minLength: 1
+        - name: creator_id
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: 1
+        - name: workspace_id
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: 1
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              example:
+                data:
+                  - id: 15170
+                    workspace_id: 55760
+                    name: Structural & Misc Steel Erection
+                    description: >-
+                      Template description for contracts of Structural & Misc
+                      Steel Erection
+                    page_count: 0
+                    has_inputs: false
+                    usage_count: 0
+                    settings: {}
+                    reminder_settings:
+                      reminders_activated: true
+                      schedule:
+                        - number_of_days_since_dispatch: 4
+                        - number_of_days_since_dispatch: 10
+                    styles: {}
+                    participation_completed_redirect_url: null
+                    updated_at: '2022-01-11T00:27:50.992Z'
+                    created_at: '2022-01-11T00:27:50.992Z'
+                    creator:
+                      id: 163888
+                      email: marlin@dickinson.org
+                      name: Twyla Schowalter DDS
+                      position: null
+                      locale: en_US
+                      avatar_url: null
+                      updated_at: '2022-01-11T00:27:50.943Z'
+                      created_at: '2022-01-11T00:27:50.943Z'
+                count: 1
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Template'
+                  count:
+                    type: number
+        '400':
+          description: >
+            The server responds with `400 bad request` in the case not all
+            required parameters were submitted,
+
+            or one of the parameters violates constraints defined by the schema
+            (e.g. string to short, string to long, etc.)
+
+            It will tell in the `detail` field of the error object what param
+            was causing this error.
+          content:
+            application/json:
+              examples:
+                Errors.BadRequest.InvalidSchemaError:
+                  value:
+                    type: Errors.BadRequest.InvalidSchemaError
+                    title: >-
+                      The request did not fulfill the schema for the requested
+                      endpoint
+                    detail: >-
+                      #/paths/~1api~1v1~1templates/get/parameters/0/schema 0.0
+                      is less than minimum value
+              schema:
+                $ref: '#/components/schemas/Errors.BadRequest.InvalidSchemaError'
+        '403':
+          description: >
+            The server responds with `403 forbidden` if there was no currently
+            logged in user.
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+              schema:
+                $ref: '#/components/schemas/Errors.Forbidden.NotAuthenticatedError'
+  '/api/v1/templates/{id}':
+    get:
+      summary: Get Template by its id
+      x-visibility: public
+      tags:
+        - Template
+      security:
+        - oAuth2:
+            - template.read
+      operationId: getTemplate
+      description: |
+        Returns information about the Template for the given id.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              example:
+                id: 15277
+                workspace_id: 55892
+                name: Landscaping & Irrigation
+                description: Template description for contracts of Landscaping & Irrigation
+                page_count: 0
+                has_inputs: false
+                usage_count: 0
+                settings: {}
+                reminder_settings:
+                  reminders_activated: true
+                  schedule:
+                    - number_of_days_since_dispatch: 4
+                    - number_of_days_since_dispatch: 10
+                styles: {}
+                participation_completed_redirect_url: null
+                updated_at: '2022-01-11T00:28:08.840Z'
+                created_at: '2022-01-11T00:28:08.840Z'
+                creator:
+                  id: 164114
+                  email: lynwood@weimann.co
+                  name: Christia Smitham III
+                  position: null
+                  locale: en_US
+                  avatar_url: null
+                  updated_at: '2022-01-11T00:28:08.788Z'
+                  created_at: '2022-01-11T00:28:08.788Z'
+                participants:
+                  - id: 63829
+                    replaced_by_participant_id: null
+                    role: default
+                    email: ''
+                    name: ''
+                    locale: en_US
+                    state: initialized
+                    dispatch_strategy: null
+                    progress: []
+                    terms_and_conditions_approved_at: null
+                    color: '#ff00ff'
+                    slot_name: null
+                    description: null
+                    dispatch_failed_reason: null
+                    dispatch_failed_message: null
+                    skipped_reason: null
+                    disabled_reason: null
+                    waiting_at: null
+                    dispatching_at: null
+                    dispatch_failed_at: null
+                    dispatch_completed_at: null
+                    opened_at: null
+                    started_at: null
+                    completed_at: null
+                    skipped_at: null
+                    disabled_at: null
+                    receive_submission_completed_mail: true
+                    updated_at: '2022-01-11T00:28:08.847Z'
+                    created_at: '2022-01-11T00:28:08.847Z'
+                participation_flow:
+                  id: 46359
+                  updated_at: '2022-01-11T00:28:08.842Z'
+                  created_at: '2022-01-11T00:28:08.842Z'
+                  nodes:
+                    - id: 159907
+                      local_uuid: null
+                      type: 'ParticipationFlow::StartNode'
+                      executed: false
+                      completed: false
+                      disabled: false
+                      updated_at: '2022-01-11T00:28:08.843Z'
+                      created_at: '2022-01-11T00:28:08.843Z'
+                    - id: 159908
+                      local_uuid: null
+                      type: 'ParticipationFlow::EndNode'
+                      executed: false
+                      completed: false
+                      disabled: false
+                      updated_at: '2022-01-11T00:28:08.844Z'
+                      created_at: '2022-01-11T00:28:08.844Z'
+                    - id: 159909
+                      local_uuid: null
+                      type: 'ParticipationFlow::ParticipantNode'
+                      executed: false
+                      completed: false
+                      disabled: false
+                      updated_at: '2022-01-11T00:28:08.848Z'
+                      created_at: '2022-01-11T00:28:08.848Z'
+                      participant:
+                        id: 63829
+                        replaced_by_participant_id: null
+                        role: default
+                        email: ''
+                        name: ''
+                        locale: en_US
+                        state: initialized
+                        dispatch_strategy: null
+                        progress: []
+                        terms_and_conditions_approved_at: null
+                        color: '#ff00ff'
+                        slot_name: null
+                        description: null
+                        dispatch_failed_reason: null
+                        dispatch_failed_message: null
+                        skipped_reason: null
+                        disabled_reason: null
+                        waiting_at: null
+                        dispatching_at: null
+                        dispatch_failed_at: null
+                        dispatch_completed_at: null
+                        opened_at: null
+                        started_at: null
+                        completed_at: null
+                        skipped_at: null
+                        disabled_at: null
+                        receive_submission_completed_mail: true
+                        updated_at: '2022-01-11T00:28:08.847Z'
+                        created_at: '2022-01-11T00:28:08.847Z'
+                  edges:
+                    - id: 123989
+                      local_uuid: null
+                      source_id: 159907
+                      destination_id: 159909
+                      updated_at: '2022-01-11T00:28:08.849Z'
+                      created_at: '2022-01-11T00:28:08.849Z'
+                    - id: 123990
+                      local_uuid: null
+                      source_id: 159909
+                      destination_id: 159908
+                      updated_at: '2022-01-11T00:28:08.850Z'
+                      created_at: '2022-01-11T00:28:08.850Z'
+                designs:
+                  - id: 233889
+                    type: 'Design::BrandDesign'
+                    organization_id: 58326
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:28:08.791Z'
+                    created_at: '2022-01-11T00:28:08.791Z'
+                    brand_settings: {}
+                    brand_styles: {}
+                    logo_url: null
+                  - id: 233890
+                    type: 'Design::SubmissionDesign'
+                    organization_id: 58326
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:28:08.793Z'
+                    created_at: '2022-01-11T00:28:08.793Z'
+                    submission_settings: {}
+                    submission_styles: {}
+                    logo_url: null
+                  - id: 233891
+                    type: 'Design::EmailDesign'
+                    organization_id: 58326
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:28:08.795Z'
+                    created_at: '2022-01-11T00:28:08.795Z'
+                    email_settings: {}
+                    email_styles: {}
+                    logo_url: null
+                  - id: 233892
+                    type: 'Design::ExportDesign'
+                    organization_id: 58326
+                    workspace_id: null
+                    bucket_id: null
+                    bucket_type: null
+                    updated_at: '2022-01-11T00:28:08.800Z'
+                    created_at: '2022-01-11T00:28:08.800Z'
+                    export_settings: {}
+                    export_styles: {}
+                    logo_url: null
+                shared_forms: []
+              schema:
+                $ref: '#/components/schemas/Template'
+        '403':
+          description: >
+            The server responds with `403 forbidden` if there was no currently
+            logged in user.
+          content:
+            application/json:
+              examples:
+                Errors.Forbidden.NotAuthenticatedError:
+                  value:
+                    type: Errors.Forbidden.NotAuthenticatedError
+                    title: Please login
+              schema:
+                $ref: '#/components/schemas/Errors.Forbidden.NotAuthenticatedError'
+        '404':
+          description: >
+            The server responds with `404 not found` when, either a resource
+            with the given id could not be found in
+
+            the database, or the currently logged has no access to it. This
+            response code is also returned in cases
+
+            in which creating a new resource references another resource (e.g.
+            by id) and the user has not at least
+
+            read access to the referenced resource.
+          content:
+            application/json:
+              examples:
+                Errors.NotFound.RecordNotFoundError:
+                  value:
+                    type: Errors.NotFound.RecordNotFoundError
+                    title: The record could not be found
+                    detail: >-
+                      The record Template(id=30563) does not exist, or you have
+                      no access
+              schema:
+                $ref: '#/components/schemas/Errors.NotFound.RecordNotFoundError'
+servers:
+  - description: Production
+    url: 'https://api.paperless.io'
+  - description: Staging
+    url: 'https://api.staging.paperless.io'
+components:
+  securitySchemes:
+    oAuth2:
+      type: oauth2
+      description: 'For more information, see https://datatracker.ietf.org/doc/html/rfc6749'
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://app.paperless.io/oauth/authorize'
+          tokenUrl: 'https://app.paperless.io/api/v1/authenticate/oauth/token'
+          scopes:
+            current_user.read: Retrieve information about the currently authorized user
+            document.read: Read existing documents
+            document.write: Create and update documents
+            webhook.read: Read existing webhooks
+            webhook.write: Create and update webhooks
+            submission.read: 'Retrieve submitted data (form values, signatures, uploaded files)'
+            template.read: Read existing documents
+  parameters: {}
+  schemas:
+    Webhook:
+      x-visibility: public
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - oauth_application_id
+        - events
+        - hook_url
+      properties:
+        id:
+          type: number
+        oauth_application_id:
+          type: number
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+              - submission.completed
+              - document.created
+              - document.updated
+              - document.destroyed
+        hook_url:
+          type: string
+    ReminderSettings:
+      type: object
+      x-visibility: public
+      additionalProperties: false
+      required:
+        - reminders_activated
+        - schedule
+      properties:
+        reminders_activated:
+          type: boolean
+        schedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReminderSettings.ScheduleEntry'
+    ReminderSettings.ScheduleEntry:
+      type: object
+      x-visibility: public
+      additionalProperties: false
+      required:
+        - number_of_days_since_dispatch
+      properties:
+        number_of_days_since_dispatch:
+          type: number
+          description: >-
+            Number of days after which a reminder is send, relative the point in
+            time when a participant received his first email.
+    SubmitEventValue:
+      x-visibility: public
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - block_id
+        - block_type
+        - slug
+        - value
+        - mapped_value
+        - participant_id
+      properties:
+        id:
+          type: integer
+        block_id:
+          type: integer
+        block_type:
+          type: string
+          enum:
+            - 'Block::Input::BankAccountInput'
+            - 'Block::Input::CheckboxInput'
+            - 'Block::Input::DateInput'
+            - 'Block::Input::FileUploadInput'
+            - 'Block::Input::RadioInput'
+            - 'Block::Input::SelectInput'
+            - 'Block::Input::SignatureInput'
+            - 'Block::Input::TextInput'
+        slug:
+          type: string
+          minLength: 1
+          maxLength: 255
+        value:
+          type: string
+          nullable: true
+          minLength: 0
+          maxLength: 65535
+        mapped_value:
+          type: string
+          nullable: true
+          minLength: 0
+          maxLength: 65535
+        participant_id:
+          type: integer
+        file:
+          oneOf:
+            - $ref: '#/components/schemas/Blob'
+    Submission:
+      x-visibility: public
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - submittable_id
+        - pdf_url
+        - audit_trail_pdf_url
+        - sealed_pdf_url
+        - dispatched_at
+        - completed_at
+        - dispatching_user
+        - aggregated_submit_event_values
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: integer
+        submittable_id:
+          type: integer
+        pdf_url:
+          type: string
+          nullable: true
+        audit_trail_pdf_url:
+          type: string
+          nullable: true
+        sealed_pdf_url:
+          type: string
+          nullable: true
+        dispatched_at:
+          type: string
+          format: date_time
+          nullable: true
+        started_at:
+          type: string
+          format: date_time
+          nullable: true
+        completed_at:
+          type: string
+          format: date_time
+          nullable: true
+        dispatching_user:
+          $ref: '#/components/schemas/User'
+        aggregated_submit_event_values:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubmitEventValue'
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    Document:
+      type: object
+      x-visibility: public
+      additionalProperties: false
+      required:
+        - id
+        - creator_id
+        - workspace_id
+        - submission_id
+        - name
+        - state
+        - description
+        - page_count
+        - has_inputs
+        - settings
+        - reminder_settings
+        - styles
+        - participants
+        - creator
+        - source_template
+        - dispatched_at
+        - completed_at
+        - archived_at
+        - participation_completed_redirect_url
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: integer
+        creator_id:
+          type: number
+        workspace_id:
+          type: number
+        submission_id:
+          type: number
+          nullable: true
+        name:
+          type: string
+        state:
+          $ref: '#/components/schemas/Document.state'
+        description:
+          type: string
+        settings:
+          type: object
+        reminder_settings:
+          $ref: '#/components/schemas/ReminderSettings'
+        styles:
+          type: object
+        page_count:
+          type: number
+        has_inputs:
+          type: boolean
+        designs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Design'
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+        creator:
+          $ref: '#/components/schemas/User'
+        source_template:
+          oneOf:
+            - type: object
+              additionalProperties: false
+              required:
+                - id
+                - name
+                - workspace_id
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                workspace_id:
+                  type: number
+        participation_flow:
+          $ref: '#/components/schemas/ParticipationFlow'
+        dispatched_at:
+          type: string
+          format: date_time
+          nullable: true
+        completed_at:
+          type: string
+          format: date_time
+          nullable: true
+        archived_at:
+          type: string
+          format: date_time
+          nullable: true
+        participation_completed_redirect_url:
+          type: string
+          nullable: true
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    Document.state:
+      type: string
+      x-visibility: public
+      enum:
+        - draft
+        - dispatched
+        - completed
+        - cancelled
+    SupportedLocale:
+      type: string
+      x-visibility: public
+      enum:
+        - de_DE
+        - en_US
+    HexColor:
+      type: string
+      x-visibility: public
+      pattern: '^#[0-9a-f]{6}$'
+      description: Hexadecimal color with 6 digits and leading "#"
+      example: '#abcdef'
+    Participant:
+      type: object
+      x-visibility: public
+      additionalProperties: false
+      required:
+        - id
+        - replaced_by_participant_id
+        - role
+        - email
+        - name
+        - locale
+        - state
+        - dispatch_strategy
+        - progress
+        - terms_and_conditions_approved_at
+        - color
+        - slot_name
+        - description
+        - dispatch_failed_reason
+        - dispatch_failed_message
+        - skipped_reason
+        - disabled_reason
+        - waiting_at
+        - dispatching_at
+        - dispatch_failed_at
+        - dispatch_completed_at
+        - opened_at
+        - started_at
+        - completed_at
+        - skipped_at
+        - disabled_at
+        - receive_submission_completed_mail
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: integer
+        replaced_by_participant_id:
+          type: integer
+          nullable: true
+        role:
+          type: string
+          enum:
+            - default
+            - viewer
+            - approver
+            - copy_receiver
+        email:
+          type: string
+          nullable: true
+          description: Can be null in state `initialized`.
+        name:
+          type: string
+          nullable: true
+          description: Can be null in state `initialized`.
+        locale:
+          $ref: '#/components/schemas/SupportedLocale'
+        state:
+          type: string
+          enum:
+            - initialized
+            - waiting
+            - dispatching
+            - dispatch_failed
+            - dispatch_completed
+            - opened
+            - started
+            - completed
+            - skipped
+            - disabled
+        dispatch_strategy:
+          oneOf:
+            - type: string
+              enum:
+                - noop
+                - email
+                - api_response_initial_participants
+        token:
+          type: string
+        progress:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - position
+              - block_id
+              - block_type
+              - block_name
+              - state
+            properties:
+              position:
+                type: integer
+              block_id:
+                type: integer
+              block_type:
+                type: string
+                enum:
+                  - 'Block::Page'
+              block_name:
+                type: string
+              state:
+                type: string
+                enum:
+                  - untouched
+                  - opened
+                  - started
+                  - completed
+        terms_and_conditions_approved_at:
+          type: string
+          format: date_time
+          nullable: true
+        color:
+          $ref: '#/components/schemas/HexColor'
+        slot_name:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        dispatch_failed_reason:
+          oneOf:
+            - type: string
+              enum:
+                - dropped
+                - bounce_bounce
+                - bounce_blocked
+        dispatch_failed_message:
+          type: string
+          nullable: true
+        skipped_reason:
+          oneOf:
+            - type: string
+              enum:
+                - or_join_node
+        disabled_reason:
+          oneOf:
+            - type: string
+              enum:
+                - undeliverable
+                - manual_correction
+                - cancelled
+        waiting_at:
+          type: string
+          format: date_time
+          nullable: true
+        dispatching_at:
+          type: string
+          format: date_time
+          nullable: true
+        dispatch_failed_at:
+          type: string
+          format: date_time
+          nullable: true
+        dispatch_completed_at:
+          type: string
+          format: date_time
+          nullable: true
+        opened_at:
+          type: string
+          format: date_time
+          nullable: true
+        started_at:
+          type: string
+          format: date_time
+          nullable: true
+        completed_at:
+          type: string
+          format: date_time
+          nullable: true
+        skipped_at:
+          type: string
+          format: date_time
+          nullable: true
+        disabled_at:
+          type: string
+          format: date_time
+          nullable: true
+        receive_submission_completed_mail:
+          type: boolean
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    Template:
+      x-visibility: public
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - workspace_id
+        - name
+        - description
+        - page_count
+        - has_inputs
+        - usage_count
+        - settings
+        - reminder_settings
+        - styles
+        - participation_completed_redirect_url
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: integer
+        creator:
+          oneOf:
+            - $ref: '#/components/schemas/User'
+        workspace_id:
+          type: number
+        name:
+          type: string
+        description:
+          type: string
+        page_count:
+          type: number
+        has_inputs:
+          type: boolean
+        usage_count:
+          type: number
+        settings:
+          type: object
+        reminder_settings:
+          $ref: '#/components/schemas/ReminderSettings'
+        styles:
+          type: object
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+        participation_flow:
+          $ref: '#/components/schemas/ParticipationFlow'
+        designs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Design'
+        participation_completed_redirect_url:
+          type: string
+          nullable: true
+        shared_forms:
+          type: array
+          items:
+            type: object
+            required:
+              - id
+              - name
+            properties:
+              id:
+                type: number
+              name:
+                type: string
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    Design:
+      type: object
+      x-visibility: public
+      additionalProperties: false
+      required:
+        - id
+        - type
+        - organization_id
+        - workspace_id
+        - bucket_id
+        - bucket_type
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum:
+            - 'Design::BrandDesign'
+            - 'Design::SubmissionDesign'
+            - 'Design::EmailDesign'
+            - 'Design::ExportDesign'
+        organization_id:
+          type: integer
+        workspace_id:
+          type: integer
+          nullable: true
+        bucket_id:
+          type: integer
+          nullable: true
+        bucket_type:
+          type: string
+          nullable: true
+        logo_url:
+          type: string
+          nullable: true
+        brand_settings:
+          type: object
+        brand_styles:
+          type: object
+        submission_settings:
+          type: object
+        submission_styles:
+          type: object
+        email_settings:
+          type: object
+        email_styles:
+          type: object
+        export_settings:
+          type: object
+        export_styles:
+          type: object
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    Blob:
+      x-visibility: public
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: number
+        key:
+          type: string
+        filename:
+          type: string
+        content_type:
+          type: string
+        metadata:
+          type: object
+        byte_size:
+          type: number
+        checksum:
+          type: string
+        service_name:
+          type: string
+        signed_id:
+          type: string
+        attachable_sgid:
+          type: string
+        direct_upload:
+          type: object
+          additionalProperties: false
+          required:
+            - url
+            - headers
+          properties:
+            url:
+              type: string
+            headers:
+              type: object
+              additionalProperties: true
+              required:
+                - Content-Type
+              properties:
+                Content-Type:
+                  type: string
+        created_at:
+          type: string
+          format: date_time
+        url:
+          type: string
+    User:
+      type: object
+      x-visibility: public
+      additionalProperties: false
+      required:
+        - id
+        - name
+        - email
+        - locale
+        - avatar_url
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        position:
+          type: string
+          nullable: true
+        email:
+          type: string
+        email_verified:
+          type: boolean
+        locale:
+          $ref: '#/components/schemas/SupportedLocale'
+        avatar_url:
+          type: string
+          nullable: true
+        settings:
+          type: object
+        notification_settings:
+          type: object
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    UUIDv4:
+      type: string
+      x-visibility: public
+      pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'
+    ParticipationFlow:
+      type: object
+      x-visibility: public
+      additionalProperties: false
+      required:
+        - id
+        - nodes
+        - edges
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: number
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipationFlow.Node'
+        edges:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipationFlow.Edge'
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    ParticipationFlow.Edge:
+      type: object
+      x-visibility: public
+      required:
+        - id
+        - local_uuid
+        - source_id
+        - destination_id
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: number
+        local_uuid:
+          oneOf:
+            - $ref: '#/components/schemas/UUIDv4'
+        source_id:
+          type: number
+        destination_id:
+          type: number
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    ParticipationFlow.StartNode.Type:
+      x-visibility: public
+      type: string
+      enum:
+        - 'ParticipationFlow::StartNode'
+    ParticipationFlow.EndNode.Type:
+      x-visibility: public
+      type: string
+      enum:
+        - 'ParticipationFlow::EndNode'
+    ParticipationFlow.ParticipantNode.Type:
+      x-visibility: public
+      type: string
+      enum:
+        - 'ParticipationFlow::ParticipantNode'
+    ParticipationFlow.AndJoinNode.Type:
+      x-visibility: public
+      type: string
+      enum:
+        - 'ParticipationFlow::AndJoinNode'
+    ParticipationFlow.OrJoinNode.Type:
+      x-visibility: public
+      type: string
+      enum:
+        - 'ParticipationFlow::OrJoinNode'
+    ParticipationFlow.Node.Type:
+      x-visibility: public
+      oneOf:
+        - $ref: '#/components/schemas/ParticipationFlow.StartNode.Type'
+        - $ref: '#/components/schemas/ParticipationFlow.EndNode.Type'
+        - $ref: '#/components/schemas/ParticipationFlow.ParticipantNode.Type'
+        - $ref: '#/components/schemas/ParticipationFlow.AndJoinNode.Type'
+        - $ref: '#/components/schemas/ParticipationFlow.OrJoinNode.Type'
+    ParticipationFlow.Node:
+      x-visibility: public
+      oneOf:
+        - $ref: '#/components/schemas/ParticipationFlow.StartNode'
+        - $ref: '#/components/schemas/ParticipationFlow.EndNode'
+        - $ref: '#/components/schemas/ParticipationFlow.ParticipantNode'
+        - $ref: '#/components/schemas/ParticipationFlow.AndJoinNode'
+        - $ref: '#/components/schemas/ParticipationFlow.OrJoinNode'
+    ParticipationFlow.StartNode:
+      type: object
+      x-visibility: public
+      required:
+        - id
+        - local_uuid
+        - type
+        - executed
+        - completed
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: number
+        local_uuid:
+          oneOf:
+            - $ref: '#/components/schemas/UUIDv4'
+        type:
+          $ref: '#/components/schemas/ParticipationFlow.StartNode.Type'
+        executed:
+          type: boolean
+        completed:
+          type: boolean
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    ParticipationFlow.EndNode:
+      type: object
+      x-visibility: public
+      required:
+        - id
+        - local_uuid
+        - type
+        - executed
+        - completed
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: number
+        local_uuid:
+          oneOf:
+            - $ref: '#/components/schemas/UUIDv4'
+        type:
+          $ref: '#/components/schemas/ParticipationFlow.EndNode.Type'
+        executed:
+          type: boolean
+        completed:
+          type: boolean
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    ParticipationFlow.ParticipantNode:
+      type: object
+      x-visibility: public
+      required:
+        - id
+        - local_uuid
+        - type
+        - executed
+        - completed
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: number
+        local_uuid:
+          oneOf:
+            - $ref: '#/components/schemas/UUIDv4'
+        type:
+          $ref: '#/components/schemas/ParticipationFlow.ParticipantNode.Type'
+        executed:
+          type: boolean
+        completed:
+          type: boolean
+        participant:
+          $ref: '#/components/schemas/Participant'
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    ParticipationFlow.AndJoinNode:
+      type: object
+      x-visibility: public
+      required:
+        - id
+        - local_uuid
+        - type
+        - executed
+        - completed
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: number
+        local_uuid:
+          oneOf:
+            - $ref: '#/components/schemas/UUIDv4'
+        type:
+          $ref: '#/components/schemas/ParticipationFlow.AndJoinNode.Type'
+        executed:
+          type: boolean
+        completed:
+          type: boolean
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    ParticipationFlow.OrJoinNode:
+      type: object
+      x-visibility: public
+      required:
+        - id
+        - local_uuid
+        - type
+        - executed
+        - completed
+        - updated_at
+        - created_at
+      properties:
+        id:
+          type: number
+        local_uuid:
+          oneOf:
+            - $ref: '#/components/schemas/UUIDv4'
+        type:
+          $ref: '#/components/schemas/ParticipationFlow.OrJoinNode.Type'
+        executed:
+          type: boolean
+        completed:
+          type: boolean
+        updated_at:
+          type: string
+          format: date_time
+        created_at:
+          type: string
+          format: date_time
+    RequestBodies.createWebhook:
+      x-visibility: public
+      type: object
+      required:
+        - events
+        - hook_url
+      properties:
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+              - submission.completed
+              - document.created
+              - document.updated
+              - document.destroyed
+        oauth_application_id:
+          type: number
+        hook_url:
+          type: string
+          minLength: 1
+          maxLength: 8192
+    RequestBodies.updateWebhook:
+      x-visibility: public
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            type: string
+            enum:
+              - submission.completed
+              - document.created
+              - document.updated
+              - document.destroyed
+        hook_url:
+          type: string
+          minLength: 1
+          maxLength: 8192
+    RequestBodies.createDocument:
+      title: Create new Document from scratch
+      type: object
+      x-visibility: public
+      required:
+        - workspace_id
+        - name
+      properties:
+        workspace_id:
+          type: number
+        document_id:
+          type: number
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          minLength: 0
+          maxLength: 65535
+        settings:
+          type: object
+        reminder_settings:
+          $ref: '#/components/schemas/ReminderSettings'
+        styles:
+          type: object
+        participation_completed_redirect_url:
+          type: string
+          minLength: 1
+          maxLength: 8192
+    RequestBodies.createDocumentFromDocument:
+      title: Duplicate existing Document
+      type: object
+      x-visibility: public
+      required:
+        - workspace_id
+        - document_id
+        - name
+      properties:
+        workspace_id:
+          type: number
+        document_id:
+          type: number
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          minLength: 0
+          maxLength: 65535
+        state:
+          type: string
+          enum:
+            - dispatched
+        participants_dispatch_strategy:
+          type: string
+          enum:
+            - email
+            - api_response_initial_participants
+        participants:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              email:
+                type: string
+                nullable: true
+                minLength: 1
+                maxLength: 255
+              name:
+                type: string
+                nullable: true
+                minLength: 1
+                maxLength: 255
+              receive_submission_completed_mail:
+                type: boolean
+        tokens:
+          type: object
+          additionalProperties:
+            type: string
+            nullable: true
+            minLength: 0
+            maxLength: 65535
+        blocks:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              default_value:
+                anyOf:
+                  - {}
+                  - null
+                  - type: array
+                    items: {}
+              default_value_from_value:
+                anyOf:
+                  - {}
+                  - null
+                  - type: array
+                    items: {}
+        settings:
+          type: object
+        reminder_settings:
+          $ref: '#/components/schemas/ReminderSettings'
+        styles:
+          type: object
+        participation_completed_redirect_url:
+          type: string
+          minLength: 1
+          maxLength: 8192
+    RequestBodies.createDocumentFromTemplate:
+      title: Create Document from Template
+      type: object
+      x-visibility: public
+      required:
+        - workspace_id
+        - template_id
+        - name
+      properties:
+        workspace_id:
+          type: number
+          description: The id of Workspace the new Document will be placed in
+        template_id:
+          type: number
+          description: >-
+            The id of the Template you want to use as a blueprint for the new
+            Document
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          minLength: 0
+          maxLength: 65535
+        state:
+          type: string
+          description: |-
+            Omit if you just want to create a new Document, set to
+                                         `dispatched` if you want to dispatch the new Document immediately
+          enum:
+            - dispatched
+        participants_dispatch_strategy:
+          type: string
+          enum:
+            - email
+            - api_response_initial_participants
+        participants:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              email:
+                type: string
+                nullable: true
+                minLength: 1
+                maxLength: 255
+              name:
+                type: string
+                nullable: true
+                minLength: 1
+                maxLength: 255
+        tokens:
+          type: object
+          additionalProperties:
+            type: string
+            nullable: true
+            minLength: 0
+            maxLength: 65535
+        blocks:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              default_value:
+                anyOf:
+                  - {}
+                  - null
+                  - type: array
+                    items: {}
+              default_value_from_value:
+                anyOf:
+                  - {}
+                  - null
+                  - type: array
+                    items: {}
+        settings:
+          type: object
+        reminder_settings:
+          $ref: '#/components/schemas/ReminderSettings'
+        styles:
+          type: object
+        participation_completed_redirect_url:
+          type: string
+          minLength: 1
+          maxLength: 8192
+    RequestBodies.updateDocument:
+      type: object
+      x-visibility: public
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          minLength: 0
+          maxLength: 65535
+        state:
+          type: string
+          enum:
+            - dispatched
+            - cancelled
+        archived_at:
+          type: string
+          format: date_time
+          nullable: true
+        settings:
+          type: object
+        reminder_settings:
+          $ref: '#/components/schemas/ReminderSettings'
+        styles:
+          type: object
+        participation_completed_redirect_url:
+          type: string
+          minLength: 1
+          maxLength: 8192
+          nullable: true
+    Errors.BadRequest.InvalidSchemaError:
+      description: The request did not fulfill the schema for the requested endpoint
+      x-visibility: public
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+      properties:
+        type:
+          type: string
+          enum:
+            - Errors.BadRequest.InvalidSchemaError
+        title:
+          type: string
+        detail:
+          type: string
+    Errors.PaymentRequired.ActiveSubscriptionMandatoryError:
+      description: >-
+        The organization does not have an active (or trialing) subscription, but
+        one is needed to fulfill the request
+      x-visibility: public
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+      properties:
+        type:
+          type: string
+          enum:
+            - Errors.PaymentRequired.ActiveSubscriptionMandatoryError
+        title:
+          type: string
+        detail:
+          type: string
+    Errors.Forbidden.NotAuthenticatedError:
+      description: Please login
+      x-visibility: public
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+      properties:
+        type:
+          type: string
+          enum:
+            - Errors.Forbidden.NotAuthenticatedError
+        title:
+          type: string
+        detail:
+          type: string
+    Errors.Forbidden.NotAuthorizedError:
+      description: Insufficient permissions
+      x-visibility: public
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+      properties:
+        type:
+          type: string
+          enum:
+            - Errors.Forbidden.NotAuthorizedError
+        title:
+          type: string
+        detail:
+          type: string
+    Errors.Forbidden.InvalidCSRFTokenError:
+      description: The given CSRF token was invalid
+      x-visibility: public
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+      properties:
+        type:
+          type: string
+          enum:
+            - Errors.Forbidden.InvalidCSRFTokenError
+        title:
+          type: string
+        detail:
+          type: string
+    Errors.NotFound.RecordNotFoundError:
+      description: The record could not be found
+      x-visibility: public
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+      properties:
+        type:
+          type: string
+          enum:
+            - Errors.NotFound.RecordNotFoundError
+        title:
+          type: string
+        detail:
+          type: string
+    Errors.UnprocessableEntity.ValidationError:
+      description: The validation for the given parameters failed
+      x-visibility: public
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - title
+        - validation_errors
+      properties:
+        type:
+          type: string
+          enum:
+            - Errors.UnprocessableEntity.ValidationError
+        title:
+          type: string
+        detail:
+          type: string
+        validation_errors:
+          $ref: >-
+            #/components/schemas/Errors.UnprocessableEntity.ValidationError.validation_errors
+    Errors.UnprocessableEntity.ValidationError.validation_errors:
+      type: object
+      x-visibility: public
+      additionalProperties:
+        oneOf:
+          - type: array
+            items:
+              type: object
+              additionalProperties: false
+              required:
+                - error
+              properties:
+                error:
+                  type: string
+                  enum:
+                    - taken
+                    - invalid
+                    - confirmation
+                    - blank
+                    - restrict_dependent_destroy.has_many
+                message:
+                  type: string
+                  nullable: true
+                attribute:
+                  type: string
+                value: {}
+          - $ref: >-
+              #/components/schemas/Errors.UnprocessableEntity.ValidationError.validation_errors
+security:
+  - bearerAuth: []

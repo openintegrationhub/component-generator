@@ -79,6 +79,16 @@ Validate.js file checks the json file if it is valid and can be regenerated
 Scripts.js file gets the scripts needed for the package json in the component
 Generate.js file is all about parsing and generating the new files. 
 
+## Utils
+
+# addCredentialsForComponentJson.js adds the credentials object in the component json file on generation time
+# functions.js has all the functions needed for processing files 
+# outputs.js is the file that has all the output Promises for the file production
+# recursiveSearch.js is the file that picks the schemaOut for every trigger
+# schemaAndComponentJsonBuilder.js is the function that builds the component json file and returns it for output
+# securitySchemes.js adds the schemes and variables for testing
+# templates.js has all the templates readen and ready for use
+
 Shorting description as well as access token naming is added accordingly to the Spec json of the component
 
 # Currently the parser can not support OPEN API version 3.0.3

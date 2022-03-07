@@ -93,7 +93,7 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
 
     newElement.data = getElementDataFromResponse(arraySplittingKey,response);
     if(skipSnapshot){
-      return newElement.data
+      return { statusCode: data.status, data: newElement.data }
     } else {
       await dataAndSnapshot(newElement,snapshot,snapshotKey, $SNAPSHOT, this);
     }
