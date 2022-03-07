@@ -55,7 +55,7 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
 
   let callParams = {
     spec: spec,
-    operationId: data["function"],
+    operationId: tokenData["function"],
     pathName: pathName,
     method: method,
     parameters: parameters,
