@@ -81,13 +81,13 @@ Generate.js file is all about parsing and generating the new files.
 
 ## Utils
 
-# addCredentialsForComponentJson.js adds the credentials object in the component json file on generation time
-# functions.js has all the functions needed for processing files 
-# outputs.js is the file that has all the output Promises for the file production
-# recursiveSearch.js is the file that picks the schemaOut for every trigger
-# schemaAndComponentJsonBuilder.js is the function that builds the component json file and returns it for output
-# securitySchemes.js adds the schemes and variables for testing
-# templates.js has all the templates readen and ready for use
+#### addCredentialsForComponentJson.js adds the credentials object in the component json file on generation time
+#### functions.js has all the functions needed for processing files 
+#### outputs.js is the file that has all the output Promises for the file production
+#### recursiveSearch.js is the file that picks the schemaOut for every trigger
+#### schemaAndComponentJsonBuilder.js is the function that builds the component json file and returns it for output
+#### securitySchemes.js adds the schemes and variables for testing
+#### templates.js has all the templates readen and ready for use
 
 Shorting description as well as access token naming is added accordingly to the Spec json of the component
 
