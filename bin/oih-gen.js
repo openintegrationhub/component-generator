@@ -20,7 +20,7 @@ const Questionnaire = require('../lib/questionnaire');
 module.exports = oihGen;
 
 oihGen().catch(e => {
-    console.error('An error occurred.', e.message);
+    console.error('An error occurred.', e);
     process.exit(1);
 });
 
