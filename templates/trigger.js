@@ -29,7 +29,7 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   console.log("msg:", msg);
   console.log("cfg:", cfg);
   const { snapshotKey, arraySplittingKey, syncParam, skipSnapshot } = cfg.nodeSettings;
-  const trigger = componentJson.triggers[data["function"]];
+  const trigger = componentJson.triggers[tokenData["function"]];
   const { pathName, method, requestContentType } = trigger.callParams;
 
   const specPath = spec.paths[pathName];
@@ -65,7 +65,7 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
 
   let callParams = {
     spec: spec,
-    operationId: data["function"],
+    operationId: tokenData["function"],
     pathName: pathName,
     method: method,
     parameters: parameters,
@@ -93,7 +93,7 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
 
     newElement.data = getElementDataFromResponse(arraySplittingKey,response);
     if(skipSnapshot){
-      return newElement.data
+      return newElement.data; 
     } else {
       await dataAndSnapshot(newElement,snapshot,snapshotKey, $SNAPSHOT, this);
     }

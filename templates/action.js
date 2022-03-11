@@ -28,7 +28,7 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
     console.log(`---CFG: ${JSON.stringify(cfg)}`);
     console.log(`---ENV: ${JSON.stringify(process.env)}`);
   }
-  const action = componentJson.actions[data["function"]];
+  const action = componentJson.actions[tokenData["function"]];
   const { pathName, method, requestContentType } = action.callParams;
 
   const specPath = spec.paths[pathName];
@@ -55,7 +55,7 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
 
   let callParams = {
     spec: spec,
-    operationId: data["function"],
+    operationId: tokenData["function"],
     pathName: pathName,
     method: method,
     parameters: parameters,
