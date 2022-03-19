@@ -66,6 +66,7 @@ helpers.js is the template file containing functions used in the triggers and ac
         dataAndSnapshot() emits the events for the data and snapshot objects and pushes them to the next component/API
         getElementDataFromResponse() parses the path of the arraySplittingKey for returning the response array if it exists otherwise it returns the single object
 
+
 We add basic docker config as well as a docker ignoring file
 
 Package.json and package-lock.json with the latest dependencies which are loaded while running the build docker image command
@@ -81,15 +82,24 @@ Generate.js file is all about parsing and generating the new files.
 
 ## Utils
 
-#### addCredentialsForComponentJson.js adds the credentials object in the component json file on generation time
-#### functions.js has all the functions needed for processing files 
-#### outputs.js is the file that has all the output Promises for the file production
-#### recursiveSearch.js is the file that picks the schemaOut for every trigger
-#### schemaAndComponentJsonBuilder.js is the function that builds the component json file and returns it for output
-#### securitySchemes.js adds the schemes and variables for testing
-#### templates.js has all the templates readen and ready for use
+ addCredentialsForComponentJson.js => adds the credentials object in the component json file on generation time
+ functions.js has all the functions needed for processing files 
+    containsHtml() checks the input for html and picks up the content
+    traverseObject() checks if the input is an object and then traverses it 
+    toText() takes the given html and returns a string text
+    filename() defines the filename of the outputed file
+    toMD() takes the text/html and converts it in a MD file
+    transliterateObject() traverses the given object and then translitarates it using the translitaration lib  
+    quote() puts quotes on a string 
+    copyTemplate() takes a template from the templates dir and copies it in the outputDir
+    output() used to output files in the generated component
 
-Shorting description as well as access token naming is added accordingly to the Spec json of the component
+ outputs.js is the file that has all the output Promises for the file production
+
+ recursiveSearch.js is the file that picks the schemaOut for every trigger
+ schemaAndComponentJsonBuilder.js is the function that builds the component json file and returns it for output
+ securitySchemes.js adds the schemes and variables for testing
+ templates.js has all the templates readen and ready for use by the functions above
 
 # Currently the parser can not support OPEN API version 3.0.3
 
