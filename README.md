@@ -45,7 +45,7 @@ Trigger.js is the template copied to triggers
         "snapshotKey" is the parameter passed for the selected trigger to compare with snapshot date and it is to replace the default snapshot passed by the generation in each trigger
         "arraySplittingKey" is the key used for access the object returned from the get request
         "syncParam" is the param used for filtering the response in the API call
-
+        "skipSnapshot" is used for skipping the emit functionality given from the ferryman
 ** As from now we use a generic Action and a Trigger for the the flow execution (look also to the component.json file )
 
 The action and the trigger process the tokenData object and grab the operationId which they use to query the object with the same name in the component.json. From there they get the callParams object which contains the method, the pathName and the contentType. From that point we use the values from the object to make the Swagger call as before.
@@ -66,6 +66,7 @@ helpers.js is the template file containing functions used in the triggers and ac
         dataAndSnapshot() emits the events for the data and snapshot objects and pushes them to the next component/API
         getElementDataFromResponse() parses the path of the arraySplittingKey for returning the response array if it exists otherwise it returns the single object
 
+lookup.js is the template used from the UI in order to get the trigger response as an object instead of calling the emit function from the ferryman therefore we add the skipSnapshot property to the call in the nodeSettings object
 
 We add basic docker config as well as a docker ignoring file
 
@@ -94,7 +95,7 @@ Generate.js file is all about parsing and generating the new files.
     copyTemplate() takes a template from the templates dir and copies it in the outputDir
     output() used to output files in the generated component
 
- outputs.js is the file that has all the output Promises for the file production
+ outputs.js is the file that has all the output Promises for the new file production
 
  recursiveSearch.js is the file that picks the schemaOut for every trigger
  schemaAndComponentJsonBuilder.js is the function that builds the component json file and returns it for output
