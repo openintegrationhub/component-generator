@@ -32,7 +32,7 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   const { pathName, method, requestContentType } = action.callParams;
 
   const specPath = spec.paths[pathName];
-  const specPathParameters = specPath[method].parameters.length ? specPath[method].parameters.map(({ name }) => {
+  const specPathParameters = specPath[method].parameters ? specPath[method].parameters.map(({ name }) => {
     return name;
   }) : [];
 
