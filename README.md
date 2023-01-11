@@ -38,69 +38,78 @@ Unless `-y`, `--yes` option is provided, if output or name options are missing, 
 
 This is the folder where the files that are copied during the generation reside
 
-Action.js is the template copied to actions
+`Action.js` is the template copied to actions
 
-Trigger.js is the template copied to triggers
+`Trigger.js` is the template copied to triggers
     Properties to be considered:
         "snapshotKey" is the parameter passed for the selected trigger to compare with snapshot date and it is to replace the default snapshot passed by the generation in each trigger
+        
         "arraySplittingKey" is the key used for access the object returned from the get request
+        
         "syncParam" is the param used for filtering the response in the API call
+        
         "skipSnapshot" is used for skipping the emit functionality given from the ferryman
 ** As from now we use a generic Action and a Trigger for the the flow execution (look also to the component.json file )
 
 The action and the trigger process the tokenData object and grab the operationId which they use to query the object with the same name in the component.json. From there they get the callParams object which contains the method, the pathName and the contentType. From that point we use the values from the object to make the Swagger call as before.
 
-testAction.js is the template copied to tests
-testTrigger.js is the template copied to tests
+`testAction.js` is the template copied to tests
+`testTrigger.js` is the template copied to tests
 
 The test contain pretty much a copy of the real trigger and action. The only difference is that the whole proces is run through a loop in order to make the call to the specific API back to back.
 
-Component.json is the file where all the data for the component is stored. From the auth type till every operationId as well as the methods and the names of the paths for every action or trigger. 
+`Component.json` is the file where all the data for the component is stored. From the auth type till every operationId as well as the methods and the names of the paths for every action or trigger. 
 
 
-helpers.js is the template file containing functions used in the triggers and actions
-    funtions:
-        isSecondDateAfter() is the function comparing incoming snapshot and the current object date
-        mapFieldNames() is the function that goes through all the parameters of the msg.data object and returns an object with the keys
-        getMetaData() creates a object needed for the OIH id linking process
-        dataAndSnapshot() emits the events for the data and snapshot objects and pushes them to the next component/API
-        getElementDataFromResponse() parses the path of the arraySplittingKey for returning the response array if it exists otherwise it returns the single object
+`helpers.js` is the template file containing functions used in the triggers and actions
+        - `isSecondDateAfter()` is the function comparing incoming snapshot and the current object date
+        - `mapFieldNames()` is the function that goes through all the parameters of the msg.data object and returns an object with the keys
+        - `getMetaData()` creates a object needed for the OIH id linking process
+        - `dataAndSnapshot()` emits the events for the data and snapshot objects and pushes them to the next component/API
+        - `getElementDataFromResponse()` parses the path of the arraySplittingKey for returning the response array if it exists otherwise it returns the single object
 
-lookup.js is the template used from the UI in order to get the trigger response as an object instead of calling the emit function from the ferryman therefore we add the skipSnapshot property to the call in the nodeSettings object
+`lookup.js` is the template used from the UI in order to get the trigger response as an object instead of calling the emit function from the ferryman therefore we add the skipSnapshot property to the call in the nodeSettings object
 
 We add basic docker config as well as a docker ignoring file
 
-Package.json and package-lock.json with the latest dependencies which are loaded while running the build docker image command
+`Package.json` and `package-lock.json` with the latest dependencies which are loaded while running the build docker image command
 
-README file gets written on the fly on the generation with all the triggers and actions listed.
+`README` file gets written on the fly on the generation with all the triggers and actions listed.
 
 ### Lib folder
 
-Download.js file grabs the json url and brings the file in the generator for validation
-Validate.js file checks the json file if it is valid and can be regenerated
-Scripts.js file gets the scripts needed for the package json in the component
-Generate.js file is all about parsing and generating the new files. 
+`Download.js` file grabs the json url and brings the file in the generator for validation.
+
+`Validate.js` file checks the json file if it is valid and can be regenerated.
+
+`Scripts.js` file gets the scripts needed for the package json in the component.
+
+`Generate.js` file is all about parsing and generating the new files. 
 
 ## Utils
 
- addCredentialsForComponentJson.js => adds the credentials object in the component json file on generation time
- functions.js has all the functions needed for processing files 
-    containsHtml() checks the input for html and picks up the content
-    traverseObject() checks if the input is an object and then traverses it 
-    toText() takes the given html and returns a string text
-    filename() defines the filename of the outputed file
-    toMD() takes the text/html and converts it in a MD file
-    transliterateObject() traverses the given object and then translitarates it using the translitaration lib  
-    quote() puts quotes on a string 
-    copyTemplate() takes a template from the templates dir and copies it in the outputDir
-    output() used to output files in the generated component
+ `addCredentialsForComponentJson.js` adds the credentials object in the component json file on generation time.
+ 
+ `functions.js` has all the functions needed for processing files 
+    - `containsHtml()` checks the input for html and picks up the content
+    - `traverseObject()` checks if the input is an object and then traverses it 
+    - `toText()` takes the given html and returns a string text
+    - `filename()` defines the filename of the outputed file
+    - `toMD()` takes the text/html and converts it in a MD file
+    - `transliterateObject()` traverses the given object and then translitarates it using the translitaration lib  
+    - `quote()` puts quotes on a string 
+    - `copyTemplate()` takes a template from the templates dir and copies it in the outputDir
+    - `output()` used to output files in the generated component
 
- outputs.js is the file that has all the output Promises for the new file production
+ `outputs.js` is the file that has all the output Promises for the new file production
 
- recursiveSearch.js is the file that picks the schemaOut for every trigger
- schemaAndComponentJsonBuilder.js is the function that builds the component json file and returns it for output
- securitySchemes.js adds the schemes and variables for testing
- templates.js has all the templates readen and ready for use by the functions above
+ `recursiveSearch.js` is the file that picks the schemaOut for every trigger
+ 
+ `schemaAndComponentJsonBuilder.js` is the function that builds the component json file and returns it for output
+ 
+ `securitySchemes.js` adds the schemes and variables for testing
+ 
+ `templates.js` has all the templates readen and ready for use by the functions above
 
 # Currently the parser can not support OPEN API version 3.0.3
 
