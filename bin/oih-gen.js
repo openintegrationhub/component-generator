@@ -53,7 +53,7 @@ async function oihGen() {
         throw new Error('Missing required parameter. Please provide an url to download the swagger definition from or a path to a local file.');
     }
 
-    const outputDir = options.output || await q.ask('Ouput directory', 'output');
+    const outputDir = options.output || await q.ask('Output directory', 'output');
     const downloadedSpecFile = path.join(outputDir, 'openapi-original.json');
     const validatedSpecFile = path.join(outputDir, 'openapi-validated.json');
 
@@ -74,6 +74,7 @@ async function oihGen() {
         .then(def => _.kebabCase(def.info.title).replace(/-v-([0-9])+/g, '-v$1') + '-connector');
     const connectorName = options.name || await q.ask('Connector name', defaultConnName);
     const generatePath = path.join(outputDir, connectorName);
+
     console.log('Generating...');
     await generate({
         inputFile: validatedSpecFile,

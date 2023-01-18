@@ -2,7 +2,7 @@
     "version": "1.0.0",
     "main": "component.json",
     "dependencies": {
-        "@openintegrationhub/ferryman": "2.1.0",
+        "@openintegrationhub/ferryman": "2.2.0",
         "swagger-client": "^3.8.22",
         "dayjs": "^1.10.7"
     },
