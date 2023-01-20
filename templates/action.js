@@ -32,9 +32,11 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   const { pathName, method, requestContentType } = action.callParams;
 
   const specPath = spec.paths[pathName];
-  const specPathParameters = specPath[method].parameters ? specPath[method].parameters.map(({ name }) => {
-    return name;
-  }) : [];
+  const specPathParameters = specPath[method].parameters
+    ? specPath[method].parameters.map(({ name }) => {
+        return name;
+      })
+    : [];
 
   const body = msg.data;
   mapFieldNames(body);
@@ -43,7 +45,7 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   for (let param of specPathParameters) {
     parameters[param] = body[param];
   }
-  
+
   $SECURITIES;
 
   if (cfg.otherServer) {

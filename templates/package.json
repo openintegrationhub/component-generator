@@ -1,21 +1,21 @@
 {
-    "version": "1.0.0",
-    "main": "component.json",
-    "dependencies": {
-        "@openintegrationhub/ferryman": "2.2.0",
-        "swagger-client": "^3.8.22",
-        "dayjs": "^1.10.7"
-    },
-    "devDependencies": {
-        "eslint": "8.8.0",
-        "eslint-config-airbnb-base": "15.0.0",
-        "eslint-plugin-import": "2.25.4",
-        "eslint-plugin-jest": "22.1.0",
-        "eslint-plugin-json": "1.4.0",
-        "eslint-plugin-mocha": "5.2.0"
-    },
-    "author": {
-        "name": "Open Integration Hub"
-    },
-    "license": "Apache-2.0"
+  "version": "1.0.0",
+  "main": "component.json",
+  "dependencies": {
+    "@openintegrationhub/ferryman": "2.2.0",
+    "swagger-client": "^3.8.22",
+    "dayjs": "^1.10.7"
+  },
+  "devDependencies": {
+    "eslint": "8.8.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-plugin-import": "2.25.4",
+    "eslint-plugin-jest": "22.1.0",
+    "eslint-plugin-json": "1.4.0",
+    "eslint-plugin-mocha": "5.2.0"
+  },
+  "author": {
+    "name": "Open Integration Hub"
+  },
+  "license": "Apache-2.0"
 }

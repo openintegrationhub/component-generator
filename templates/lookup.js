@@ -8,7 +8,7 @@
  * @param {Object} actionParams - action parameters - { actionName: "string", secretId: "string", data: "object"}
  */
 
-const { process: triggerProcess } = require('../triggers/trigger');
+const { process: triggerProcess } = require("../triggers/trigger");
 
 /*
 * data will have the following format: 
@@ -34,24 +34,18 @@ async function processAction(req, res, _, actionParams) {
   // only when the secretId parameter is provided
   if (secretId) {
     const { authorization } = req.headers;
-    const splittedAuthorization = authorization.split(' ');
+    const splittedAuthorization = authorization.split(" ");
     const token = splittedAuthorization[1];
 
     try {
       const secret = await ferryman.fetchSecret(secretId, token);
       Object.assign(cfg, secret);
     } catch (error) {
-      console.log('Error getting the secret', error);
+      console.log("Error getting the secret", error);
     }
   }
 
-  const dataResponse = await triggerProcess(
-    msg,
-    cfg,
-    snapshot,
-    incomingMessageHeaders,
-    tokenData
-  );
+  const dataResponse = await triggerProcess(msg, cfg, snapshot, incomingMessageHeaders, tokenData);
 
   return res.send(dataResponse);
 }

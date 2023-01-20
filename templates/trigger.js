@@ -13,12 +13,7 @@
 
 const Swagger = require("swagger-client");
 const spec = require("../spec.json");
-const {
-  dataAndSnapshot,
-  mapFieldNames,
-  getMetadata,
-  getElementDataFromResponse
-} = require("../utils/helpers");
+const { dataAndSnapshot, mapFieldNames, getMetadata, getElementDataFromResponse } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
 function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
@@ -33,9 +28,11 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   const { pathName, method, requestContentType } = trigger.callParams;
 
   const specPath = spec.paths[pathName];
-  const specPathParameters = specPath[method].parameters ? specPath[method].parameters.map(({ name }) => {
-    return name;
-  }) : [];
+  const specPathParameters = specPath[method].parameters
+    ? specPath[method].parameters.map(({ name }) => {
+        return name;
+      })
+    : [];
 
   if (isVerbose) {
     console.log(`---MSG: ${JSON.stringify(msg)}`);
@@ -86,16 +83,16 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   const newElement = {};
 
   // Call operation via Swagger client
-  return Swagger.execute(callParams).then( async (data) => {
+  return Swagger.execute(callParams).then(async (data) => {
     delete data.uid;
     newElement.metadata = getMetadata(msg.metadata);
     const response = JSON.parse(data.data);
 
-    newElement.data = getElementDataFromResponse(arraySplittingKey,response);
-    if(skipSnapshot){
-      return newElement.data; 
+    newElement.data = getElementDataFromResponse(arraySplittingKey, response);
+    if (skipSnapshot) {
+      return newElement.data;
     } else {
-      await dataAndSnapshot(newElement,snapshot,snapshotKey, $SNAPSHOT, this);
+      await dataAndSnapshot(newElement, snapshot, snapshotKey, $SNAPSHOT, this);
     }
   });
 }
