@@ -47,5 +47,8 @@
     "swagger2openapi": "^7.0.2",
     "transliteration": "^2.1.5",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.3"
   }
 }
