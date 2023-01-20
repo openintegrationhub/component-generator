@@ -1,5 +1,4 @@
 # <p align="center" width="100%"> <img src="./logo.png" width="250" height="250"> </p>
-
 # <p align="center" width="100%"> <%= api.info.title %> OIH Connector </p>
 
 ## Description
@@ -16,9 +15,9 @@ Generated at: <%= moment().format() %>
 ## Authorization
 
 <%
-let schemes = api.components && api.components.securitySchemes;
+    let schemes = api.components && api.components.securitySchemes;
 
-    if(_.isEmpty(schemes)) {
+    if (_.isEmpty(schemes)) {
         print('This API does not require authorization.\n');
     } else {
         print('Supported authorization schemes:\n');
@@ -32,61 +31,55 @@ let schemes = api.components && api.components.securitySchemes;
         else if (scheme.type === 'oauth2') {print('- OAuth2'); hasOauth2 = true;}
         else if (scheme.type === 'openIdConnect') print('- OpenId Connect');
         else print('- ' + scheme.type);
-
+        
         if(scheme.description) {
             print(' - ' + scheme.description);
         }
-
+        
         print('\n');
-
+        
     });
 
-    if(hasOauth2) {
+    if (hasOauth2) {
         print('\nFor OAuth 2.0 you need to specify OAuth Client credentials as environment variables in the connector repository:\n');
         print('* `OAUTH_CLIENT_ID` - your OAuth client id\n');
         print('* `OAUTH_CLIENT_SECRET` - your OAuth client secret\n');
     }
-
 %>
-
 ## Actions
-
 <%
-_.forOwn(componentJson.actions, action => {
-print('\n### ' + toText(action.$$$title) + '\n');
-        if(action.$$$title !== action.$$$description && action.$$$description) {
+    _.forOwn(componentJson.actions, action => {
+        print('\n### ' + toText(action.$$$title) + '\n');
+        if (action.$$$title !== action.$$$description && action.$$$description) {
             print(toMD(action.$$$description, {quote: true}));
-print('\n');
-}
-if(!_.isEmpty(action.$$$tags)) {
+            print('\n');
+        }
+        if (!_.isEmpty(action.$$$tags)) {
             print('\n*Tags:* ');
             print(action.$$$tags.map(tag => '`' + tag +'`').join(' '));
             print('\n');
         }
-        if(!_.isEmpty(action.$$$params)) {
+        if (!_.isEmpty(action.$$$params)) {
             print('\n#### Input Parameters\n');
             _.each(action.$$$params, param => {
-print('\* `' + param.name + '` - _');
-print(param.required ? 'required' : 'optional');
-print('_');
-if(param.description) {
-print(' - ' + toMD(param.description));
-}
-print('\n');
-if(param.schema && !\_.isEmpty(param.schema.enum)) {
-print(' Possible values: ' + param.schema.enum.join(', ') + '.\n');
-}
-});
-}
-
+                print('* `' + param.name + '` - _');
+                print(param.required ? 'required' : 'optional');
+                print('_');
+                if(param.description) {
+                    print(' - ' + toMD(param.description));
+                }
+                print('\n');
+                if (param.schema && !_.isEmpty(param.schema.enum)) {
+                    print('    Possible values: ' + param.schema.enum.join(', ') + '.\n');
+                }
+            });
+        }
     });
-
 %>
-
 ## License
 
 : <%= packageName %><br/>
-<br/>
+                    <br/>
 
 All files of this connector are licensed under the Apache 2.0 License. For details
 see the file LICENSE on the toplevel directory.
