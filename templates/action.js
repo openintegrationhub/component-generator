@@ -17,7 +17,7 @@ const { mapFieldNames, getMetadata } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
 function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
-  var isVerbose = process.env.debug || cfg.verbose;
+  const isVerbose = process.env.debug || cfg.verbose;
 
   console.log("data function:", tokenData["function"]);
   console.log("msg:", msg);

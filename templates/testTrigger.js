@@ -17,7 +17,7 @@ const { isSecondDateAfter, mapFieldNames, getMetadata } = require("../utils/help
 const componentJson = require("../../component.json");
 
 function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, data) {
-  var isVerbose = process.env.debug || cfg.verbose;
+  const isVerbose = process.env.debug || cfg.verbose;
   snapshot.lastUpdated = snapshot.lastUpdated || new Date(0).getTime();
 
   console.log("data function:", data["function"]);
