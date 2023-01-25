@@ -5,8 +5,9 @@
 
 A generated OIH connector for the <%= api.info.title %> API (version <%= api.info.version %>).
 
-Generated from: <%= openapiUrl %><br/>
-Generated at: <%= moment().format() %>
+Generated from: <%= openapiUrl %> <br/>
+Generated at: <%= moment().format() %> <br/>
+Snapshot key: <%= snapshot %>
 
 ## API Description
 

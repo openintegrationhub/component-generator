@@ -84,7 +84,7 @@ async function oihGen() {
     outputDir: generatePath,
     packageName: connectorName,
     swaggerUrl: url,
-    snapshot: options.snapshot,
+    snapshot: options.snapshot || "",
   });
 
   console.log("\x1b[32m", "Successfully generated. Connector has been saved in output directory:", generatePath);
