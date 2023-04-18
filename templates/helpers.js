@@ -62,7 +62,7 @@ function getElementDataFromResponse(splittingKey, res) {
   }
 }
 module.exports = {
-  isSecondDateAfter: compareDate,
+  compareDate,
   mapFieldNames,
   getMetadata,
   dataAndSnapshot,
