@@ -13,7 +13,7 @@
 
 const Swagger = require("swagger-client");
 const spec = require("../spec.json");
-const { isSecondDateAfter, mapFieldNames, getMetadata } = require("../utils/helpers");
+const { compareDate, mapFieldNames, getMetadata } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
 function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, data) {

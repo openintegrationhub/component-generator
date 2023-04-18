@@ -4,7 +4,8 @@
   "dependencies": {
     "@openintegrationhub/ferryman": "2.2.0",
     "swagger-client": "^3.8.22",
-    "dayjs": "^1.10.7"
+    "dayjs": "^1.10.7",
+    "lodash.get": "4.4.2"
   },
   "devDependencies": {
     "eslint": "8.8.0",

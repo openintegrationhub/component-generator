@@ -62,7 +62,7 @@ The test contain pretty much a copy of the real trigger and action. The only dif
 
 
 `helpers.js` is the template file containing functions used in the triggers and actions
-        - `isSecondDateAfter()` is the function comparing incoming snapshot and the current object date
+        - `compareDate()` is the function comparing incoming snapshot and the current object date
         - `mapFieldNames()` is the function that goes through all the parameters of the msg.data object and returns an object with the keys
         - `getMetaData()` creates a object needed for the OIH id linking process
         - `dataAndSnapshot()` emits the events for the data and snapshot objects and pushes them to the next component/API
