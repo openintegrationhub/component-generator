@@ -1,6 +1,7 @@
 const dayjs = require("dayjs");
+const lodashGet = require("lodash.get");
 
-function isSecondDateAfter(a, b) {
+function compareDate(a, b) {
   return dayjs(a).isAfter(b);
 }
 
@@ -17,36 +18,36 @@ function getMetadata(metadata) {
   let newMetadata = {};
   for (let i = 0; i < metadataKeys.length; i++) {
     newMetadata[metadataKeys[i]] =
-      metadata !== undefined && metadata[metadataKeys[i]] !== undefined
-        ? metadata[metadataKeys[i]]
-        : `${metadataKeys[i]} not set yet`;
+        metadata !== undefined && metadata[metadataKeys[i]] !== undefined
+            ? metadata[metadataKeys[i]]
+            : `${metadataKeys[i]} not set yet`;
   }
   return newMetadata;
 }
 
 async function dataAndSnapshot(newElement, snapshot, snapshotKey, standardSnapshot, self) {
   if (Array.isArray(newElement.data)) {
-    let lastElement = 0;
+    let lastObjectDate = 0;
     for (let i = 0; i < newElement.data.length; i++) {
       const newObject = { ...newElement, data: newElement.data[i] };
-      const currentObjectDate = newObject.data[snapshotKey]
-        ? newObject.data[snapshotKey]
-        : newObject.data[standardSnapshot];
+      const currentObjectDate = lodashGet(newObject.data, snapshotKey)
+          ? lodashGet(newObject.data, snapshotKey)
+          : lodashGet(newObject.data, standardSnapshot);
       if (snapshot.lastUpdated === 0) {
-        if (isSecondDateAfter(currentObjectDate, lastElement)) {
-          lastElement = currentObjectDate;
+        if (compareDate(currentObjectDate, lastObjectDate)) {
+          lastObjectDate = currentObjectDate;
         }
         await self.emit("data", newObject);
       } else {
-        if (isSecondDateAfter(currentObjectDate, snapshot.lastUpdated)) {
-          if (isSecondDateAfter(currentObjectDate, lastElement)) {
-            lastElement = currentObjectDate;
+        if (compareDate(currentObjectDate, snapshot.lastUpdated)) {
+          if (compareDate(currentObjectDate, lastObjectDate)) {
+            lastObjectDate = currentObjectDate;
           }
           await self.emit("data", newObject);
         }
       }
     }
-    snapshot.lastUpdated = lastElement !== 0 ? lastElement : snapshot.lastUpdated;
+    snapshot.lastUpdated = lastObjectDate !== 0 ? lastObjectDate : snapshot.lastUpdated;
     console.log("returned a new snapshot", snapshot);
     await self.emit("snapshot", snapshot);
   } else {
@@ -61,7 +62,7 @@ function getElementDataFromResponse(splittingKey, res) {
   }
 }
 module.exports = {
-  isSecondDateAfter,
+  isSecondDateAfter: compareDate,
   mapFieldNames,
   getMetadata,
   dataAndSnapshot,
