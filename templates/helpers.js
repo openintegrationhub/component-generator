@@ -18,9 +18,9 @@ function getMetadata(metadata) {
   let newMetadata = {};
   for (let i = 0; i < metadataKeys.length; i++) {
     newMetadata[metadataKeys[i]] =
-        metadata !== undefined && metadata[metadataKeys[i]] !== undefined
-            ? metadata[metadataKeys[i]]
-            : `${metadataKeys[i]} not set yet`;
+      metadata !== undefined && metadata[metadataKeys[i]] !== undefined
+        ? metadata[metadataKeys[i]]
+        : `${metadataKeys[i]} not set yet`;
   }
   return newMetadata;
 }
@@ -31,9 +31,9 @@ async function dataAndSnapshot(newElement, snapshot, snapshotKey, standardSnapsh
     for (let i = 0; i < newElement.data.length; i++) {
       const newObject = { ...newElement, data: newElement.data[i] };
       const currentObjectDate = lodashGet(newObject.data, snapshotKey)
-          ? lodashGet(newObject.data, snapshotKey)
-          : lodashGet(newObject.data, standardSnapshot);
-      if (snapshot.lastUpdated === 0) {
+        ? lodashGet(newObject.data, snapshotKey)
+        : lodashGet(newObject.data, standardSnapshot);
+      if (!snapshot.lastUpdated) {
         if (compareDate(currentObjectDate, lastObjectDate)) {
           lastObjectDate = currentObjectDate;
         }
