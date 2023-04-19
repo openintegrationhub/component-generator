@@ -22,6 +22,9 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   console.log("data function:", tokenData["function"]);
   console.log("msg:", msg);
   console.log("cfg:", cfg);
+  console.log("snapshot:", snapshot);
+  console.log("message headers:", incomingMessageHeaders);
+  console.log("token data:", tokenData);
 
   if (isVerbose) {
     console.log(`---MSG: ${JSON.stringify(msg)}`);

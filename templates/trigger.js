@@ -22,6 +22,10 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   console.log("data function:", tokenData["function"]);
   console.log("msg:", msg);
   console.log("cfg:", cfg);
+  console.log("snapshot:", snapshot);
+  console.log("message headers:", incomingMessageHeaders);
+  console.log("token data:", tokenData);
+
   const { snapshotKey, arraySplittingKey, syncParam, skipSnapshot } = cfg.nodeSettings;
   const trigger = componentJson.triggers[tokenData["function"]];
   const { pathName, method, requestContentType } = trigger.callParams;
