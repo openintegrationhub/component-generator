@@ -18,7 +18,6 @@ const componentJson = require("../../component.json");
 
 function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   const isVerbose = process.env.debug || cfg.verbose;
-  snapshot.lastUpdated = snapshot.lastUpdated || new Date(0).getTime();
 
   console.log("data function:", tokenData["function"]);
   console.log("msg:", msg);
@@ -47,7 +46,7 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   for (let param of specPathParameters) {
     parameters[param] = body[param];
   }
-  if (syncParam) {
+  if (syncParam && snapshot.lastUpdated) {
     parameters[syncParam] = snapshot.lastUpdated;
   }
 
