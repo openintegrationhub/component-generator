@@ -121,7 +121,6 @@ Docker uses node 16 and requires the package lock json to work so it is importan
 
 
 
-
 <!-- #### Install npm package
 
 ##### Install package and require module to use it as a library
