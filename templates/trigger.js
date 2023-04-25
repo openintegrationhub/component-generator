@@ -19,12 +19,11 @@ const componentJson = require("../../component.json");
 function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   const isVerbose = process.env.debug || cfg.verbose;
 
-  console.log("data function:", tokenData["function"]);
-  console.log("msg:", msg);
-  console.log("cfg:", cfg);
-  console.log("snapshot:", snapshot);
-  console.log("message headers:", incomingMessageHeaders);
-  console.log("token data:", tokenData);
+  this.logger.info("Incoming message %j", msg);
+  this.logger.info("Config %j", cfg);
+  this.logger.info("Snapshot %j", snapshot);
+  this.logger.info("Message headers %j", incomingMessageHeaders);
+  this.logger.info("Token data %j", tokenData);
 
   const { snapshotKey, arraySplittingKey, syncParam, skipSnapshot } = cfg.nodeSettings;
   const trigger = componentJson.triggers[tokenData["function"]];
@@ -36,12 +35,6 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
         return name;
       })
     : [];
-
-  if (isVerbose) {
-    console.log(`---MSG: ${JSON.stringify(msg)}`);
-    console.log(`---CFG: ${JSON.stringify(cfg)}`);
-    console.log(`---ENV: ${JSON.stringify(process.env)}`);
-  }
 
   const body = msg.data;
   mapFieldNames(body);
@@ -78,11 +71,10 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
     delete callParams.requestBody;
   }
 
-  if (isVerbose) {
-    let out = Object.assign({}, callParams);
-    out.spec = "[omitted]";
-    console.log(`--SWAGGER CALL: ${JSON.stringify(out)}`);
-  }
+  const callParamsForLogging = { ...callParams };
+  callParamsForLogging.spec = "[omitted]";
+  this.logger.info("Call params %j", callParamsForLogging);
+
   const newElement = {};
 
   // Call operation via Swagger client
