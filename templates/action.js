@@ -30,9 +30,7 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
 
   const specPath = spec.paths[pathName];
   const specPathParameters = specPath[method].parameters
-    ? specPath[method].parameters.map(({ name }) => {
-        return name;
-      })
+    ? specPath[method].parameters.map(({ name }) => name)
     : [];
 
   const body = msg.data;
@@ -52,7 +50,7 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
     spec.servers.push({ url: cfg.otherServer });
   }
 
-  let callParams = {
+  const callParams = {
     spec: spec,
     operationId: tokenData["function"],
     pathName: pathName,
@@ -71,16 +69,16 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   callParamsForLogging.spec = "[omitted]";
   this.logger.info("Call params %j", callParamsForLogging);
 
-  const newElement = {};
   // Call operation via Swagger client
-  return Swagger.execute(callParams).then((data) => {
-    // emit a single message with data
-    delete data.uid;
+  return Swagger.execute(callParams).then((resp) => {
+    this.logger.info("Swagger response %j", resp);
+
+    delete resp.uid;
+    const newElement = {};
     newElement.metadata = getMetadata(msg.metadata);
-    newElement.data = data.data;
+    newElement.data = resp.data;
     this.emit("data", newElement);
   });
 }
 
-// this wrapers offers a simplified emitData(data) function
 module.exports = { process: processAction };

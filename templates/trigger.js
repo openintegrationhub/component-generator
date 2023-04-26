@@ -31,17 +31,12 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
 
   const specPath = spec.paths[pathName];
   const specPathParameters = specPath[method].parameters
-    ? specPath[method].parameters.map(({ name }) => {
-        return name;
-      })
+    ? specPath[method].parameters.map(({ name }) => name)
     : [];
-
-  const body = msg.data;
-  mapFieldNames(body);
 
   let parameters = {};
   for (let param of specPathParameters) {
-    parameters[param] = body[param];
+    parameters[param] = cfg[param];
   }
   if (syncParam && snapshot.lastUpdated) {
     parameters[syncParam] = snapshot.lastUpdated;
@@ -56,32 +51,30 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
     spec.servers.push({ url: cfg.otherServer });
   }
 
-  let callParams = {
+  const callParams = {
     spec: spec,
     operationId: tokenData["function"],
     pathName: pathName,
     method: method,
     parameters: parameters,
     requestContentType: requestContentType,
-    requestBody: body,
     securities: { authorized: securities },
     server: spec.servers[cfg.server] || cfg.otherServer,
   };
-  if (callParams.method === "get") {
-    delete callParams.requestBody;
-  }
 
   const callParamsForLogging = { ...callParams };
   callParamsForLogging.spec = "[omitted]";
   this.logger.info("Call params %j", callParamsForLogging);
 
-  const newElement = {};
 
   // Call operation via Swagger client
-  return Swagger.execute(callParams).then(async (data) => {
-    delete data.uid;
+  return Swagger.execute(callParams).then(async (resp) => {
+    this.logger.info("Swagger response %j", resp);
+
+    delete resp.uid;
+    const newElement = {};
     newElement.metadata = getMetadata(msg.metadata);
-    const response = JSON.parse(data.data);
+    const response = JSON.parse(resp.data);
 
     newElement.data = getElementDataFromResponse(arraySplittingKey, response);
     if (skipSnapshot) {
@@ -92,5 +85,4 @@ function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   });
 }
 
-// this wrapers offers a simplified emitData(data) function
 module.exports = { process: processTrigger };
