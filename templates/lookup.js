@@ -9,6 +9,7 @@
  */
 
 const { process: triggerProcess } = require("../triggers/trigger");
+const logger = require("@openintegrationhub/ferryman/lib/logging");
 
 /*
 * data will have the following format: 
@@ -22,6 +23,8 @@ async function processAction(req, res, _, actionParams) {
   const { secretId, data } = actionParams;
   const { ferryman } = req;
   const { operationId, parameters, cfg } = data;
+
+  logger.info({ params: actionParams }, "Running lookup with params");
 
   // in the data it should be always the operationId
   // we remove because it is not a parameter of the msg data object
@@ -41,11 +44,18 @@ async function processAction(req, res, _, actionParams) {
       const secret = await ferryman.fetchSecret(secretId, token);
       Object.assign(cfg, secret);
     } catch (error) {
-      console.log("Error getting the secret", error);
+      logger.error(error, "Failed to get secret");
     }
   }
 
-  const dataResponse = await triggerProcess(msg, cfg, snapshot, incomingMessageHeaders, tokenData);
+  const context = {
+    logger,
+    emit() {},
+  };
+
+  const dataResponse = await triggerProcess.call(context, msg, cfg, snapshot, incomingMessageHeaders, tokenData);
+
+  logger.info({ response: dataResponse }, "Lookup function response");
 
   return res.send(dataResponse);
 }
