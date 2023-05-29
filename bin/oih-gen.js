@@ -27,6 +27,13 @@ async function oihGen() {
         .choices(["no_pagination", "cursor"])
         .default("no_pagination")
     )
+    .option("--pagination-next-cursor-path [path]", "Path to the next pagination cursor")
+    .addOption(
+      new Option("--pagination-token-in [path]", "Where to look for the next page token")
+        .choices(["body", "headers"])
+        .default("body")
+    )
+    .option("--pagination-token-field-name [name]", "Name of the field in an API accepting the pagination token")
     .parse();
 
   const options = program.opts();
@@ -45,6 +52,16 @@ async function oihGen() {
     connectorName: options.name,
     outputDir: options.output,
     snapshot: options.snapshot,
+    paginationConfig: {
+      strategy: {
+        type: options.paginationType,
+        nextCursorPath: options.paginationNextCursorPath,
+        in: options.paginationTokenIn,
+      },
+      pageTokenOption: {
+        fieldName: options.paginationTokenFieldName,
+      },
+    },
   });
 }
 

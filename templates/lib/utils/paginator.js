@@ -14,10 +14,10 @@ class CursorPaginator {
   }
 
   hasNextPage({ headers, body }) {
-    return !!this.getNextPageToken({headers, body});
+    return !!this.getNextPageToken({ headers, body });
   }
 
-  getNextPageToken({ headers, body}) {
+  getNextPageToken({ headers, body }) {
     const nextCursorLocation = this.config.strategy.in === "body" ? body : headers;
     return lodashGet(nextCursorLocation, this.config.strategy.nextCursorPath);
   }
