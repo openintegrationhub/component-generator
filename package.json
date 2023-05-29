@@ -27,8 +27,8 @@
   "license": "ISC",
   "dependencies": {
     "@apidevtools/swagger-parser": "^10.1.0",
+    "commander": "^10.0.1",
     "fs-extra": "^10.1.0",
-    "getopts": "^2.3.0",
     "html-to-text": "^8.2.0",
     "lodash": "^4.17.20",
     "media-type": "^0.3.1",
