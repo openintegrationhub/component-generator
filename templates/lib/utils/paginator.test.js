@@ -1,4 +1,10 @@
-const { createPaginator, CursorPaginator, PageIncrementPaginator, NoPagingPaginator } = require("./paginator");
+const {
+  createPaginator,
+  CursorPaginator,
+  PageIncrementPaginator,
+  OffsetIncrementPaginator,
+  NoPagingPaginator,
+} = require("./paginator");
 
 describe("Paginators", () => {
   describe("createPaginator", () => {
@@ -22,6 +28,16 @@ describe("Paginators", () => {
       });
 
       expect(paginator).toBeInstanceOf(PageIncrementPaginator);
+    });
+
+    it("should create OffsetIncrementPaginator", () => {
+      const paginator = createPaginator({
+        strategy: {
+          type: "offset_increment",
+        },
+      });
+
+      expect(paginator).toBeInstanceOf(OffsetIncrementPaginator);
     });
 
     it("should create NoPagingPaginator", () => {
@@ -68,7 +84,7 @@ describe("Paginators", () => {
 
   describe("PageIncrementPaginator", () => {
     it("should return correct next page token", () => {
-      const paginator = new PageIncrementPaginator({
+      const paginator = createPaginator({
         pageSizeOption: {
           fieldName: "per_page",
         },
@@ -95,7 +111,7 @@ describe("Paginators", () => {
     });
 
     it("should return return no pages if returned less items than perPage", () => {
-      const paginator = new PageIncrementPaginator({
+      const paginator = createPaginator({
         pageSizeOption: {
           fieldName: "per_page",
         },
@@ -119,7 +135,7 @@ describe("Paginators", () => {
     });
 
     it("should accept empty resultsPath", () => {
-      const paginator = new PageIncrementPaginator({
+      const paginator = createPaginator({
         pageSizeOption: {
           fieldName: "per_page",
         },
@@ -141,6 +157,84 @@ describe("Paginators", () => {
       expect(paginator.hasNextPage(response)).toBeTruthy();
       expect(paginator.getNextPageToken(response)).toBe(1);
       expect(paginator.getNextPageToken(response)).toBe(2);
+    });
+  });
+
+  describe("OffsetIncrementPaginator", () => {
+    it("should return correct next page token", () => {
+      const paginator = createPaginator({
+        pageSizeOption: {
+          fieldName: "per_page",
+        },
+        pageTokenOption: {
+          fieldName: "page",
+        },
+        strategy: {
+          type: "offset_increment",
+          pageSize: 2,
+          resultsPath: "results",
+        },
+      });
+
+      const response = {
+        body: {
+          results: [{ id: 1 }, { id: 2 }],
+        },
+        headers: {},
+      };
+
+      expect(paginator.hasNextPage(response)).toBeTruthy();
+      expect(paginator.getNextPageToken(response)).toBe(2);
+      expect(paginator.getNextPageToken(response)).toBe(4);
+    });
+
+    it("should return return no pages if returned less items than perPage", () => {
+      const paginator = createPaginator({
+        pageSizeOption: {
+          fieldName: "per_page",
+        },
+        pageTokenOption: {
+          fieldName: "page",
+        },
+        strategy: {
+          type: "offset_increment",
+          pageSize: 2,
+        },
+      });
+
+      const response = {
+        body: {
+          results: [{ id: 1 }],
+        },
+        headers: {},
+      };
+
+      expect(paginator.hasNextPage(response)).toBeFalsy();
+    });
+
+    it("should accept empty resultsPath", () => {
+      const paginator = createPaginator({
+        pageSizeOption: {
+          fieldName: "per_page",
+        },
+        pageTokenOption: {
+          fieldName: "page",
+        },
+        strategy: {
+          type: "offset_increment",
+          pageSize: 2,
+          resultsPath: "",
+        },
+      });
+
+      const response = {
+        body: [{ id: 1 }, { id: 2 }],
+        headers: {},
+      };
+
+      expect(paginator.hasNextPage(response)).toBeTruthy();
+      expect(paginator.getNextPageToken(response)).toBe(2);
+      expect(paginator.getNextPageToken(response)).toBe(4);
     });
   });
 

@@ -5,8 +5,9 @@ module.exports.createPaginator = function createPaginator(config) {
     return new CursorPaginator(config);
   } else if (config.strategy.type === "page_increment") {
     return new PageIncrementPaginator(config);
+  } else if (config.strategy.type === "offset_increment") {
+    return new OffsetIncrementPaginator(config);
   }
-
   return new NoPagingPaginator();
 };
 
@@ -42,8 +43,31 @@ class PageIncrementPaginator {
     return lodashGet(body, resultsPath) === this.config.strategy.pageSize;
   }
 
-  getNextPageToken({ headers, body }) {
+  getNextPageToken() {
     return ++this.page;
+  }
+}
+
+class OffsetIncrementPaginator {
+  offset = 0;
+
+  constructor(config) {
+    this.config = config;
+  }
+
+  hasNextPage({ body }) {
+    const resultsPath = [];
+    if (this.config.strategy.resultsPath) {
+      resultsPath.push(this.config.strategy.resultsPath);
+    }
+    resultsPath.push("length");
+
+    return lodashGet(body, resultsPath) === this.config.strategy.pageSize;
+  }
+
+  getNextPageToken() {
+    this.offset += this.config.strategy.pageSize;
+    return this.offset;
   }
 }
 
@@ -60,5 +84,6 @@ class NoPagingPaginator {
 Object.assign(module.exports, {
   CursorPaginator,
   PageIncrementPaginator,
+  OffsetIncrementPaginator,
   NoPagingPaginator,
 });
