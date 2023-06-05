@@ -21,7 +21,7 @@ class CursorPaginator {
   }
 
   getNextPageToken({ headers, body }) {
-    const nextCursorLocation = this.config.strategy.in === "body" ? body : headers;
+    const nextCursorLocation = this.config.strategy.tokenIn === "body" ? body : headers;
     return lodashGet(nextCursorLocation, this.config.strategy.nextCursorPath);
   }
 }

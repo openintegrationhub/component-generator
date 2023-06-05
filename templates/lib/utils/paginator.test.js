@@ -54,14 +54,14 @@ describe("Paginators", () => {
   });
 
   describe("CursorPaginator", () => {
-    it("should return correct next page token", () => {
+    it("should return correct next page token in body", () => {
       const paginator = new CursorPaginator({
         pageTokenOption: {
           fieldName: "after",
         },
         strategy: {
           type: "cursor",
-          in: "body",
+          tokenIn: "body",
           nextCursorPath: "meta.next.token",
         },
       });
@@ -75,6 +75,29 @@ describe("Paginators", () => {
             },
           },
         },
+      };
+
+      expect(paginator.hasNextPage(response)).toBeTruthy();
+      expect(paginator.getNextPageToken(response)).toBe("next-page-token");
+    });
+
+    it("should return correct next page token in headers", () => {
+      const paginator = new CursorPaginator({
+        pageTokenOption: {
+          fieldName: "after",
+        },
+        strategy: {
+          type: "cursor",
+          tokenIn: "headers",
+          nextCursorPath: "token",
+        },
+      });
+
+      const response = {
+        headers: {
+          token: "next-page-token",
+        },
+        body: {},
       };
 
       expect(paginator.hasNextPage(response)).toBeTruthy();

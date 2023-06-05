@@ -64,9 +64,9 @@ async function oihGen() {
       },
       strategy: {
         type: options.paginationType,
-        nextCursorPath: options.paginationNextCursorPath,
-        in: options.paginationTokenIn,
         pageSize: options.paginationPageSize,
+        tokenIn: options.paginationTokenIn,
+        nextCursorPath: options.paginationNextCursorPath,
         resultsPath: options.paginationResultsPath,
       },
     },
