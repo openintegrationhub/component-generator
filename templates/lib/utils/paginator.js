@@ -32,3 +32,8 @@ class NoPagingPaginator {
     return "";
   }
 }
+
+Object.assign(module.exports, {
+  CursorPaginator,
+  NoPagingPaginator,
+});
