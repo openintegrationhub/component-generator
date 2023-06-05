@@ -3,6 +3,8 @@ const lodashGet = require("lodash.get");
 module.exports.createPaginator = function createPaginator(config) {
   if (config.strategy.type === "cursor") {
     return new CursorPaginator(config);
+  } else if (config.strategy.type === "page_increment") {
+    return new PageIncrementPaginator(config);
   }
 
   return new NoPagingPaginator();
@@ -23,6 +25,28 @@ class CursorPaginator {
   }
 }
 
+class PageIncrementPaginator {
+  page = 0;
+
+  constructor(config) {
+    this.config = config;
+  }
+
+  hasNextPage({ body }) {
+    const resultsPath = [];
+    if (this.config.strategy.resultsPath) {
+      resultsPath.push(this.config.strategy.resultsPath);
+    }
+    resultsPath.push("length");
+
+    return lodashGet(body, resultsPath) === this.config.strategy.pageSize;
+  }
+
+  getNextPageToken({ headers, body }) {
+    return ++this.page;
+  }
+}
+
 class NoPagingPaginator {
   hasNextPage() {
     return false;
@@ -35,5 +59,6 @@ class NoPagingPaginator {
 
 Object.assign(module.exports, {
   CursorPaginator,
+  PageIncrementPaginator,
   NoPagingPaginator,
 });
