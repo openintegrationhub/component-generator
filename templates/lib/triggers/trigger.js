@@ -63,6 +63,13 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
 
   const paginationConfig = $PAGINATION_CONFIG;
 
+  // if there is user provided pageSize
+  if (paginationConfig?.pageSizeOption?.fieldName && parameters[paginationConfig.pageSizeOption.fieldName]) {
+    paginationConfig.strategy.pageSize = parseInt(parameters[paginationConfig.pageSizeOption.fieldName]);
+  }
+
+  this.logger.info("Pagination config %j", paginationConfig);
+
   const paginator = createPaginator(paginationConfig);
 
   let hasMorePages = true;
@@ -72,12 +79,11 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     this.logger.info("Call params %j", callParamsForLogging);
 
     const resp = await Swagger.execute(callParams);
-    this.logger.info("Swagger response %j", resp);
+    const { body, headers } = resp;
+    this.logger.info("Swagger response %j", { body, headers });
 
     const newElement = {};
     newElement.metadata = getMetadata(msg.metadata);
-    const body = resp.body;
-    const headers = resp.headers;
 
     newElement.data = getElementDataFromResponse(arraySplittingKey, body);
     if (skipSnapshot) {

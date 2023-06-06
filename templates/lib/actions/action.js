@@ -29,9 +29,7 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   const { pathName, method, requestContentType } = action.callParams;
 
   const specPath = spec.paths[pathName];
-  const specPathParameters = specPath[method].parameters
-    ? specPath[method].parameters.map(({ name }) => name)
-    : [];
+  const specPathParameters = specPath[method].parameters ? specPath[method].parameters.map(({ name }) => name) : [];
 
   const body = msg.data;
   mapFieldNames(body);
@@ -71,9 +69,9 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
 
   // Call operation via Swagger client
   return Swagger.execute(callParams).then((resp) => {
-    this.logger.info("Swagger response %j", resp);
+    const { body, headers } = resp;
+    this.logger.info("Swagger response %j", { body, headers });
 
-    delete resp.uid;
     const newElement = {};
     newElement.metadata = getMetadata(msg.metadata);
     newElement.data = resp.data;
