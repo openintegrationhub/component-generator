@@ -129,8 +129,8 @@ describe("Paginators", () => {
       };
 
       expect(paginator.hasNextPage(response)).toBeTruthy();
-      expect(paginator.getNextPageToken(response)).toBe(1);
       expect(paginator.getNextPageToken(response)).toBe(2);
+      expect(paginator.getNextPageToken(response)).toBe(3);
     });
 
     it("should return return no pages if returned less items than perPage", () => {
@@ -178,8 +178,8 @@ describe("Paginators", () => {
       };
 
       expect(paginator.hasNextPage(response)).toBeTruthy();
-      expect(paginator.getNextPageToken(response)).toBe(1);
       expect(paginator.getNextPageToken(response)).toBe(2);
+      expect(paginator.getNextPageToken(response)).toBe(3);
     });
   });
 

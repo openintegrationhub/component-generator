@@ -27,7 +27,7 @@ class CursorPaginator {
 }
 
 class PageIncrementPaginator {
-  page = 0;
+  page = 1;
 
   constructor(config) {
     this.config = config;
