@@ -69,8 +69,8 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
 
   // Call operation via Swagger client
   return Swagger.execute(callParams).then((resp) => {
-    const { body, headers } = resp;
-    this.logger.info("Swagger response %j", { body, headers });
+    const { url, body, headers } = resp;
+    this.logger.info("Swagger response %j", { url, body, headers });
 
     const newElement = {};
     newElement.metadata = getMetadata(msg.metadata);

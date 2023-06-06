@@ -86,8 +86,8 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     this.logger.info("Call params %j", callParamsForLogging);
 
     const resp = await Swagger.execute(callParams);
-    const { body, headers } = resp;
-    this.logger.info("Swagger response %j", { body, headers });
+    const { url, body, headers } = resp;
+    this.logger.info("Swagger response %j", { url, body, headers });
 
     const newElement = {};
     newElement.metadata = getMetadata(msg.metadata);
