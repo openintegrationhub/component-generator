@@ -50,6 +50,22 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     spec.servers.push({ url: cfg.otherServer });
   }
 
+  const paginationConfig = $PAGINATION_CONFIG;
+
+  // if there is user provided pageSize
+  if (paginationConfig?.pageSizeOption?.fieldName) {
+    // if user specified pageSize - we take that
+    if (parameters[paginationConfig.pageSizeOption.fieldName]) {
+      paginationConfig.strategy.pageSize = parseInt(parameters[paginationConfig.pageSizeOption.fieldName]);
+    }
+    // otherwise we use a configured pageSize
+    else {
+      parameters[paginationConfig.pageSizeOption.fieldName] = paginationConfig.strategy.pageSize;
+    }
+  }
+
+  this.logger.info("Pagination config %j", paginationConfig);
+
   let callParams = {
     spec: spec,
     operationId: tokenData["function"],
@@ -60,15 +76,6 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     securities: { authorized: securities },
     server: spec.servers[cfg.server] || cfg.otherServer,
   };
-
-  const paginationConfig = $PAGINATION_CONFIG;
-
-  // if there is user provided pageSize
-  if (paginationConfig?.pageSizeOption?.fieldName && parameters[paginationConfig.pageSizeOption.fieldName]) {
-    paginationConfig.strategy.pageSize = parseInt(parameters[paginationConfig.pageSizeOption.fieldName]);
-  }
-
-  this.logger.info("Pagination config %j", paginationConfig);
 
   const paginator = createPaginator(paginationConfig);
 
