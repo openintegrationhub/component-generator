@@ -24,7 +24,7 @@ async function oihGen() {
     .option("-s, --snapshot [string]", "Field name to be used for snapshot in triggers", "")
     .addOption(
       new Option("--pagination-type [type]", "Type of pagination")
-        .choices(["no_pagination", "cursor"])
+        .choices(["no_pagination", "cursor", "page_increment", "offset_increment"])
         .default("no_pagination")
     )
     .option("--pagination-next-cursor-path [path]", "Path to the next pagination cursor")
@@ -34,8 +34,12 @@ async function oihGen() {
         .choices(["body", "headers"])
         .default("body")
     )
-    .option("--pagination-page-size [number]", "Number of results per page to fetch")
     .option("--pagination-token-field-name [name]", "Name of the field in an API accepting the pagination token")
+    .addOption(
+      new Option("--pagination-page-size [number]", "Number of results per page to fetch")
+        .default(50)
+        .argParser(parseInt)
+    )
     .option("--pagination-page-size-field-name [name]", "Name of the field in an API accepting the page size option")
     .parse();
 
