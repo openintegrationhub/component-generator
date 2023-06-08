@@ -38,7 +38,10 @@ async function oihGen() {
     .addOption(
       new Option("--pagination-page-size [number]", "Number of results per page to fetch")
         .default(50)
-        .argParser(parseInt)
+        .argParser((value, defaultValue) => {
+          const parsed = parseInt(value);
+          return isFinite(parsed) ? parsed : defaultValue;
+        })
     )
     .option("--pagination-page-size-field-name [name]", "Name of the field in an API accepting the page size option")
     .parse();
