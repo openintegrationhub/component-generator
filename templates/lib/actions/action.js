@@ -13,11 +13,10 @@
 
 const Swagger = require("swagger-client");
 const spec = require("../spec.json");
-const { mapFieldNames, getMetadata } = require("../utils/helpers");
+const { mapFieldNames, getMetadata, mapFormDataBody } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
-function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
-  const isVerbose = process.env.debug || cfg.verbose;
+async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
 
   this.logger.info("Incoming message %j", msg);
   this.logger.info("Config %j", cfg);
@@ -31,8 +30,12 @@ function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   const specPath = spec.paths[pathName];
   const specPathParameters = specPath[method].parameters ? specPath[method].parameters.map(({ name }) => name) : [];
 
-  const body = msg.data;
+  let body = msg.data;
   mapFieldNames(body);
+  if (requestContentType === "multipart/form-data") {
+    this.logger.info("requestContentType multipart/form-data is defined");
+    body = await mapFormDataBody.call(this, action, body);
+  }
 
   let parameters = {};
   for (let param of specPathParameters) {
