@@ -80,7 +80,9 @@ function getMetadata(metadata) {
 
 async function dataAndSnapshot(newElement, snapshot, snapshotKey, standardSnapshot, self) {
   if (Array.isArray(newElement.data)) {
+    this.logger.info("Found %s items in response data", newElement.data.length);
     let lastObjectDate = 0;
+    let emittedItemsCount = 0;
     for (let i = 0; i < newElement.data.length; i++) {
       const newObject = { ...newElement, data: newElement.data[i] };
       const currentObjectDate = lodashGet(newObject.data, snapshotKey)
@@ -91,26 +93,32 @@ async function dataAndSnapshot(newElement, snapshot, snapshotKey, standardSnapsh
           lastObjectDate = currentObjectDate;
         }
         await self.emit("data", newObject);
+        emittedItemsCount++;
       } else {
         if (compareDate(currentObjectDate, snapshot.lastUpdated)) {
           if (compareDate(currentObjectDate, lastObjectDate)) {
             lastObjectDate = currentObjectDate;
           }
           await self.emit("data", newObject);
+          emittedItemsCount++;
         }
       }
     }
+    this.logger.info("%s items were emitted", emittedItemsCount);
     snapshot.lastUpdated = lastObjectDate !== 0 ? lastObjectDate : snapshot.lastUpdated;
-    console.log("returned a new snapshot", snapshot);
     await self.emit("snapshot", snapshot);
+    this.logger.info("A new snapshot was emitted: %j", snapshot);
   } else {
+    this.logger.info("Found one item in response data, going to emit...");
     await self.emit("data", newElement);
   }
 }
 function getElementDataFromResponse(splittingKey, res) {
   if (!splittingKey) {
+    this.logger.info("Splitting key missing, going to return original data...");
     return res;
   } else {
+    this.logger.info("Going to split result by key: %s", splittingKey);
     return splittingKey.split(".").reduce((p, c) => (p && p[c]) || null, res);
   }
 }
