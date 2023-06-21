@@ -4,7 +4,7 @@
  * Mass generator version: $GENERATOR_VERSION
  *
  * : $PACKAGE_NAME
- * Copyright © 2020,  AG
+ * Copyright © 2023,  AG
  *
  * All files of this connector are licensed under the Apache 2.0 License. For details
  * see the file LICENSE on the toplevel directory.
@@ -17,15 +17,18 @@ const { mapFieldNames, getMetadata, mapFormDataBody } = require("../utils/helper
 const componentJson = require("../../component.json");
 
 async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
+  this.logger.debug("Incoming message: %j", msg);
+  this.logger.trace("Incoming configuration: %j", cfg);
+  this.logger.debug("Incoming snapshot: %j", snapshot);
+  this.logger.debug("Incoming message headers: %j", incomingMessageHeaders);
+  this.logger.debug("Incoming token data: %j", tokenData);
 
-  this.logger.info("Incoming message %j", msg);
-  this.logger.info("Config %j", cfg);
-  this.logger.info("Snapshot %j", snapshot);
-  this.logger.info("Message headers %j", incomingMessageHeaders);
-  this.logger.info("Token data %j", tokenData);
+  const actionFunction = tokenData["function"];
+  this.logger.info("Starting to execute action '%s'", actionFunction);
 
-  const action = componentJson.actions[tokenData["function"]];
+  const action = componentJson.actions[actionFunction];
   const { pathName, method, requestContentType } = action.callParams;
+  this.logger.info("Found spec callParams: 'pathName': %s, 'method': %s, 'requestContentType': %s", pathName, method, requestContentType);
 
   const specPath = spec.paths[pathName];
   const specPathParameters = specPath[method].parameters ? specPath[method].parameters.map(({ name }) => name) : [];
@@ -41,6 +44,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
   for (let param of specPathParameters) {
     parameters[param] = body[param];
   }
+  this.logger.debug("Parameters were populated from configuration: %j", parameters);
 
   $SECURITIES;
 
@@ -49,11 +53,12 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
       spec.servers = [];
     }
     spec.servers.push({ url: cfg.otherServer });
+    this.logger.debug("Server: %s was added to spec servers array", cfg.otherServer);
   }
 
   const callParams = {
     spec: spec,
-    operationId: tokenData["function"],
+    operationId: actionFunction,
     pathName: pathName,
     method: method,
     parameters: parameters,
@@ -68,17 +73,20 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
 
   const callParamsForLogging = { ...callParams };
   callParamsForLogging.spec = "[omitted]";
-  this.logger.info("Call params %j", callParamsForLogging);
+  this.logger.trace("Call parameters with 'securities': %j", callParamsForLogging);
+  callParamsForLogging.securities = "[omitted]";
+  this.logger.info("Final Call params: %j", callParamsForLogging);
 
   // Call operation via Swagger client
   return Swagger.execute(callParams).then((resp) => {
     const { url, body, headers } = resp;
-    this.logger.info("Swagger response %j", { url, body, headers });
-
+    this.logger.debug("Swagger response %j", { url, body, headers });
     const newElement = {};
     newElement.metadata = getMetadata(msg.metadata);
     newElement.data = resp.data;
+    this.logger.info("Going to emit response data...");
     this.emit("data", newElement);
+    this.logger.info("Execution finished");
   });
 }
 
