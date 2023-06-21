@@ -24,7 +24,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
   this.logger.debug("Incoming token data: %j", tokenData);
 
   const triggerFunction = tokenData["function"];
-  this.logger.info('Starting execution trigger "%s"', triggerFunction)
+  this.logger.info('Starting to execute trigger "%s"', triggerFunction)
 
   this.logger.info("Incoming snapshot: %j", snapshot);
 

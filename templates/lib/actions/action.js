@@ -24,7 +24,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
   this.logger.debug("Incoming token data: %j", tokenData);
 
   const actionFunction = tokenData["function"];
-  this.logger.info("Starting execution action '%s'", actionFunction);
+  this.logger.info("Starting to execute action '%s'", actionFunction);
 
   const action = componentJson.actions[actionFunction];
   const { pathName, method, requestContentType } = action.callParams;
@@ -72,6 +72,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
   }
 
   const callParamsForLogging = { ...callParams };
+  callParamsForLogging.spec = "[omitted]";
   this.logger.trace("Call parameters with 'securities': %j", callParamsForLogging);
   callParamsForLogging.securities = "[omitted]";
   this.logger.info("Final Call params: %j", callParamsForLogging);
