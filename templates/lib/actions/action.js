@@ -17,6 +17,12 @@ const { mapFieldNames, getMetadata, mapFormDataBody } = require("../utils/helper
 const componentJson = require("../../component.json");
 
 async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
+  const { logLevel } = cfg.nodeSettings;
+
+  if (["fatal", "error", "warn", "info", "debug", "trace"].includes(logLevel)) {
+    this.logger.level(logLevel);
+  }
+
   this.logger.debug("Incoming message: %j", msg);
   this.logger.trace("Incoming configuration: %j", cfg);
   this.logger.debug("Incoming snapshot: %j", snapshot);
@@ -28,7 +34,12 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
 
   const action = componentJson.actions[actionFunction];
   const { pathName, method, requestContentType } = action.callParams;
-  this.logger.info("Found spec callParams: 'pathName': %s, 'method': %s, 'requestContentType': %s", pathName, method, requestContentType);
+  this.logger.info(
+    "Found spec callParams: 'pathName': %s, 'method': %s, 'requestContentType': %s",
+    pathName,
+    method,
+    requestContentType
+  );
 
   const specPath = spec.paths[pathName];
   const specPathParameters = specPath[method].parameters ? specPath[method].parameters.map(({ name }) => name) : [];
