@@ -20,8 +20,10 @@ const componentJson = require("../../component.json");
 async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   const { snapshotKey, arraySplittingKey, syncParam, skipSnapshot, logLevel } = cfg.nodeSettings;
 
+  this.loggger.info("Current log level: %s", this.logger.level());
   if (["fatal", "error", "warn", "info", "debug", "trace"].includes(logLevel)) {
     this.logger.level(logLevel);
+    this.loggger.info("New log level: %s", this.logger.level());
   }
 
   this.logger.debug("Incoming message: %j", msg);
