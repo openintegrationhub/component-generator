@@ -17,24 +17,26 @@ const { mapFieldNames, getMetadata, mapFormDataBody } = require("../utils/helper
 const componentJson = require("../../component.json");
 
 async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
+  let logger = this.logger;
   const { logLevel } = cfg.nodeSettings;
 
   if (["fatal", "error", "warn", "info", "debug", "trace"].includes(logLevel)) {
-    this.logger.level(logLevel);
+    logger = this.logger.child({});
+    logger.level && logger.level(logLevel);
   }
 
-  this.logger.debug("Incoming message: %j", msg);
-  this.logger.trace("Incoming configuration: %j", cfg);
-  this.logger.debug("Incoming snapshot: %j", snapshot);
-  this.logger.debug("Incoming message headers: %j", incomingMessageHeaders);
-  this.logger.debug("Incoming token data: %j", tokenData);
+  logger.debug("Incoming message: %j", msg);
+  logger.trace("Incoming configuration: %j", cfg);
+  logger.debug("Incoming snapshot: %j", snapshot);
+  logger.debug("Incoming message headers: %j", incomingMessageHeaders);
+  logger.debug("Incoming token data: %j", tokenData);
 
   const actionFunction = tokenData["function"];
-  this.logger.info("Starting to execute action '%s'", actionFunction);
+  logger.info("Starting to execute action '%s'", actionFunction);
 
   const action = componentJson.actions[actionFunction];
   const { pathName, method, requestContentType } = action.callParams;
-  this.logger.info(
+  logger.info(
     "Found spec callParams: 'pathName': %s, 'method': %s, 'requestContentType': %s",
     pathName,
     method,
@@ -47,7 +49,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
   let body = msg.data;
   mapFieldNames(body);
   if (requestContentType === "multipart/form-data") {
-    this.logger.info("requestContentType multipart/form-data is defined");
+    logger.info("requestContentType multipart/form-data is defined");
     body = await mapFormDataBody.call(this, action, body);
   }
 
@@ -55,7 +57,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
   for (let param of specPathParameters) {
     parameters[param] = body[param];
   }
-  this.logger.debug("Parameters were populated from configuration: %j", parameters);
+  logger.debug("Parameters were populated from configuration: %j", parameters);
 
   $SECURITIES;
 
@@ -64,7 +66,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
       spec.servers = [];
     }
     spec.servers.push({ url: cfg.otherServer });
-    this.logger.debug("Server: %s was added to spec servers array", cfg.otherServer);
+    logger.debug("Server: %s was added to spec servers array", cfg.otherServer);
   }
 
   const callParams = {
@@ -84,20 +86,20 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
 
   const callParamsForLogging = { ...callParams };
   callParamsForLogging.spec = "[omitted]";
-  this.logger.trace("Call parameters with 'securities': %j", callParamsForLogging);
+  logger.trace("Call parameters with 'securities': %j", callParamsForLogging);
   callParamsForLogging.securities = "[omitted]";
-  this.logger.info("Final Call params: %j", callParamsForLogging);
+  logger.info("Final Call params: %j", callParamsForLogging);
 
   // Call operation via Swagger client
   return Swagger.execute(callParams).then((resp) => {
     const { url, body, headers } = resp;
-    this.logger.debug("Swagger response %j", { url, body, headers });
+    logger.debug("Swagger response %j", { url, body, headers });
     const newElement = {};
     newElement.metadata = getMetadata(msg.metadata);
     newElement.data = resp.data;
-    this.logger.info("Going to emit response data...");
+    logger.info("Going to emit response data...");
     this.emit("data", newElement);
-    this.logger.info("Execution finished");
+    logger.info("Execution finished");
   });
 }
 

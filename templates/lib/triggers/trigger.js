@@ -18,25 +18,25 @@ const { createPaginator } = require("../utils/paginator");
 const componentJson = require("../../component.json");
 
 async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
+  let logger = this.logger;
   const { snapshotKey, arraySplittingKey, syncParam, skipSnapshot, logLevel } = cfg.nodeSettings;
 
-  this.loggger.info("Current log level: %s", this.logger.level());
   if (["fatal", "error", "warn", "info", "debug", "trace"].includes(logLevel)) {
-    this.logger.level(logLevel);
-    this.loggger.info("New log level: %s", this.logger.level());
+    logger = this.logger.child({});
+    logger.level && logger.level(logLevel);
   }
 
-  this.logger.debug("Incoming message: %j", msg);
-  this.logger.trace("Incoming configuration: %j", cfg);
-  this.logger.debug("Incoming message headers: %j", incomingMessageHeaders);
-  this.logger.debug("Incoming token data: %j", tokenData);
+  logger.debug("Incoming message: %j", msg);
+  logger.trace("Incoming configuration: %j", cfg);
+  logger.debug("Incoming message headers: %j", incomingMessageHeaders);
+  logger.debug("Incoming token data: %j", tokenData);
 
   const triggerFunction = tokenData["function"];
-  this.logger.info('Starting to execute trigger "%s"', triggerFunction);
+  logger.info('Starting to execute trigger "%s"', triggerFunction);
 
-  this.logger.info("Incoming snapshot: %j", snapshot);
+  logger.info("Incoming snapshot: %j", snapshot);
 
-  this.logger.info(
+  logger.info(
     'Trigger settings - "snapshotKey": %s, "arraySplittingKey": %s, "syncParam": %s, "skipSnapshot": %s',
     snapshotKey,
     arraySplittingKey,
@@ -46,7 +46,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
 
   const trigger = componentJson.triggers[triggerFunction];
   const { pathName, method, requestContentType } = trigger.callParams;
-  this.logger.info(
+  logger.info(
     'Found spec callParams: "pathName": %s, "method": %s, "requestContentType": %s',
     pathName,
     method,
@@ -58,10 +58,10 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
 
   let triggerParams = cfg.triggerParams;
   if (!triggerParams) {
-    this.logger.debug("Trigger params was not found in cfg.triggerParams, going to look into cfg");
+    logger.debug("Trigger params was not found in cfg.triggerParams, going to look into cfg");
     triggerParams = cfg;
   } else {
-    this.logger.info("Found incoming trigger params: %j", triggerParams);
+    logger.info("Found incoming trigger params: %j", triggerParams);
   }
 
   let parameters = {};
@@ -72,7 +72,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
   if (syncParam && snapshot.lastUpdated) {
     parameters[syncParam] = snapshot.lastUpdated;
   }
-  this.logger.debug("Parameters were populated from configuration: %j", parameters);
+  logger.debug("Parameters were populated from configuration: %j", parameters);
 
   $SECURITIES;
 
@@ -81,7 +81,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
       spec.servers = [];
     }
     spec.servers.push({ url: cfg.otherServer });
-    this.logger.debug("Server: %s was added to spec servers array", cfg.otherServer);
+    logger.debug("Server: %s was added to spec servers array", cfg.otherServer);
   }
 
   const paginationConfig = $PAGINATION_CONFIG;
@@ -98,7 +98,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     }
   }
 
-  this.logger.info("Pagination config %j", paginationConfig);
+  logger.info("Pagination config %j", paginationConfig);
 
   let callParams = {
     spec: spec,
@@ -117,20 +117,20 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
   do {
     const callParamsForLogging = { ...callParams };
     callParamsForLogging.spec = "[omitted]";
-    this.logger.trace('Call parameters with "securities": %j', callParamsForLogging);
+    logger.trace('Call parameters with "securities": %j', callParamsForLogging);
     callParamsForLogging.securities = "[omitted]";
-    this.logger.info("Final Call params: %j", callParamsForLogging);
+    logger.info("Final Call params: %j", callParamsForLogging);
 
     const resp = await Swagger.execute(callParams);
     const { url, body, headers } = resp;
-    this.logger.debug("Swagger response: %j", { url, body, headers });
+    logger.debug("Swagger response: %j", { url, body, headers });
 
     const newElement = {};
     newElement.metadata = getMetadata(msg.metadata);
 
     newElement.data = getElementDataFromResponse.call(this, arraySplittingKey, body);
     if (skipSnapshot) {
-      this.logger.info("Option skipSnapshot enabled, just going to return found data, pagination is disabled");
+      logger.info("Option skipSnapshot enabled, just going to return found data, pagination is disabled");
       return newElement.data; //no pagination if skipping snapshot
     } else {
       await dataAndSnapshot.call(this, newElement, snapshot, snapshotKey, "", this);
@@ -140,14 +140,14 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     if (paginator.hasNextPage({ body, headers })) {
       callParams = { ...callParams, parameters: { ...callParams.parameters } };
       callParams.parameters[paginationConfig.pageTokenOption.fieldName] = paginator.getNextPageToken({ body, headers });
-      this.logger.info("Found the next page, going to request...");
+      logger.info("Found the next page, going to request...");
       hasMorePages = true;
     } else {
-      this.logger.info("All pages have been received");
+      logger.info("All pages have been received");
       hasMorePages = false;
     }
   } while (hasMorePages);
-  this.logger.info("Execution finished");
+  logger.info("Execution finished");
 }
 
 module.exports = { process: processTrigger };
