@@ -211,6 +211,35 @@ describe("Paginators", () => {
       expect(paginator.getNextPageToken(response)).toBe(4);
     });
 
+    it("should return correct next page token if resultsPath contains .", () => {
+      const paginator = createPaginator({
+        pageSizeOption: {
+          fieldName: "per_page",
+        },
+        pageTokenOption: {
+          fieldName: "page",
+        },
+        strategy: {
+          type: "offset_increment",
+          pageSize: 2,
+          resultsPath: "d.results",
+        },
+      });
+
+      const response = {
+        body: {
+          d: {
+            results: [{id: 1}, {id: 2}]
+          },
+        },
+        headers: {},
+      };
+
+      expect(paginator.hasNextPage(response)).toBeTruthy();
+      expect(paginator.getNextPageToken(response)).toBe(2);
+      expect(paginator.getNextPageToken(response)).toBe(4);
+    });
+
     it("should return return no pages if returned less items than perPage", () => {
       const paginator = createPaginator({
         pageSizeOption: {

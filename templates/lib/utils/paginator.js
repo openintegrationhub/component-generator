@@ -36,7 +36,7 @@ class PageIncrementPaginator {
   hasNextPage({ body }) {
     const resultsPath = [];
     if (this.config.strategy.resultsPath) {
-      resultsPath.push(this.config.strategy.resultsPath);
+      resultsPath.push(...this.config.strategy.resultsPath.split('.'));
     }
     resultsPath.push("length");
 
@@ -58,7 +58,7 @@ class OffsetIncrementPaginator {
   hasNextPage({ body }) {
     const resultsPath = [];
     if (this.config.strategy.resultsPath) {
-      resultsPath.push(this.config.strategy.resultsPath);
+      resultsPath.push(...this.config.strategy.resultsPath.split('.'));
     }
     resultsPath.push("length");
 
