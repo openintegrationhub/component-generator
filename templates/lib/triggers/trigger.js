@@ -70,7 +70,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
   }
 
   if (syncParam && snapshot.lastUpdated) {
-    if (syncParam === '$filter'){
+    if (syncParam === '$FILTER'){
       if (!snapshotKey){
         throw new Error('snapshotKey params should be specified!')
       }
