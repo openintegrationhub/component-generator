@@ -78,6 +78,18 @@ function getMetadata(metadata) {
   return newMetadata;
 }
 
+function isMicrosoftJsonDate(dateStr) {
+  const regex = /^\/Date\((\d+)([+-]\d{4})?\)\/$/;
+  if (regex.test(dateStr)) {
+    const match = dateStr.match(regex);
+    const milliseconds = parseInt(match[1]);
+    const timeZoneOffset = match[2] ? parseInt(match[2]) / 100 : 0;
+    return new Date(milliseconds + timeZoneOffset * 60 * 60 * 1000);;
+  } else {
+    return null;
+  }
+}
+
 async function dataAndSnapshot(newElement, snapshot, snapshotKey, standardSnapshot, self) {
   if (Array.isArray(newElement.data)) {
     this.logger.info("Found %s items in response data", newElement.data.length);
@@ -85,9 +97,16 @@ async function dataAndSnapshot(newElement, snapshot, snapshotKey, standardSnapsh
     let emittedItemsCount = 0;
     for (let i = 0; i < newElement.data.length; i++) {
       const newObject = { ...newElement, data: newElement.data[i] };
-      const currentObjectDate = lodashGet(newObject.data, snapshotKey)
+      let currentObjectDate = lodashGet(newObject.data, snapshotKey)
         ? lodashGet(newObject.data, snapshotKey)
         : lodashGet(newObject.data, standardSnapshot);
+      if (currentObjectDate){
+        const parsedDate = isMicrosoftJsonDate(currentObjectDate);
+        if (parsedDate) {
+          this.logger.info("Microsoft JSON date format detected, parsed date: %s", parsedDate);
+          currentObjectDate = parsedDate;
+        }
+      }
       if (!snapshot.lastUpdated) {
         if (compareDate(currentObjectDate, lastObjectDate)) {
           lastObjectDate = currentObjectDate;
@@ -128,5 +147,6 @@ module.exports = {
   getMetadata,
   dataAndSnapshot,
   getElementDataFromResponse,
-  mapFormDataBody
+  mapFormDataBody,
+  isMicrosoftJsonDate
 };

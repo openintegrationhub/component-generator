@@ -70,7 +70,14 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
   }
 
   if (syncParam && snapshot.lastUpdated) {
-    parameters[syncParam] = snapshot.lastUpdated;
+    if (syncParam === '$filter'){
+      if (!snapshotKey){
+        throw new Error('snapshotKey params should be specified!')
+      }
+      parameters[syncParam] = `${snapshotKey} gt datetime'${snapshot.lastUpdated}'`;
+    } else {
+      parameters[syncParam] = snapshot.lastUpdated;
+    }
   }
   logger.debug("Parameters were populated from configuration: %j", parameters);
 
