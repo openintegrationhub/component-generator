@@ -128,7 +128,16 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     callParamsForLogging.securities = "[omitted]";
     logger.info("Final Call params: %j", callParamsForLogging);
 
-    const resp = await Swagger.execute(callParams);
+    let resp;
+    try {
+      resp = await Swagger.execute(callParams);
+    } catch (e) {
+      if (e instanceof Error && e.response) {
+        const response = e.response;
+        this.logger.error("API error! Status: '%s', statusText: %s, errorBody: %j", response.status, response.statusText, response.body);
+      }
+      throw e;
+    }
     const { url, body, headers } = resp;
     logger.debug("Swagger response: %j", { url, body, headers });
 
