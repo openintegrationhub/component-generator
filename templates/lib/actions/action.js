@@ -90,17 +90,25 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
   callParamsForLogging.securities = "[omitted]";
   logger.info("Final Call params: %j", callParamsForLogging);
 
-  // Call operation via Swagger client
-  return Swagger.execute(callParams).then((resp) => {
-    const { url, body, headers } = resp;
-    logger.debug("Swagger response %j", { url, body, headers });
-    const newElement = {};
-    newElement.metadata = getMetadata(msg.metadata);
-    newElement.data = resp.data;
-    logger.info("Going to emit response data...");
-    this.emit("data", newElement);
-    logger.info("Execution finished");
-  });
+  let resp;
+  try {
+    resp = await Swagger.execute(callParams);
+  } catch (e) {
+    if (e instanceof Error && e.response) {
+      const response = e.response;
+      this.logger.error("API error! Status: '%s', statusText: %s, errorBody: %j", response.status, response.statusText, response.body);
+    }
+    throw e;
+  }
+
+  const { url, body: respBody, headers } = resp;
+  this.logger.info("Swagger response %j", { url, respBody, headers });
+
+  const newElement = {};
+  newElement.metadata = getMetadata(msg.metadata);
+  newElement.data = resp.data;
+  this.emit("data", newElement);
+  this.logger.info("Execution finished");
 }
 
 module.exports = { process: processAction };
