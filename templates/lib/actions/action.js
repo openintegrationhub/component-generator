@@ -35,7 +35,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
   logger.info("Starting to execute action '%s'", actionFunction);
 
   const action = componentJson.actions[actionFunction];
-  const { pathName, method, requestContentType } = action.callParams;
+  const { operationId, pathName, method, requestContentType } = action.callParams;
   logger.info(
     "Found spec callParams: 'pathName': %s, 'method': %s, 'requestContentType': %s",
     pathName,
@@ -71,7 +71,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
 
   const callParams = {
     spec: spec,
-    operationId: actionFunction,
+    operationId: operationId,
     pathName: pathName,
     method: method,
     parameters: parameters,
@@ -96,7 +96,12 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
   } catch (e) {
     if (e instanceof Error && e.response) {
       const response = e.response;
-      this.logger.error("API error! Status: '%s', statusText: %s, errorBody: %j", response.status, response.statusText, response.body);
+      this.logger.error(
+        "API error! Status: '%s', statusText: %s, errorBody: %j",
+        response.status,
+        response.statusText,
+        response.body
+      );
     }
     throw e;
   }

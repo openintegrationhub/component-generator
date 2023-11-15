@@ -45,7 +45,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
   );
 
   const trigger = componentJson.triggers[triggerFunction];
-  const { pathName, method, requestContentType } = trigger.callParams;
+  const { operationId, pathName, method, requestContentType } = trigger.callParams;
   logger.info(
     'Found spec callParams: "pathName": %s, "method": %s, "requestContentType": %s',
     pathName,
@@ -70,9 +70,9 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
   }
 
   if (syncParam && snapshot.lastUpdated) {
-    if (syncParam === '$FILTER'){
-      if (!snapshotKey){
-        throw new Error('snapshotKey params should be specified!')
+    if (syncParam === "$FILTER") {
+      if (!snapshotKey) {
+        throw new Error("snapshotKey params should be specified!");
       }
       parameters[syncParam] = `${snapshotKey} gt datetime'${snapshot.lastUpdated}'`;
     } else {
@@ -109,7 +109,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
 
   let callParams = {
     spec: spec,
-    operationId: triggerFunction,
+    operationId: operationId,
     pathName: pathName,
     method: method,
     parameters: parameters,
@@ -134,7 +134,12 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     } catch (e) {
       if (e instanceof Error && e.response) {
         const response = e.response;
-        this.logger.error("API error! Status: '%s', statusText: %s, errorBody: %j", response.status, response.statusText, response.body);
+        this.logger.error(
+          "API error! Status: '%s', statusText: %s, errorBody: %j",
+          response.status,
+          response.statusText,
+          response.body
+        );
       }
       throw e;
     }

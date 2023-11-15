@@ -12,7 +12,7 @@ const { process: triggerProcess } = require("../triggers/trigger");
 const logger = require("@openintegrationhub/ferryman/lib/logging");
 
 /*
-* data will have the following format: 
+* data will have the following format:
  {
     operationId => for example getCampaigns
     parameters => msg (usually empty object)
@@ -22,7 +22,7 @@ const logger = require("@openintegrationhub/ferryman/lib/logging");
 async function processAction(req, res, _, actionParams) {
   const { secretId, data } = actionParams;
   const { ferryman } = req;
-  const { operationId, parameters, cfg } = data;
+  const { operationId: functionName, parameters, cfg } = data;
 
   logger.info({ params: actionParams }, "Running lookup with params");
 
@@ -32,7 +32,7 @@ async function processAction(req, res, _, actionParams) {
 
   const snapshot = {},
     incomingMessageHeaders = {};
-  const tokenData = { function: operationId };
+  const tokenData = { function: functionName };
 
   // only when the secretId parameter is provided
   if (secretId) {
