@@ -10,7 +10,8 @@
     "access": "public"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "troi": "node bin/oih-gen.js -o troi-component-3 -n TroiRetry troi.json"
   },
   "keywords": [
     "cli",
@@ -46,6 +47,8 @@
   "devDependencies": {
     "axios": "^1.4.0",
     "dayjs": "1.11.10",
+    "eslint": "^8.54.0",
+    "eslint-plugin-json": "^3.1.0",
     "formdata-node": "4.4.1",
     "jest": "^29.5.0",
     "prettier": "^2.8.3"

@@ -4,7 +4,33 @@ const fs = require("fs");
 const FormDataNode = require("formdata-node");
 const path = require("path");
 const axios = require("axios");
+const Swagger = require("swagger-client");
 const { File } = FormDataNode;
+
+const executeCall = async function (callParams) {
+  const callParamsForLogging = { ...callParams };
+  callParamsForLogging.spec = "[omitted]";
+  this.logger.trace("Call parameters with \"securities\": %j", callParamsForLogging);
+  callParamsForLogging.securities = "[omitted]";
+  this.logger.info("Final Call params: %j", callParamsForLogging);
+  try {
+    const resp = await Swagger.execute(callParams);
+    const { url, body, headers } = resp;
+    this.logger.info("Swagger response %j", { url, body, headers });
+    return { body, headers };
+  } catch (e) {
+    if (e instanceof Error && e.response) {
+      const response = e.response;
+      this.logger.error(
+        "API error! Status: '%s', statusText: %s, errorBody: %j",
+        response.status,
+        response.statusText,
+        response.body
+      );
+    }
+    throw e;
+  }
+};
 
 const getFileName = (fileUrl) => {
   const parsedUrl = new URL(fileUrl);
@@ -84,7 +110,7 @@ function isMicrosoftJsonDate(dateStr) {
     const match = dateStr.match(regex);
     const milliseconds = parseInt(match[1]);
     const timeZoneOffset = match[2] ? parseInt(match[2]) / 100 : 0;
-    return new Date(milliseconds + timeZoneOffset * 60 * 60 * 1000);;
+    return new Date(milliseconds + timeZoneOffset * 60 * 60 * 1000);
   } else {
     return null;
   }
@@ -148,5 +174,6 @@ module.exports = {
   dataAndSnapshot,
   getElementDataFromResponse,
   mapFormDataBody,
-  isMicrosoftJsonDate
+  isMicrosoftJsonDate,
+  executeCall,
 };

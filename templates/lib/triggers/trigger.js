@@ -11,9 +11,8 @@
  *
  */
 
-const Swagger = require("swagger-client");
 const spec = require("../spec.json");
-const { dataAndSnapshot, getMetadata, getElementDataFromResponse } = require("../utils/helpers");
+const { dataAndSnapshot, getMetadata, getElementDataFromResponse, executeCall } = require("../utils/helpers");
 const { createPaginator } = require("../utils/paginator");
 const componentJson = require("../../component.json");
 
@@ -122,33 +121,10 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
 
   let hasMorePages = true;
   do {
-    const callParamsForLogging = { ...callParams };
-    callParamsForLogging.spec = "[omitted]";
-    logger.trace('Call parameters with "securities": %j', callParamsForLogging);
-    callParamsForLogging.securities = "[omitted]";
-    logger.info("Final Call params: %j", callParamsForLogging);
-
-    let resp;
-    try {
-      resp = await Swagger.execute(callParams);
-    } catch (e) {
-      if (e instanceof Error && e.response) {
-        const response = e.response;
-        this.logger.error(
-          "API error! Status: '%s', statusText: %s, errorBody: %j",
-          response.status,
-          response.statusText,
-          response.body
-        );
-      }
-      throw e;
-    }
-    const { url, body, headers } = resp;
-    logger.debug("Swagger response: %j", { url, body, headers });
+    const { body, headers } = await executeCall.call(this, callParams);
 
     const newElement = {};
     newElement.metadata = getMetadata(msg.metadata);
-
     newElement.data = getElementDataFromResponse.call(this, arraySplittingKey, body);
     if (skipSnapshot) {
       logger.info("Option skipSnapshot enabled, just going to return found data, pagination is disabled");
