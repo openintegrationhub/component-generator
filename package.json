@@ -1,6 +1,6 @@
 {
   "name": "@openintegrationhub/component-generator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -10,8 +10,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "jest",
-    "troi": "node bin/oih-gen.js -o troi-component-3 -n TroiRetry troi.json"
+    "test": "jest"
   },
   "keywords": [
     "cli",
