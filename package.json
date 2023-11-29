@@ -6,6 +6,9 @@
   "bin": {
     "oih-gen": "bin/oih-gen.js"
   },
+  "jest": {
+    "testPathIgnorePatterns": ["templates/spec-integration"]
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -50,6 +53,7 @@
     "eslint-plugin-json": "^3.1.0",
     "formdata-node": "4.4.1",
     "jest": "^29.5.0",
-    "prettier": "^2.8.3"
+    "prettier": "^2.8.3",
+    "swagger-client": "^3.24.5"
   }
 }
