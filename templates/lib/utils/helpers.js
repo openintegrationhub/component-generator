@@ -22,7 +22,7 @@ const executeSwaggerCall = async function (callParams) {
         const response = await Swagger.execute(callParams);
         resolve(response);
       } catch (error) {
-        if (operation.retry(error) && error.status && error.status > 400 && error.status !== 401 && error.status !== 403) {
+        if (operation.retry(error) && error.status && error.status > 400 && error.status !== 401 && error.status !== 403 && error.status !== 422) {
           this.logger.info(`Received response status: ${error.status}. Attempt #${currentAttempt}. Retrying in ${operation._originalTimeouts[currentAttempt-1]} ms...`);
           return;
         }
