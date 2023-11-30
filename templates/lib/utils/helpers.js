@@ -5,39 +5,31 @@ const FormDataNode = require("formdata-node");
 const path = require("path");
 const axios = require("axios");
 const Swagger = require("swagger-client");
+const retry = require("retry");
 const { File } = FormDataNode;
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 const executeSwaggerCall = async function (callParams) {
-  let maxRetries = 5;
-  let retryDelay = 5000; // 5 seconds in milliseconds
-  let currentRetry = 0;
-  let response;
-  let err;
-
-  while (currentRetry < maxRetries) {
-    try {
-      response = await Swagger.execute(callParams);
-      break;
-    } catch (error) {
-      if (error.response.status && error.response.status > 400 && error.response.status !== 401 && error.response.status !== 403) {
-        err = error;
-        currentRetry++;
-        this.logger.info(`Received ${error.response.status} status. Attempt #${currentRetry}. Retrying in ${retryDelay / 1000} seconds...`);
-        await sleep(retryDelay);
-      } else {
-        throw error;
+  const operation = retry.operation({
+    retries: 5,
+    factor: 2,
+    minTimeout: 5000,
+    maxTimeout: 6000,
+    randomize: true,
+  });
+  return new Promise((resolve, reject) => {
+    operation.attempt(async (currentAttempt) => {
+      try {
+        const response = await Swagger.execute(callParams);
+        resolve(response);
+      } catch (error) {
+        if (operation.retry(error) && error.status && error.status > 400 && error.status !== 401 && error.status !== 403) {
+          this.logger.info(`Received response status: ${error.status}. Attempt #${currentAttempt}. Retrying in ${operation._originalTimeouts[currentAttempt-1]} ms...`);
+          return;
+        }
+        reject(operation.mainError());
       }
-    }
-  }
-  if (err && currentRetry === maxRetries) {
-    this.logger.info("Max retries reached. Throwing error...");
-    throw err;
-  }
-  return response;
+    });
+  });
 };
 
 const executeCall = async function (callParams) {
