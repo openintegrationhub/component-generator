@@ -4,7 +4,59 @@ const fs = require("fs");
 const FormDataNode = require("formdata-node");
 const path = require("path");
 const axios = require("axios");
+const Swagger = require("swagger-client");
+const retry = require("retry");
 const { File } = FormDataNode;
+
+const executeSwaggerCall = async function (callParams) {
+  const operation = retry.operation({
+    retries: 5,
+    factor: 2,
+    minTimeout: 5000,
+    maxTimeout: 6000,
+    randomize: true,
+  });
+  return new Promise((resolve, reject) => {
+    operation.attempt(async (currentAttempt) => {
+      try {
+        const response = await Swagger.execute(callParams);
+        resolve(response);
+      } catch (error) {
+        if (operation.retry(error) && error.status && error.status > 400 && error.status !== 401 && error.status !== 403 && error.status !== 422) {
+          this.logger.info(`Received response status: ${error.status}. Attempt #${currentAttempt}. Retrying in ${operation._originalTimeouts[currentAttempt-1]} ms...`);
+          return;
+        }
+        reject(operation.mainError());
+      }
+    });
+  });
+};
+
+const executeCall = async function (callParams) {
+  const callParamsForLogging = { ...callParams };
+  callParamsForLogging.spec = "[omitted]";
+  this.logger.trace("Call parameters with \"securities\": %j", callParamsForLogging);
+  callParamsForLogging.securities = "[omitted]";
+  this.logger.info("Final Call params: %j", callParamsForLogging);
+  let response;
+  try {
+    response = await executeSwaggerCall.call(this, callParams);
+  } catch (e) {
+    if (e instanceof Error && e.response) {
+      const response = e.response;
+      this.logger.error(
+        "API error! Status: '%s', statusText: %s, errorBody: %j",
+        response.status,
+        response.statusText,
+        response.body
+      );
+    }
+    throw e;
+  }
+  const { url, body, headers } = response;
+  this.logger.info("Swagger response %j", { url, body, headers });
+  return { body, headers };
+};
 
 const getFileName = (fileUrl) => {
   const parsedUrl = new URL(fileUrl);
@@ -84,7 +136,7 @@ function isMicrosoftJsonDate(dateStr) {
     const match = dateStr.match(regex);
     const milliseconds = parseInt(match[1]);
     const timeZoneOffset = match[2] ? parseInt(match[2]) / 100 : 0;
-    return new Date(milliseconds + timeZoneOffset * 60 * 60 * 1000);;
+    return new Date(milliseconds + timeZoneOffset * 60 * 60 * 1000);
   } else {
     return null;
   }
@@ -148,5 +200,6 @@ module.exports = {
   dataAndSnapshot,
   getElementDataFromResponse,
   mapFormDataBody,
-  isMicrosoftJsonDate
+  isMicrosoftJsonDate,
+  executeCall,
 };

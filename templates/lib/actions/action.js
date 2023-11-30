@@ -11,9 +11,8 @@
  *
  */
 
-const Swagger = require("swagger-client");
 const spec = require("../spec.json");
-const { mapFieldNames, getMetadata, mapFormDataBody } = require("../utils/helpers");
+const { mapFieldNames, getMetadata, mapFormDataBody, executeCall } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
 async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
@@ -84,34 +83,12 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     delete callParams.requestBody;
   }
 
-  const callParamsForLogging = { ...callParams };
-  callParamsForLogging.spec = "[omitted]";
-  logger.trace("Call parameters with 'securities': %j", callParamsForLogging);
-  callParamsForLogging.securities = "[omitted]";
-  logger.info("Final Call params: %j", callParamsForLogging);
 
-  let resp;
-  try {
-    resp = await Swagger.execute(callParams);
-  } catch (e) {
-    if (e instanceof Error && e.response) {
-      const response = e.response;
-      this.logger.error(
-        "API error! Status: '%s', statusText: %s, errorBody: %j",
-        response.status,
-        response.statusText,
-        response.body
-      );
-    }
-    throw e;
-  }
-
-  const { url, body: respBody, headers } = resp;
-  this.logger.info("Swagger response %j", { url, respBody, headers });
+  const resp = await executeCall.call(this, callParams);
 
   const newElement = {};
   newElement.metadata = getMetadata(msg.metadata);
-  newElement.data = resp.data;
+  newElement.data = resp.body;
   this.emit("data", newElement);
   this.logger.info("Execution finished");
 }
