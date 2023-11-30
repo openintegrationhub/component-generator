@@ -40,6 +40,7 @@
     "prompt-sync": "^4.2.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
+    "retry": "^0.13.1",
     "semver": "^7.3.0",
     "swagger-parser": "10.0.3",
     "swagger2openapi": "^7.0.2",
