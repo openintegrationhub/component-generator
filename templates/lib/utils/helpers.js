@@ -22,8 +22,19 @@ const executeSwaggerCall = async function (callParams) {
         const response = await Swagger.execute(callParams);
         resolve(response);
       } catch (error) {
-        if (operation.retry(error) && error.status && error.status > 400 && error.status !== 401 && error.status !== 403 && error.status !== 422) {
-          this.logger.info(`Received response status: ${error.status}. Attempt #${currentAttempt}. Retrying in ${operation._originalTimeouts[currentAttempt-1]} ms...`);
+        if (
+          operation.retry(error) &&
+          error.status &&
+          error.status > 400 &&
+          error.status !== 401 &&
+          error.status !== 403 &&
+          error.status !== 422
+        ) {
+          this.logger.info(
+            `Received response status: ${error.status}. Attempt #${currentAttempt}. Retrying in ${
+              operation._originalTimeouts[currentAttempt - 1]
+            } ms...`
+          );
           return;
         }
         reject(operation.mainError());
@@ -35,7 +46,7 @@ const executeSwaggerCall = async function (callParams) {
 const executeCall = async function (callParams) {
   const callParamsForLogging = { ...callParams };
   callParamsForLogging.spec = "[omitted]";
-  this.logger.trace("Call parameters with \"securities\": %j", callParamsForLogging);
+  this.logger.trace("Call parameters with 'securities': %j", callParamsForLogging);
   callParamsForLogging.securities = "[omitted]";
   this.logger.info("Final Call params: %j", callParamsForLogging);
   let response;
@@ -53,8 +64,20 @@ const executeCall = async function (callParams) {
     }
     throw e;
   }
-  const { url, body, headers } = response;
-  this.logger.info("Swagger response %j", { url, body, headers });
+  const { url, status, body, headers } = response;
+
+  // exception for Slack, because they return error with 200 status code
+  if ("ok" in body && typeof body.ok === "boolean" && !body.ok) {
+    this.logger.error(
+      "API error! Status: '%s', statusText: %s, errorBody: %j",
+      response.status,
+      response.statusText,
+      response.body
+    );
+    throw new Error(body.error || "API returned erroneous response");
+  }
+
+  this.logger.info("Swagger response %j", { status, url, body, headers });
   return { body, headers };
 };
 
@@ -62,7 +85,7 @@ const getFileName = (fileUrl) => {
   const parsedUrl = new URL(fileUrl);
   const filePath = parsedUrl.pathname;
   const title = path.basename(filePath);
-  if (!title){
+  if (!title) {
     throw new Error("Cannot find filename in provided url");
   }
   return title;
@@ -73,7 +96,7 @@ const downloadFileFromUrl = async (fileUrl) => {
   const response = await axios({
     method: "GET",
     url: fileUrl,
-    responseType: "arraybuffer"
+    responseType: "arraybuffer",
   });
   return new File([response.data], title);
 };
@@ -83,19 +106,31 @@ const getInputMetadataSchema = (metadataPath) => {
   return JSON.parse(inputMetadata).properties.requestBody.properties;
 };
 
-const mapFormDataBody = async function(action, body) {
+const mapFormDataBody = async function (action, body) {
   this.logger.info("Going to import Input Metadata Schema...");
   let inputMetadataSchema = getInputMetadataSchema(action.metadata.in);
   this.logger.info("Input Metadata Schema: %j", inputMetadataSchema);
   for (const key of Object.keys(body)) {
     this.logger.info("Body property '%s' has type: %s", key, inputMetadataSchema[key].type);
-    if (inputMetadataSchema[key].type === "string" && inputMetadataSchema[key].format && inputMetadataSchema[key].format === "binary") {
-      this.logger.info("For body property '%s' detected 'binary' format. Going to download binary data from provided URL: %s", key, body[key]);
+    if (
+      inputMetadataSchema[key].type === "string" &&
+      inputMetadataSchema[key].format &&
+      inputMetadataSchema[key].format === "binary"
+    ) {
+      this.logger.info(
+        "For body property '%s' detected 'binary' format. Going to download binary data from provided URL: %s",
+        key,
+        body[key]
+      );
       let fileUrl;
-      try{
+      try {
         fileUrl = new URL(body[key]);
       } catch (e) {
-        this.logger.error("Body property '%s' has binary format and require valid URL as value, but has %s", key, body[key]);
+        this.logger.error(
+          "Body property '%s' has binary format and require valid URL as value, but has %s",
+          key,
+          body[key]
+        );
       }
       this.logger.info("Going to download File from provided URL...");
       const fileContent = await downloadFileFromUrl(fileUrl);
@@ -114,7 +149,7 @@ function mapFieldNames(obj) {
   if (Array.isArray(obj)) {
     obj.forEach(mapFieldNames);
   } else if (typeof obj === "object" && obj) {
-    obj = Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null));
+    obj = Object.fromEntries(Object.entries(obj).filter(([, v]) => v != null));
     return obj;
   }
 }
@@ -152,7 +187,7 @@ async function dataAndSnapshot(newElement, snapshot, snapshotKey, standardSnapsh
       let currentObjectDate = lodashGet(newObject.data, snapshotKey)
         ? lodashGet(newObject.data, snapshotKey)
         : lodashGet(newObject.data, standardSnapshot);
-      if (currentObjectDate){
+      if (currentObjectDate) {
         const parsedDate = isMicrosoftJsonDate(currentObjectDate);
         if (parsedDate) {
           this.logger.info("Microsoft JSON date format detected, parsed date: %s", parsedDate);
