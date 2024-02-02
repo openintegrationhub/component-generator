@@ -67,7 +67,7 @@ const executeCall = async function (callParams) {
   const { url, status, body, headers } = response;
 
   // exception for Slack, because they return error with 200 status code
-  if ("ok" in body && typeof body.ok === "boolean" && !body.ok) {
+  if (body && "ok" in body && typeof body.ok === "boolean" && !body.ok) {
     this.logger.error(
       "API error! Status: '%s', statusText: %s, errorBody: %j",
       response.status,
