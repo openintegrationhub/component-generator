@@ -28,6 +28,7 @@ const executeSwaggerCall = async function (callParams) {
           error.status > 400 &&
           error.status !== 401 &&
           error.status !== 403 &&
+          error.status !== 409 &&
           error.status !== 422
         ) {
           this.logger.info(
