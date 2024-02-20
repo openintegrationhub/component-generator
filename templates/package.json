@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "main": "component.json",
   "dependencies": {
-    "@openintegrationhub/ferryman": "2.4.0",
+    "@openintegrationhub/ferryman": "2.4.1",
     "axios": "^1.4.0",
     "dayjs": "^1.10.7",
     "formdata-node": "4.4.1",
