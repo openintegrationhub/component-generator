@@ -32,8 +32,7 @@ const executeSwaggerCall = async function (callParams) {
           error.status !== 422
         ) {
           this.logger.info(
-            `Received response status: ${error.status}. Attempt #${currentAttempt}. Retrying in ${
-              operation._originalTimeouts[currentAttempt - 1]
+            `Received response status: ${error.status}. Attempt #${currentAttempt}. Retrying in ${operation._originalTimeouts[currentAttempt - 1]
             } ms...`
           );
           return;
@@ -158,10 +157,8 @@ function getMetadata(metadata) {
   const metadataKeys = ["oihUid", "recordUid", "applicationUid"];
   let newMetadata = {};
   for (let i = 0; i < metadataKeys.length; i++) {
-    newMetadata[metadataKeys[i]] =
-      metadata !== undefined && metadata[metadataKeys[i]] !== undefined
-        ? metadata[metadataKeys[i]]
-        : `${metadataKeys[i]} not set yet`;
+    if (metadataKeys[i] in metadata && metadata[metadataKeys[i]])
+      newMetadata[metadataKeys[i]] = metadata[metadataKeys[i]];
   }
   return newMetadata;
 }
