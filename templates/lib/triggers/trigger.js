@@ -12,7 +12,7 @@
  */
 
 const spec = require("../spec.json");
-const { dataAndSnapshot, getMetadata, getElementDataFromResponse, executeCall } = require("../utils/helpers");
+const { dataAndSnapshot, getMetadata, getElementDataFromResponse, executeCall, getInitialSnapshotValue } = require("../utils/helpers");
 const { createPaginator } = require("../utils/paginator");
 const componentJson = require("../../component.json");
 
@@ -34,6 +34,10 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
   logger.info('Starting to execute trigger "%s"', triggerFunction);
 
   logger.info("Incoming snapshot: %j", snapshot);
+
+  snapshot.lastUpdated = getInitialSnapshotValue(cfg, snapshot);
+
+  logger.info("Using snapshot: %j", snapshot);
 
   logger.info(
     'Trigger settings - "snapshotKey": %s, "arraySplittingKey": %s, "syncParam": %s, "skipSnapshot": %s',
