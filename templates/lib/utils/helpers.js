@@ -226,6 +226,27 @@ function getElementDataFromResponse(splittingKey, res) {
     return splittingKey.split(".").reduce((p, c) => (p && p[c]) || null, res);
   }
 }
+
+function getInitialSnapshotValue(cfg, snapshot) {
+  let initialSnapshot;
+
+  if (snapshot && snapshot.lastUpdated) {
+    initialSnapshot = snapshot.lastUpdated;
+  } else {
+    initialSnapshot = new Date(0).getTime();
+  }
+
+  if (cfg && cfg.nodeSettings && cfg.nodeSettings.initialSnapshot) {
+    const initial = dayjs(cfg.nodeSettings.initialSnapshot);
+    const incoming = dayjs(initialSnapshot);
+    if (initial.isValid && incoming.isValid && initial.isAfter(incoming)) {
+      initialSnapshot = cfg.nodeSettings.initialSnapshot;
+    }
+  }
+
+  return initialSnapshot;
+}
+
 module.exports = {
   compareDate,
   mapFieldNames,
@@ -235,4 +256,5 @@ module.exports = {
   mapFormDataBody,
   isMicrosoftJsonDate,
   executeCall,
+  getInitialSnapshotValue
 };
