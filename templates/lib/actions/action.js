@@ -98,10 +98,11 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     this.logger.info("Execution finished");
   } catch (e) {
     if (continueOnError === true) {
-      this.emit('data', {});
+      this.emit('data', { data: {} });
+    } else {
+      this.emit('error', e);
     }
     logger.error(e);
-    this.emit('error', e);
   }
 }
 
