@@ -48,7 +48,9 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     );
 
     const specPath = spec.paths[pathName];
+    const specPathGeneralParams = specPath.parameters? specPath.parameters.map(({ name }) => name) : [];
     const specPathParameters = specPath[method].parameters ? specPath[method].parameters.map(({ name }) => name) : [];
+    specPathParameters.push(...specPathGeneralParams);
 
     let body = msg.data;
     mapFieldNames(body);
