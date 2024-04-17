@@ -157,7 +157,7 @@ function getMetadata(metadata) {
   const metadataKeys = ["oihUid", "recordUid", "applicationUid"];
   let newMetadata = {};
   for (let i = 0; i < metadataKeys.length; i++) {
-    if (metadataKeys[i] in metadata && metadata[metadataKeys[i]])
+    if (metadata && metadataKeys[i] in metadata && metadata[metadataKeys[i]])
       newMetadata[metadataKeys[i]] = metadata[metadataKeys[i]];
   }
   return newMetadata;
