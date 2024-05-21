@@ -30,6 +30,10 @@ async function processAction(req, res, _, actionParams) {
   // we remove because it is not a parameter of the msg data object
   const msg = { data: parameters || {} };
 
+  if (cfg.triggerParams && cfg.triggerParams.otherServer){
+    cfg.otherServer = cfg.triggerParams.otherServer;
+  }
+
   const snapshot = {},
     incomingMessageHeaders = {};
   const tokenData = { function: functionName };
