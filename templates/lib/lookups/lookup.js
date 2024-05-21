@@ -28,7 +28,7 @@ async function processAction(req, res, _, actionParams) {
 
   // in the data it should be always the operationId
   // we remove because it is not a parameter of the msg data object
-  const msg = { data: parameters || {} };
+  const msg = { data: parameters || {}, metadata: {} };
 
   if (cfg.triggerParams && cfg.triggerParams.otherServer){
     cfg.otherServer = cfg.triggerParams.otherServer;
