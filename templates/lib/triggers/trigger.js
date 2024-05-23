@@ -75,7 +75,9 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
 
     let parameters = {};
     for (let param of specPathParameters) {
-      parameters[param] = triggerParams[param];
+      if (triggerParams[param]) {
+        parameters[param] = triggerParams[param];
+      }
     }
 
     if (syncParam && snapshot.lastUpdated) {
