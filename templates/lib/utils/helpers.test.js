@@ -1,6 +1,7 @@
 const {
   isMicrosoftJsonDate,
   getInitialSnapshotValue,
+  compareDate,
 } = require("./helpers");
 const dayjs = require('dayjs');
 
@@ -15,7 +16,13 @@ describe("Helpers", () => {
       const date = isMicrosoftJsonDate("2020-01-01T00:00:00.000Z");
       expect(date).toEqual(null);
     });
+
+    it("should handle integer comparisons", () => {
+      const result = compareDate(4, 0);
+      expect(result).toEqual(true);
+    });
   });
+
 
   describe("getInitialSnapshotValue", () => {
     it("should return null date when nothing is set", () => {

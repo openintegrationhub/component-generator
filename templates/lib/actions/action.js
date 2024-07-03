@@ -48,7 +48,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     );
 
     const specPath = spec.paths[pathName];
-    const specPathGeneralParams = specPath.parameters? specPath.parameters.map(({ name }) => name) : [];
+    const specPathGeneralParams = specPath.parameters ? specPath.parameters.map(({ name }) => name) : [];
     const specPathParameters = specPath[method].parameters ? specPath[method].parameters.map(({ name }) => name) : [];
     specPathParameters.push(...specPathGeneralParams);
 
@@ -61,7 +61,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
 
     let parameters = {};
     for (let param of specPathParameters) {
-      if (body[param]){
+      if (body[param]) {
         parameters[param] = body[param];
       }
     }
@@ -102,7 +102,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     this.logger.info("Execution finished");
   } catch (e) {
     if (continueOnError === true) {
-      this.emit('data', { data: {} });
+      this.emit('data', { data: {}, metadata: {} });
     } else {
       this.emit('error', e);
     }
