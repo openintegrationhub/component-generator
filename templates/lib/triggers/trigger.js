@@ -12,7 +12,13 @@
  */
 
 const spec = require("../spec.json");
-const { dataAndSnapshot, getMetadata, getElementDataFromResponse, executeCall, getInitialSnapshotValue } = require("../utils/helpers");
+const {
+  dataAndSnapshot,
+  getMetadata,
+  getElementDataFromResponse,
+  executeCall,
+  getInitialSnapshotValue
+} = require("../utils/helpers");
 const { createPaginator } = require("../utils/paginator");
 const componentJson = require("../../component.json");
 
@@ -35,7 +41,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     logger.debug("Incoming token data: %j", tokenData);
 
     const triggerFunction = tokenData["function"];
-    logger.info('Starting to execute trigger "%s"', triggerFunction);
+    logger.info("Starting to execute trigger \"%s\"", triggerFunction);
 
     logger.info("Incoming snapshot: %j", snapshot);
 
@@ -44,7 +50,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     logger.info("Using snapshot: %j", snapshot);
 
     logger.info(
-      'Trigger settings - "snapshotKey": %s, "arraySplittingKey": %s, "syncParam": %s, "skipSnapshot": %s',
+      "Trigger settings - \"snapshotKey\": %s, \"arraySplittingKey\": %s, \"syncParam\": %s, \"skipSnapshot\": %s",
       snapshotKey,
       arraySplittingKey,
       syncParam,
@@ -54,7 +60,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     const trigger = componentJson.triggers[triggerFunction];
     const { operationId, pathName, method, requestContentType } = trigger.callParams;
     logger.info(
-      'Found spec callParams: "pathName": %s, "method": %s, "requestContentType": %s',
+      "Found spec callParams: \"pathName\": %s, \"method\": %s, \"requestContentType\": %s",
       pathName,
       method,
       requestContentType
@@ -70,8 +76,13 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
       logger.debug("Trigger params was not found in cfg.triggerParams, going to look into cfg");
       triggerParams = cfg;
     } else {
-      logger.info("Found incoming trigger params: %j", triggerParams);
+      logger.debug("Found incoming trigger params: %j", triggerParams);
     }
+    if (msg && msg.data) {
+      logger.debug("Found params in msg.data", msg.data);
+      triggerParams = { ...triggerParams, ...msg.data };
+    }
+    logger.info("Final trigger params: %j", triggerParams);
 
     let parameters = {};
     for (let param of specPathParameters) {
@@ -126,7 +137,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
       parameters: parameters,
       requestContentType: requestContentType,
       securities: { authorized: securities },
-      server: spec.servers[cfg.server] || cfg.otherServer,
+      server: spec.servers[cfg.server] || cfg.otherServer
     };
 
     const paginator = createPaginator(paginationConfig);
@@ -148,7 +159,10 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
       // pagination
       if (paginator.hasNextPage({ body, headers })) {
         callParams = { ...callParams, parameters: { ...callParams.parameters } };
-        callParams.parameters[paginationConfig.pageTokenOption.fieldName] = paginator.getNextPageToken({ body, headers });
+        callParams.parameters[paginationConfig.pageTokenOption.fieldName] = paginator.getNextPageToken({
+          body,
+          headers
+        });
         logger.info("Found the next page, going to request...");
         hasMorePages = true;
       } else {
@@ -159,9 +173,9 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     logger.info("Execution finished");
   } catch (e) {
     if (continueOnError === true) {
-      this.emit('data', { data: {}, metadata: {} });
+      this.emit("data", { data: {}, metadata: {} });
     } else {
-      this.emit('error', e);
+      this.emit("error", e);
     }
     logger.error(e);
   }
