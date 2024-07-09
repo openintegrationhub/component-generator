@@ -63,6 +63,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     for (let param of specPathParameters) {
       if (body[param]) {
         parameters[param] = body[param];
+        delete body[param];
       }
     }
     logger.debug("Parameters were populated from configuration: %j", parameters);
