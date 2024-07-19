@@ -209,9 +209,12 @@ async function dataAndSnapshot(newElement, snapshot, snapshotKey, standardSnapsh
       }
     }
     this.logger.info("%s items were emitted", emittedItemsCount);
-    snapshot.lastUpdated = lastObjectDate !== 0 ? lastObjectDate : snapshot.lastUpdated;
-    await self.emit("snapshot", snapshot);
-    this.logger.info("A new snapshot was emitted: %j", snapshot);
+    this.logger.info("Generating snapshot, found latest object date %s", lastObjectDate);
+    snapshot.lastUpdated = lastObjectDate ? lastObjectDate : snapshot.lastUpdated;
+    if (snapshot.lastUpdated) {
+      await self.emit("snapshot", snapshot);
+      this.logger.info("A new snapshot was emitted: %j", snapshot);
+    }
   } else {
     this.logger.info("Found one item in response data, going to emit...");
     await self.emit("data", newElement);
