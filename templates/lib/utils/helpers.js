@@ -78,6 +78,11 @@ const executeCall = async function (callParams) {
   }
 
   this.logger.info("Swagger response %j", { status, url, body, headers });
+  if (!body){
+    this.logger.info("Response body is empty, going to check response data");
+    const data = await getResponseData.call(this, response);
+    return { body: data, headers };
+  }
   return { body, headers };
 };
 
@@ -248,6 +253,33 @@ function getInitialSnapshotValue(cfg, snapshot) {
   }
 
   return initialSnapshot;
+}
+
+async function getResponseData(response) {
+  const data = response.data;
+  try {
+    if (data && typeof data.size === "number" && typeof data.type === "string") {
+      this.logger.info("Response data is a Blob object");
+      const arrayBuffer = await data.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const jsonString = buffer.toString("utf-8");
+
+      let parsedData;
+      try {
+        parsedData = JSON.parse(jsonString);
+        this.logger.info("Blob object successful parsed to JSON object");
+        return parsedData;
+      } catch (jsonError) {
+        this.logger.error("Data is not JSON. Handling as text.");
+        return jsonString;
+      }
+    } else {
+      this.logger.info("Data is not a Blob object");
+      return data;
+    }
+  } catch (error) {
+    this.logger.error("Error fetching data:", error);
+  }
 }
 
 module.exports = {
