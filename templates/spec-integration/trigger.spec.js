@@ -8,10 +8,13 @@ describe("Trigger test", () => {
     const triggerName = "SET TRIGGER NAME HERE";
     const accessToken = await getAccessToken();
     const context = getContext();
-    const msg = {data:{}};
+    const msg = { data: {} };
     const cfg = {
       accessToken,
-      nodeSettings: {}
+      nodeSettings: {},
+      additionalParameters: {
+        teamId: 123,
+      }
     };
     const snapshot = {};
     const incomingMessageHeaders = {};

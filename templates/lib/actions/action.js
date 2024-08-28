@@ -64,6 +64,8 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
       if (body[param]) {
         parameters[param] = body[param];
         delete body[param];
+      } else if (cfg && cfg.additionalParameters && cfg.additionalParameters[param]) {
+        parameters[param] = cfg.additionalParameters[param];
       }
     }
     logger.debug("Parameters were populated from configuration: %j", parameters);
