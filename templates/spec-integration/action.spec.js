@@ -15,7 +15,10 @@ describe("Action test", () => {
     };
     const cfg = {
       accessToken,
-      nodeSettings: {}
+      nodeSettings: {},
+      additionalParameters: {
+        teamId: 123,
+      }
       // SET CONFIGURATION HERE
     };
     const snapshot = {};
@@ -23,7 +26,7 @@ describe("Action test", () => {
     const tokenData = {
       "function": actionName
     };
-    await action.process.call(context,msg, cfg, snapshot, incomingMessageHeaders, tokenData);
+    await action.process.call(context, msg, cfg, snapshot, incomingMessageHeaders, tokenData);
     expect(context.emit.callCount).to.be.equal(2);
   });
 });
