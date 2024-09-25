@@ -77,8 +77,8 @@ const executeCall = async function (callParams) {
     throw new Error(body.error || "API returned erroneous response");
   }
 
-  this.logger.info("Swagger response %j", { status, url, body, headers });
-  if (!body){
+  this.logger.info("Swagger response %j", { status, url, headers });
+  if (!body) {
     this.logger.info("Response body is empty, going to check response data");
     const data = await getResponseData.call(this, response);
     return { body: data, headers };
@@ -197,7 +197,9 @@ async function dataAndSnapshot(newElement, snapshot, snapshotKey, standardSnapsh
           currentObjectDate = parsedDate;
         }
       }
-      if (!snapshot.lastUpdated) {
+      if (!currentObjectDate && snapshotKey) {
+        this.logger.info(`Could not find snapshot value for snapshot key ${snapshotKey}, skipping entry...`);
+      } else if (!snapshot.lastUpdated) {
         if (compareDate(currentObjectDate, lastObjectDate)) {
           lastObjectDate = currentObjectDate;
         }
