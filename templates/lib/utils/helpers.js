@@ -25,11 +25,7 @@ const executeSwaggerCall = async function (callParams) {
         if (
           operation.retry(error) &&
           error.status &&
-          error.status > 400 &&
-          error.status !== 401 &&
-          error.status !== 403 &&
-          error.status !== 409 &&
-          error.status !== 422
+          (error.status > 499 || error.status === 429)
         ) {
           this.logger.info(
             `Received response status: ${error.status}. Attempt #${currentAttempt}. Retrying in ${operation._originalTimeouts[currentAttempt - 1]
