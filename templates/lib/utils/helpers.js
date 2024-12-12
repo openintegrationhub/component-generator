@@ -142,6 +142,19 @@ const mapFormDataBody = async function (action, body) {
   return body;
 };
 
+const putAdditionalParamsInBody = async function (action, body, additionalParameters) {
+  const newBody = body;
+  const inputMetadataSchema = getInputMetadataSchema(action.metadata.in);
+
+  for (let property in additionalParameters) {
+    if (property in inputMetadataSchema && !(property in body)) {
+      body[property] = additionalParameters[property];
+    }
+  }
+
+  return newBody;
+};
+
 function compareDate(a, b) {
   return dayjs(a).isAfter(b);
 }
@@ -289,5 +302,7 @@ module.exports = {
   mapFormDataBody,
   isMicrosoftJsonDate,
   executeCall,
-  getInitialSnapshotValue
+  getInitialSnapshotValue,
+  getInputMetadataSchema,
+  putAdditionalParamsInBody
 };

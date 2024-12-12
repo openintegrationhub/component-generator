@@ -12,7 +12,7 @@
  */
 
 const spec = require("../spec.json");
-const { mapFieldNames, getMetadata, mapFormDataBody, executeCall } = require("../utils/helpers");
+const { mapFieldNames, getMetadata, mapFormDataBody, putAdditionalParamsInBody, executeCall } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
 async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
@@ -53,6 +53,11 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     specPathParameters.push(...specPathGeneralParams);
 
     let body = msg.data;
+
+    if (cfg && cfg.additionalParameters) {
+      body = putAdditionalParamsInBody(this, action, body, cfg.additionalParameters)
+    }
+
     mapFieldNames(body);
     if (requestContentType === "multipart/form-data") {
       logger.info("requestContentType multipart/form-data is defined");
