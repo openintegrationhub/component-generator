@@ -144,7 +144,20 @@ const mapFormDataBody = async function (action, body) {
 
 const putAdditionalParamsInBody = async function (action, body, additionalParameters) {
   const newBody = body;
-  const inputMetadataSchema = getInputMetadataSchema(action.metadata.in);
+  let inputMetadataSchema;
+
+  if (!action.metadata || !action.metadata.in) {
+    this.logger.warn("No metadata input found");
+    return newBody;
+  }
+
+  try {
+    inputMetadataSchema = getInputMetadataSchema(action.metadata.in);
+  } catch (e) {
+    this.logger.error("Could not fetch input");
+    this.logger.error(e);
+    return newBody
+  }
 
   for (let property in additionalParameters) {
     if (property in inputMetadataSchema && !(property in body)) {
