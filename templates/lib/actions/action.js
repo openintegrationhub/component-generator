@@ -55,7 +55,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     let body = msg.data;
 
     if (cfg && cfg.additionalParameters) {
-      body = putAdditionalParamsInBody.call(this, action, body, cfg.additionalParameters)
+      body = await putAdditionalParamsInBody.call(this, action, body, cfg.additionalParameters);
     }
 
     mapFieldNames(body);
