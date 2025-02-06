@@ -106,6 +106,11 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     const newElement = {};
     newElement.metadata = getMetadata(msg.metadata);
     newElement.data = resp.body;
+
+    if (cfg.returnResult) {
+      return newElement;
+    }
+
     this.emit("data", newElement);
     this.logger.info("Execution finished");
   } catch (e) {
