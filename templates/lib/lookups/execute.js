@@ -22,13 +22,13 @@ const logger = require("@openintegrationhub/ferryman/lib/logging");
 async function processAction(req, res, _, actionParams) {
   const { secretId, data } = actionParams;
   const { ferryman } = req;
-  const { operationId: functionName, parameters, cfg } = data;
+  const { operationId: functionName, cfg } = data;
+  if (!cfg) cfg = {};
+  if (!cfg.nodeSettings) cfg.nodeSettings = {};
 
   logger.info({ params: actionParams }, "Running execute with params");
 
-  // in the data it should be always the operationId
-  // we remove because it is not a parameter of the msg data object
-  const msg = { data: parameters || {}, metadata: {} };
+  const msg = { data: data.data || {}, metadata: {} };
 
   const snapshot = {},
     incomingMessageHeaders = {};
