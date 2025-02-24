@@ -28,7 +28,7 @@ async function processAction(req, res, _, actionParams) {
 
   logger.info({ params: actionParams }, "Running execute with params");
 
-  const msg = { data: data.data || {}, metadata: {} };
+  const msg = { data: data.data?.data || {}, metadata: {} };
 
   const snapshot = {},
     incomingMessageHeaders = {};
