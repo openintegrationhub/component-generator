@@ -8,7 +8,7 @@
  * @param {Object} actionParams - action parameters - { actionName: "string", secretId: "string", data: "object"}
  */
 
-const { process: actionProcess } = require("../triggers/trigger");
+const { process: actionProcess } = require("../actions/action");
 const logger = require("@openintegrationhub/ferryman/lib/logging");
 
 /*
