@@ -103,6 +103,36 @@ describe("Paginators", () => {
       expect(paginator.hasNextPage(response)).toBeTruthy();
       expect(paginator.getNextPageToken(response)).toBe("next-page-token");
     });
+
+    it("should abort when receiving the same data twice in a row", () => {
+      const paginator = new CursorPaginator({
+        pageTokenOption: {
+          fieldName: "after",
+        },
+        strategy: {
+          type: "cursor",
+          tokenIn: "body",
+          nextCursorPath: "meta.next.token",
+        },
+      });
+
+      const response = {
+        headers: {},
+        body: {
+          data: ['abc', 'def'],
+          meta: {
+            next: {
+              token: "next-page-token",
+            },
+          },
+        },
+      };
+
+      expect(paginator.hasNextPage(response)).toBeTruthy();
+      expect(paginator.getNextPageToken(response)).toBe("next-page-token");
+
+      expect(paginator.hasNextPage(response)).toBeFalsy();
+    });
   });
 
   describe("PageIncrementPaginator", () => {
@@ -181,6 +211,40 @@ describe("Paginators", () => {
       expect(paginator.getNextPageToken(response)).toBe(2);
       expect(paginator.getNextPageToken(response)).toBe(3);
     });
+
+    it("should abort when receiving the same data twice in a row", () => {
+      const paginator = createPaginator({
+        pageSizeOption: {
+          fieldName: "per_page",
+        },
+        pageTokenOption: {
+          fieldName: "page",
+        },
+        strategy: {
+          type: "page_increment",
+          pageSize: 2,
+          resultsPath: "results",
+        },
+      });
+
+      const response1 = {
+        body: {
+          results: [{ id: 1 }, { id: 2 }],
+        },
+        headers: {},
+      };
+
+      const response2 = {
+        body: {
+          results: [{ id: 3 }, { id: 4 }],
+        },
+        headers: {},
+      };
+
+      expect(paginator.hasNextPage(response1)).toBeTruthy();
+      expect(paginator.hasNextPage(response2)).toBeTruthy();
+      expect(paginator.hasNextPage(response2)).toBeFalsy();
+    });
   });
 
   describe("OffsetIncrementPaginator", () => {
@@ -229,7 +293,7 @@ describe("Paginators", () => {
       const response = {
         body: {
           d: {
-            results: [{id: 1}, {id: 2}]
+            results: [{ id: 1 }, { id: 2 }]
           },
         },
         headers: {},
@@ -288,6 +352,41 @@ describe("Paginators", () => {
       expect(paginator.getNextPageToken(response)).toBe(2);
       expect(paginator.getNextPageToken(response)).toBe(4);
     });
+
+    it("should when receiving the same data twice in a row", () => {
+      const paginator = createPaginator({
+        pageSizeOption: {
+          fieldName: "per_page",
+        },
+        pageTokenOption: {
+          fieldName: "page",
+        },
+        strategy: {
+          type: "offset_increment",
+          pageSize: 2,
+          resultsPath: "results",
+        },
+      });
+
+      const response1 = {
+        body: {
+          results: [{ id: 1 }, { id: 2 }],
+        },
+        headers: {},
+      };
+
+      const response2 = {
+        body: {
+          results: [{ id: 3 }, { id: 4 }],
+        },
+        headers: {},
+      };
+
+      expect(paginator.hasNextPage(response1)).toBeTruthy();
+      expect(paginator.hasNextPage(response2)).toBeTruthy();
+      expect(paginator.hasNextPage(response2)).toBeFalsy();
+    });
+
   });
 
   describe("NoPagingPaginator", () => {
