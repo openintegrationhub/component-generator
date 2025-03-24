@@ -1,4 +1,5 @@
 const lodashGet = require("lodash.get");
+const crypto = require('crypto');
 
 module.exports.createPaginator = function createPaginator(config) {
   if (config.strategy.type === "cursor") {
@@ -14,9 +15,17 @@ module.exports.createPaginator = function createPaginator(config) {
 class CursorPaginator {
   constructor(config) {
     this.config = config;
+    this.lastPageHash = "";
   }
 
   hasNextPage({ headers, body }) {
+    const hashedBody = crypto.createHash('sha256').update(JSON.stringify(body), 'utf8').digest('hex');
+    if (hashedBody === this.lastPageHash) {
+      console.warn("Received same data twice in a row, aborting pagination...")
+      return false;
+    }
+    this.lastPageHash = hashedBody;
+
     return !!this.getNextPageToken({ headers, body });
   }
 
@@ -31,9 +40,17 @@ class PageIncrementPaginator {
 
   constructor(config) {
     this.config = config;
+    this.lastPageHash = "";
   }
 
   hasNextPage({ body }) {
+    const hashedBody = crypto.createHash('sha256').update(JSON.stringify(body), 'utf8').digest('hex');
+    if (hashedBody === this.lastPageHash) {
+      console.warn("Received same data twice in a row, aborting pagination...")
+      return false;
+    }
+    this.lastPageHash = hashedBody;
+
     const resultsPath = [];
     if (this.config.strategy.resultsPath) {
       resultsPath.push(...this.config.strategy.resultsPath.split('.'));
@@ -53,9 +70,17 @@ class OffsetIncrementPaginator {
 
   constructor(config) {
     this.config = config;
+    this.lastPageHash = "";
   }
 
   hasNextPage({ body }) {
+    const hashedBody = crypto.createHash('sha256').update(JSON.stringify(body), 'utf8').digest('hex');
+    if (hashedBody === this.lastPageHash) {
+      console.warn("Received same data twice in a row, aborting pagination...")
+      return false;
+    }
+    this.lastPageHash = hashedBody;
+
     const resultsPath = [];
     if (this.config.strategy.resultsPath) {
       resultsPath.push(...this.config.strategy.resultsPath.split('.'));
