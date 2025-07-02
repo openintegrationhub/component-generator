@@ -150,6 +150,13 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     do {
       const { body, headers } = await executeCall.call(this, callParams);
 
+      // Wait for rate limit if specified
+      const rateLimit = cfg.nodeSettings && cfg.nodeSettings.rateLimit ? parseInt(cfg.nodeSettings.rateLimit) : 1700;
+      if (rateLimit > 0) {
+        this.logger.info(`Waiting for rate limit: ${rateLimit} ms`);
+        await new Promise(resolve => setTimeout(resolve, rateLimit));
+      }
+
       const newElement = {};
       newElement.metadata = getMetadata(msg.metadata);
       newElement.data = getElementDataFromResponse.call(this, arraySplittingKey, body);
