@@ -103,6 +103,13 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
 
     const resp = await executeCall.call(this, callParams);
 
+    // Wait for rate limit if specified
+    const rateLimit = cfg.nodeSettings && cfg.nodeSettings.rateLimit ? parseInt(cfg.nodeSettings.rateLimit) : 1700;
+    if (rateLimit > 0) {
+      this.logger.info(`Waiting for rate limit: ${rateLimit} ms`);
+      await new Promise(resolve => setTimeout(resolve, rateLimit));
+    }
+
     const newElement = {};
     newElement.metadata = getMetadata(msg.metadata);
     newElement.data = resp.body;
