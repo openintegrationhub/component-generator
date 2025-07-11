@@ -3,6 +3,7 @@
   "description": "",
   "docsUrl": "",
   "url": "",
+  "rateLimit": -1,
   "envVars": {},
   "credentials": {},
   "triggers": {},
