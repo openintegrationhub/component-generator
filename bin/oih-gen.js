@@ -62,6 +62,7 @@ async function oihGen() {
     connectorName: options.name,
     outputDir: options.output,
     snapshot: options.snapshot,
+    rateLimit: options.rateLimit,
     paginationConfig: {
       pageTokenOption: {
         fieldName: options.paginationTokenFieldName,

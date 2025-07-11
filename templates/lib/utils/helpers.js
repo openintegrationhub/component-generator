@@ -13,7 +13,7 @@ const executeSwaggerCall = async function (callParams) {
     retries: 5,
     factor: 2,
     minTimeout: 5000,
-    maxTimeout: 6000,
+    maxTimeout: 20000,
     randomize: true,
   });
   return new Promise((resolve, reject) => {
