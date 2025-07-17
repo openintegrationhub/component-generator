@@ -21,6 +21,7 @@ const {
 } = require("../utils/helpers");
 const { createPaginator } = require("../utils/paginator");
 const componentJson = require("../../component.json");
+const dayjs = require("dayjs");
 
 async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   let logger = this.logger;
@@ -28,7 +29,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
   if (cfg && cfg.nodeSettings && cfg.nodeSettings.continueOnError) continueOnError = true;
 
   try {
-    const { snapshotKey, arraySplittingKey, syncParam, skipSnapshot, logLevel } = cfg.nodeSettings;
+    const { snapshotKey, arraySplittingKey, syncParam, skipSnapshot, logLevel, syncParamFormat } = cfg.nodeSettings;
 
     if (["fatal", "error", "warn", "info", "debug", "trace"].includes(logLevel)) {
       logger = this.logger.child({});
@@ -96,15 +97,21 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     }
 
     if (syncParam && snapshot.lastUpdated) {
+      let formattedTimestamp = snapshot.lastUpdated;
+      if (syncParamFormat) {
+        formattedTimestamp = dayjs(snapshot.lastUpdated).utc().format(syncParamFormat);
+      }
+      logger.info("SyncParam: %s", formattedTimestamp);
       if (syncParam === "$FILTER") {
         if (!snapshotKey) {
           throw new Error("snapshotKey params should be specified!");
         }
-        parameters[syncParam] = `${snapshotKey} gt datetime'${snapshot.lastUpdated}'`;
+        parameters[syncParam] = `${snapshotKey} gt datetime'${formattedTimestamp}'`;
       } else {
-        parameters[syncParam] = snapshot.lastUpdated;
+        parameters[syncParam] = formattedTimestamp;
       }
     }
+
     logger.debug("Parameters were populated from configuration: %j", parameters);
 
     $SECURITIES;

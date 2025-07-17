@@ -63,6 +63,7 @@ async function oihGen() {
     outputDir: options.output,
     snapshot: options.snapshot,
     rateLimit: options.rateLimit,
+    syncParamFormat: options.syncParamFormat,
     paginationConfig: {
       pageTokenOption: {
         fieldName: options.paginationTokenFieldName,
