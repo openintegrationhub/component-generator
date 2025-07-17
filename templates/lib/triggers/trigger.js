@@ -22,6 +22,8 @@ const {
 const { createPaginator } = require("../utils/paginator");
 const componentJson = require("../../component.json");
 const dayjs = require("dayjs");
+const utc = require('dayjs/plugin/utc');
+dayjs.extend(utc);
 
 async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
   let logger = this.logger;
@@ -29,7 +31,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
   if (cfg && cfg.nodeSettings && cfg.nodeSettings.continueOnError) continueOnError = true;
 
   try {
-    const { snapshotKey, arraySplittingKey, syncParam, skipSnapshot, logLevel, syncParamFormat } = cfg.nodeSettings;
+    const { snapshotKey, arraySplittingKey, syncParam, skipSnapshot, logLevel } = cfg.nodeSettings;
 
     if (["fatal", "error", "warn", "info", "debug", "trace"].includes(logLevel)) {
       logger = this.logger.child({});
@@ -98,6 +100,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
 
     if (syncParam && snapshot.lastUpdated) {
       let formattedTimestamp = snapshot.lastUpdated;
+      const syncParamFormat = cfg.nodeSettings.syncParamFormat || componentJson.syncParamFormat;
       if (syncParamFormat) {
         formattedTimestamp = dayjs(snapshot.lastUpdated).utc().format(syncParamFormat);
       }
