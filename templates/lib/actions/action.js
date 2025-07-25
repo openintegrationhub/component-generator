@@ -54,6 +54,14 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
 
     let body = msg.data;
 
+    if (cfg.nodeSettings && cfg.nodeSettings.injectFlowData) {
+      if (!cfg.additionalParameters) cfg.additionalParameters = {};
+      const logChild = this.logger.child();
+      if (logChild && logChild.fields && logChild.fields.flowId) {
+        cfg.additionalParameters.flowID = logChild.fields.flowId;
+      }
+    }
+
     if (cfg && cfg.additionalParameters) {
       body = await putAdditionalParamsInBody.call(this, action, body, cfg.additionalParameters);
     }
