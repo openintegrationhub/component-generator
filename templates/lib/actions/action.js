@@ -39,12 +39,13 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     logger.info("Starting to execute action '%s'", actionFunction);
 
     const action = componentJson.actions[actionFunction];
-    const { operationId, pathName, method, requestContentType } = action.callParams;
+    const { operationId, pathName, method, requestContentType, responseContentType } = action.callParams;
     logger.info(
-      "Found spec callParams: 'pathName': %s, 'method': %s, 'requestContentType': %s",
+      "Found spec callParams: 'pathName': %s, 'method': %s, 'requestContentType': %s, 'responseContentType': %t",
       pathName,
       method,
-      requestContentType
+      requestContentType,
+      responseContentType
     );
 
     const specPath = spec.paths[pathName];
@@ -100,6 +101,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
       method: method,
       parameters: parameters,
       requestContentType: requestContentType,
+      responseContentType: responseContentType,
       requestBody: body,
       securities: { authorized: securities },
       server: spec.servers[cfg.server] || cfg.otherServer,

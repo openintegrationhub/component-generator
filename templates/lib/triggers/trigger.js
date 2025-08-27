@@ -61,12 +61,13 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     );
 
     const trigger = componentJson.triggers[triggerFunction];
-    const { operationId, pathName, method, requestContentType } = trigger.callParams;
+    const { operationId, pathName, method, requestContentType, responseContentType } = trigger.callParams;
     logger.info(
-      "Found spec callParams: \"pathName\": %s, \"method\": %s, \"requestContentType\": %s",
+      "Found spec callParams: \"pathName\": %s, \"method\": %s, \"requestContentType\": %s, \"responseContentType\": %t",
       pathName,
       method,
-      requestContentType
+      requestContentType,
+      responseContentType,
     );
 
     const specPath = spec.paths[pathName];
@@ -150,6 +151,7 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
       method: method,
       parameters: parameters,
       requestContentType: requestContentType,
+      responseContentType: responseContentType,
       securities: { authorized: securities },
       server: spec.servers[cfg.server] || cfg.otherServer
     };
