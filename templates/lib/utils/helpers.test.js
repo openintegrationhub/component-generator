@@ -2,6 +2,7 @@ const {
   isMicrosoftJsonDate,
   getInitialSnapshotValue,
   compareDate,
+  formatApiKey
 } = require("./helpers");
 const dayjs = require('dayjs');
 
@@ -55,5 +56,17 @@ describe("Helpers", () => {
       expect(initialSnapshot).toEqual(dayjs('10-20-2020').format());
     });
 
+  });
+
+  describe("formatApiKey", () => {
+    it("should prefix a key with a given prefix if it is missing", () => {
+      const tokenKey = formatApiKey('abcd123', { prefix: 'Token ' });
+      expect(tokenKey).toEqual('Token abcd123');
+    });
+
+    it("should not prefix a key if it's already correctly formatted", () => {
+      const BearerKey = formatApiKey('Bearer abcd123', { prefix: 'Bearer ' });
+      expect(BearerKey).toEqual('Bearer abcd123');
+    });
   });
 });
