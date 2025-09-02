@@ -17,7 +17,8 @@ const {
   getMetadata,
   getElementDataFromResponse,
   executeCall,
-  getInitialSnapshotValue
+  getInitialSnapshotValue,
+  formatApiKey,
 } = require("../utils/helpers");
 const { createPaginator } = require("../utils/paginator");
 const componentJson = require("../../component.json");
@@ -42,6 +43,10 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
     logger.trace("Incoming configuration: %j", cfg);
     logger.debug("Incoming message headers: %j", incomingMessageHeaders);
     logger.debug("Incoming token data: %j", tokenData);
+
+    if (cfg?.key && componentJson?.authFormat) {
+      cfg.key = formatApiKey(cfg.key, componentJson.authFormat);
+    }
 
     const triggerFunction = tokenData["function"];
     logger.info("Starting to execute trigger \"%s\"", triggerFunction);

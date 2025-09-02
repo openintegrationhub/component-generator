@@ -4,6 +4,7 @@
   "docsUrl": "",
   "url": "",
   "rateLimit": -1,
+  "authFormat": {},
   "envVars": {},
   "credentials": {},
   "triggers": {},

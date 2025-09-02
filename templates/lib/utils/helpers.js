@@ -306,6 +306,18 @@ async function getResponseData(response) {
   }
 }
 
+function formatApiKey(key, format) {
+  let formattedKey = key;
+
+  if (format.prefix) {
+    if (!formattedKey?.startsWith(format.prefix)) {
+      formattedKey = `${format.prefix}${formattedKey}`;
+    }
+  }
+
+  return formattedKey;
+}
+
 module.exports = {
   compareDate,
   mapFieldNames,
@@ -317,5 +329,6 @@ module.exports = {
   executeCall,
   getInitialSnapshotValue,
   getInputMetadataSchema,
-  putAdditionalParamsInBody
+  putAdditionalParamsInBody,
+  formatApiKey
 };

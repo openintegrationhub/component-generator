@@ -12,7 +12,7 @@
  */
 
 const spec = require("../spec.json");
-const { mapFieldNames, getMetadata, mapFormDataBody, putAdditionalParamsInBody, executeCall } = require("../utils/helpers");
+const { mapFieldNames, getMetadata, mapFormDataBody, putAdditionalParamsInBody, executeCall, formatApiKey } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
 async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenData) {
@@ -34,6 +34,10 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     logger.debug("Incoming snapshot: %j", snapshot);
     logger.debug("Incoming message headers: %j", incomingMessageHeaders);
     logger.debug("Incoming token data: %j", tokenData);
+
+    if (cfg?.key && componentJson?.authFormat) {
+      cfg.key = formatApiKey(cfg.key, componentJson.authFormat);
+    }
 
     const actionFunction = tokenData["function"];
     logger.info("Starting to execute action '%s'", actionFunction);
