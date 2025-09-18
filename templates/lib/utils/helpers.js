@@ -73,7 +73,7 @@ const executeCall = async function (callParams) {
     throw new Error(body.error || "API returned erroneous response");
   }
 
-  this.logger.info("Swagger response %j", { status, url, headers });
+  this.logger.info("Swagger response %j", { status, url, headers, body });
   if (!body) {
     this.logger.info("Response body is empty, going to check response data");
     const data = await getResponseData.call(this, response);
@@ -225,6 +225,7 @@ async function dataAndSnapshot(newElement, snapshot, snapshotKey, standardSnapsh
         if (compareDate(currentObjectDate, lastObjectDate)) {
           lastObjectDate = currentObjectDate;
         }
+        this.logger.info("Going to emit data: %j", newObject);
         await self.emit("data", newObject);
         emittedItemsCount++;
       } else {
@@ -232,6 +233,7 @@ async function dataAndSnapshot(newElement, snapshot, snapshotKey, standardSnapsh
           if (compareDate(currentObjectDate, lastObjectDate)) {
             lastObjectDate = currentObjectDate;
           }
+          this.logger.info("Going to emit data: %j", newObject);
           await self.emit("data", newObject);
           emittedItemsCount++;
         }
@@ -246,6 +248,7 @@ async function dataAndSnapshot(newElement, snapshot, snapshotKey, standardSnapsh
     }
   } else {
     this.logger.info("Found one item in response data, going to emit...");
+    this.logger.info("Going to emit data: %j", newElement);
     await self.emit("data", newElement);
   }
 }

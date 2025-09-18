@@ -39,10 +39,10 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
       logger.level && logger.level(logLevel);
     }
 
-    logger.debug("Incoming message: %j", msg);
+    logger.info("Incoming message: %j", msg);
     logger.trace("Incoming configuration: %j", cfg);
-    logger.debug("Incoming message headers: %j", incomingMessageHeaders);
-    logger.debug("Incoming token data: %j", tokenData);
+    logger.info("Incoming message headers: %j", incomingMessageHeaders);
+    logger.info("Incoming token data: %j", tokenData);
 
     if (cfg?.key && componentJson?.authFormat) {
       cfg.key = formatApiKey(cfg.key, componentJson.authFormat);
