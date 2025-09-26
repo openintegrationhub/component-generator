@@ -148,8 +148,10 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
           logger.info(`Emitted array item at index ${index}`);
         });
       } else if (responseBody && typeof responseBody === "object") {
-        logger.info(`Response is an object. Checking for array at key "${arraySplittingKey}".`);
-        const splitArray = responseBody[arraySplittingKey];
+        logger.info(`Response is an object. Resolving nested path "${arraySplittingKey}".`);
+        const splitArray = arraySplittingKey
+          .split(".")
+          .reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : null), responseBody);
 
         if (Array.isArray(splitArray)) {
           logger.info(`Found array at "${arraySplittingKey}" with ${splitArray.length} items. Emitting each element.`);
@@ -161,10 +163,10 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
             logger.info(`Emitted nested array item at index ${index}`);
           });
         } else {
-          if (splitArray === undefined) {
-            logger.info(`Key "${arraySplittingKey}" not found in response object. Emitting full response instead.`);
+          if (splitArray === null) {
+            logger.info(`Path "${arraySplittingKey}" not found in response object. Emitting full response instead.`);
           } else {
-            logger.info(`Key "${arraySplittingKey}" exists but value is not an array (type: ${typeof splitArray}). Emitting full response instead.`);
+            logger.info(`Path "${arraySplittingKey}" resolved, but value is not an array (type: ${typeof splitArray}). Emitting full response instead.`);
           }
           this.emit("data", { data: responseBody, metadata: getMetadata(msg.metadata) });
         }
