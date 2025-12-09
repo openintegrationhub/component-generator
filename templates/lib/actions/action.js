@@ -29,6 +29,9 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
   let continueOnError = false;
   if (cfg && cfg.nodeSettings && cfg.nodeSettings.continueOnError) continueOnError = true;
 
+  let returnResult = false;
+  if (cfg && cfg.returnResult) returnResult = true;
+
   try {
     if (["fatal", "error", "warn", "info", "debug", "trace"].includes(logLevel)) {
       logger = this.logger.child({});
@@ -127,8 +130,8 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
       cfg.nodeSettings && cfg.nodeSettings.rateLimit
         ? parseInt(cfg.nodeSettings.rateLimit)
         : Number.isInteger(componentJson.rateLimit)
-        ? componentJson.rateLimit
-        : 0;
+          ? componentJson.rateLimit
+          : 0;
     if (rateLimit > 0) {
       this.logger.info(`Waiting for rate limit: ${rateLimit} ms`);
       await new Promise((resolve) => setTimeout(resolve, rateLimit));
@@ -137,7 +140,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     const responseBody = resp.body;
     const { arraySplittingKey } = cfg.nodeSettings;
 
-    if (arraySplittingKey && !cfg.returnResult) {
+    if (arraySplittingKey && !returnResult) {
       if (Array.isArray(responseBody)) {
         logger.info(`Response is an array with ${responseBody.length} items. Emitting each element separately.`);
         responseBody.forEach((item, index) => {
@@ -180,7 +183,7 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
         data: responseBody,
       };
 
-      if (cfg.returnResult) {
+      if (returnResult) {
         logger.info(`returnResult flag is true. Returning output message instead of emitting.`);
         return outputMessage;
       }
@@ -195,6 +198,9 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
       this.emit("error", e);
     }
     logger.error(e);
+    if (returnResult) {
+      return { error: e }
+    }
   }
 }
 
