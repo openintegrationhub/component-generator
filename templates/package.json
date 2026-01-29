@@ -8,7 +8,7 @@
     "formdata-node": "4.4.1",
     "lodash.get": "4.4.2",
     "retry": "^0.13.1",
-    "swagger-client": "^3.8.22"
+    "swagger-client": "^3.36.1"
   },
   "devDependencies": {
     "chai": "^4.3.7",
