@@ -9,7 +9,7 @@
  */
 
 const { process: actionProcess } = require("../actions/action");
-const logger = require("@openintegrationhub/ferryman/lib/logging");
+let logger = require("@openintegrationhub/ferryman/lib/logging");
 
 /*
 * data will have the following format:
@@ -22,11 +22,15 @@ const logger = require("@openintegrationhub/ferryman/lib/logging");
 async function processAction(req, res, _, actionParams) {
   const { secretId, data } = actionParams;
   const { ferryman } = req;
-  const { operationId: functionName, cfg } = data;
+  const { operationId: functionName, cfg, flowId } = data;
   if (!cfg) cfg = {};
   if (!cfg.nodeSettings) cfg.nodeSettings = {};
 
   logger.info({ params: actionParams }, "Running execute with params");
+
+  if (flowId) {
+    logger = logger.child({ flowId });
+  }
 
   const msg = { data: data.data?.data || {}, metadata: {} };
 
