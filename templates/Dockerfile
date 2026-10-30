@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:22-alpine
 
 RUN apk --no-cache add \
     python3 \
@@ -11,7 +11,7 @@ WORKDIR /usr/src/app
 COPY package.json /usr/src/app
 COPY package-lock.json /usr/src/app
 
-RUN npm ci --production
+RUN npm ci --omit=dev
 
 COPY . /usr/src/app
 
