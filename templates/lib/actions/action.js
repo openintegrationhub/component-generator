@@ -67,6 +67,13 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
 
     let body = msg.data;
 
+    // A top-level "requestBody" means the OpenAPI descriptor was mapped by mistake; unwrap the actual payload
+    const wrappedBody = body && body.requestBody;
+    if (wrappedBody && (typeof wrappedBody !== "object" || Object.keys(wrappedBody).length > 0)) {
+      logger.warn("Found top-level 'requestBody' property in message data, this indicates a mapping error. Using its contents as request body");
+      body = wrappedBody;
+    }
+
     if (cfg.nodeSettings && cfg.nodeSettings.injectFlowData) {
       if (!cfg.additionalParameters) cfg.additionalParameters = {};
       const logChild = this.logger.child();
