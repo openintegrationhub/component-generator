@@ -321,6 +321,18 @@ function formatApiKey(key, format) {
   return formattedKey;
 }
 
+const SENSITIVE_CONFIG_KEYS = ["key", "accessToken", "refreshToken", "username", "passphrase"];
+
+// Returns a copy of the config that is safe to log; the original object is not modified
+function redactConfig(cfg) {
+  if (!cfg || typeof cfg !== "object") return cfg;
+  return JSON.parse(
+    JSON.stringify(cfg, (k, value) =>
+      SENSITIVE_CONFIG_KEYS.includes(k) && value !== undefined && value !== null ? "***" : value
+    )
+  );
+}
+
 module.exports = {
   compareDate,
   mapFieldNames,
@@ -333,5 +345,6 @@ module.exports = {
   getInitialSnapshotValue,
   getInputMetadataSchema,
   putAdditionalParamsInBody,
-  formatApiKey
+  formatApiKey,
+  redactConfig
 };
