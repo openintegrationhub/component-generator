@@ -19,6 +19,7 @@ const {
   putAdditionalParamsInBody,
   executeCall,
   formatApiKey,
+  redactConfig,
 } = require("../utils/helpers");
 const componentJson = require("../../component.json");
 
@@ -38,12 +39,10 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
       logger.level && logger.level(logLevel);
     }
 
-    logger.debug("Incoming message: %j", msg);
-    logger.trace("Incoming configuration: %j", cfg);
-    logger.debug("Incoming snapshot: %j", snapshot);
-    logger.debug("Incoming message headers: %j", incomingMessageHeaders);
-    logger.debug("Incoming token data: %j", tokenData);
-
+    logger.info("Incoming message: %j", msg);
+    logger.info("Incoming snapshot: %j", snapshot);
+    logger.info("Incoming configuration: %j", redactConfig(cfg));
+ 
     if (cfg?.key && componentJson?.authFormat) {
       cfg.key = formatApiKey(cfg.key, componentJson.authFormat);
     }
@@ -67,6 +66,13 @@ async function processAction(msg, cfg, snapshot, incomingMessageHeaders, tokenDa
     specPathParameters.push(...specPathGeneralParams);
 
     let body = msg.data;
+
+    // A top-level "requestBody" means the OpenAPI descriptor was mapped by mistake; unwrap the actual payload
+    const wrappedBody = body && body.requestBody;
+    if (wrappedBody && (typeof wrappedBody !== "object" || Object.keys(wrappedBody).length > 0)) {
+      logger.warn("Found top-level 'requestBody' property in message data, this indicates a mapping error. Using its contents as request body");
+      body = wrappedBody;
+    }
 
     if (cfg.nodeSettings && cfg.nodeSettings.injectFlowData) {
       if (!cfg.additionalParameters) cfg.additionalParameters = {};
