@@ -95,7 +95,6 @@ async function processTrigger(msg, cfg, snapshot, incomingMessageHeaders, tokenD
       logger.debug("Found additional params in credentials", cfg.additionalParameters),
         triggerParams = { ...triggerParams, ...cfg.additionalParameters };
     }
-    logger.info("Final trigger params: %j", triggerParams);
 
     let parameters = {};
     for (let param of specPathParameters) {
